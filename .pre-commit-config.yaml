@@ -1,0 +1,41 @@
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.5.26
+    hooks:
+      - id: uv-lock
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: ruff check
+        language: system
+        types_or: [ python, pyi, jupyter ]
+        args: [ --fix ]
+      - id: ruff
+        name: ruff
+        entry: ruff format
+        language: system
+        types_or: [ python, pyi, jupyter ]
+      - id: pytest
+        name: pytest
+        entry: uv run pytest -vv --cov=src --cov-report term-missing:skip-covered
+        language: python
+        pass_filenames: false
+        always_run: true
+      - id: repo-map
+        name: repo_map
+        entry: uv run -m repo_mapper
+        language: system
+        pass_filenames: false
+        args:
+          - --repo-root
+          - .
+          - --readme-path
+          - ./README.md
+          - --gitignore-path
+          - ./.gitignore
+          - --allowed-exts
+          - py,md,yaml,toml,lock
+          - --ignore-dirs
+          - .venv,target,.git,mock_data,.pytest_cache
+          # - --ignore-hidden
