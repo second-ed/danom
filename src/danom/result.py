@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from typing import (
     ParamSpec,
+    Self,
     TypeVar,
 )
 
@@ -23,3 +24,6 @@ class Result(ABC):
 
     @abstractmethod
     def unwrap(self) -> T: ...
+
+    def __class_getitem__(cls, _params: tuple) -> Self:
+        return cls

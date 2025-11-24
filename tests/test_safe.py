@@ -3,15 +3,16 @@ from typing import Any, Self
 import pytest
 
 from src.danom import safe, safe_method
+from src.danom.result import Result
 
 
 @safe
-def mock_func(a: int, b: int) -> int:
+def mock_func(a: int, b: int) -> Result[int, Exception]:
     return a + b
 
 
 @safe
-def mock_func_raises(_a: Any) -> None:
+def mock_func_raises(_a: Any) -> Result[None, Exception]:
     raise TypeError
 
 
