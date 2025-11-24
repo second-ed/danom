@@ -5,7 +5,8 @@
 ```
 ├── .github
 │   └── workflows
-│       └── ci_tests.yaml
+│       ├── ci_tests.yaml
+│       └── publish.yaml
 ├── src
 │   └── danom
 │       ├── __init__.py
