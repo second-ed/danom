@@ -16,7 +16,7 @@ class ReadmeDoc:
 
     def to_readme(self) -> str:
         docs = "\n".join([line.strip() for line in self.doc.splitlines()])
-        return "\n".join([f"### `{self.name}{self.sig}`", docs])
+        return "\n".join([f"### `{self.name}`", f"```python\n{self.name}{self.sig}\n```", docs])
 
 
 def create_readme_lines() -> str:

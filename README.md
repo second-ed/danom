@@ -3,7 +3,10 @@
 
 ## Ok
 
-### `Ok.and_then(self, func: collections.abc.Callable[[~T], danom._result.Result], **kwargs: dict) -> danom._result.Result`
+### `Ok.and_then`
+```python
+Ok.and_then(self, func: collections.abc.Callable[[~T], danom._result.Result], **kwargs: dict) -> danom._result.Result
+```
 Pipe another function that returns a monad.
 
 ```python
@@ -12,7 +15,10 @@ Pipe another function that returns a monad.
 ```
 
 
-### `Ok.is_ok(self) -> Literal[True]`
+### `Ok.is_ok`
+```python
+Ok.is_ok(self) -> Literal[True]
+```
 Returns True if the result type is Ok.
 
 ```python
@@ -20,7 +26,10 @@ Returns True if the result type is Ok.
 ```
 
 
-### `Ok.match(self, if_ok_func: collections.abc.Callable[[~T], danom._result.Result], _if_err_func: collections.abc.Callable[[~T], danom._result.Result]) -> danom._result.Result`
+### `Ok.match`
+```python
+Ok.match(self, if_ok_func: collections.abc.Callable[[~T], danom._result.Result], _if_err_func: collections.abc.Callable[[~T], danom._result.Result]) -> danom._result.Result
+```
 Map Ok func to Ok and Err func to Err
 
 ```python
@@ -30,7 +39,10 @@ Map Ok func to Ok and Err func to Err
 ```
 
 
-### `Ok.unwrap(self) -> ~T`
+### `Ok.unwrap`
+```python
+Ok.unwrap(self) -> ~T
+```
 Unwrap the Ok monad and get the inner value.
 
 ```python
@@ -42,7 +54,10 @@ Unwrap the Ok monad and get the inner value.
 
 ## Err
 
-### `Err.and_then(self, _: 'Callable[[T], Result]', **_kwargs: 'dict') -> 'Self'`
+### `Err.and_then`
+```python
+Err.and_then(self, _: 'Callable[[T], Result]', **_kwargs: 'dict') -> 'Self'
+```
 Pipe another function that returns a monad. For Err will return original error.
 
 ```python
@@ -51,7 +66,10 @@ Pipe another function that returns a monad. For Err will return original error.
 ```
 
 
-### `Err.is_ok(self) -> 'Literal[False]'`
+### `Err.is_ok`
+```python
+Err.is_ok(self) -> 'Literal[False]'
+```
 Returns False if the result type is Err.
 
 ```python
@@ -59,7 +77,10 @@ Err().is_ok() == False
 ```
 
 
-### `Err.match(self, _if_ok_func: 'Callable[[T], Result]', if_err_func: 'Callable[[T], Result]') -> 'Result'`
+### `Err.match`
+```python
+Err.match(self, _if_ok_func: 'Callable[[T], Result]', if_err_func: 'Callable[[T], Result]') -> 'Result'
+```
 Map Ok func to Ok and Err func to Err
 
 ```python
@@ -69,7 +90,10 @@ Map Ok func to Ok and Err func to Err
 ```
 
 
-### `Err.unwrap(self) -> 'None'`
+### `Err.unwrap`
+```python
+Err.unwrap(self) -> 'None'
+```
 Unwrap the Err monad will raise the inner error.
 
 ```python
