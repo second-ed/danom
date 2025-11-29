@@ -39,3 +39,9 @@ repos:
           - --ignore-dirs
           - .venv,target,.git,mock_data,.pytest_cache
           # - --ignore-hidden
+      - id: update-readme
+        name: update_readme
+        entry: uv run -m dev_tools.update_readme
+        language: python
+        pass_filenames: false
+        always_run: true

@@ -46,17 +46,44 @@ class Err(Result):
         return trace_info
 
     def is_ok(self) -> Literal[False]:
+        """Returns False if the result type is Err.
+
+        ```python
+        Err().is_ok() == False
+        ```
+        """
         return False
 
     def and_then(self, _: Callable[[T], Result], **_kwargs: dict) -> Self:
+        """Pipe another function that returns a monad. For Err will return original error.
+
+        ```python
+        >>> Err(error=TypeError()).and_then(add_one) == Err(error=TypeError())
+        >>> Err(error=TypeError()).and_then(raise_value_err) == Err(error=TypeError())
+        ```
+        """
         return self
 
     def unwrap(self) -> None:
+        """Unwrap the Err monad will raise the inner error.
+
+        ```python
+        >>> Err(error=TypeError()).unwrap() raise TypeError(...)
+        ```
+        """
         raise self.error
 
     def match(
         self, _if_ok_func: Callable[[T], Result], if_err_func: Callable[[T], Result]
     ) -> Result:
+        """Map Ok func to Ok and Err func to Err
+
+        ```python
+        >>> Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
+        >>> Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
+        >>> Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
+        ```
+        """
         return if_err_func(self.error)
 
     def __getattr__(self, _name: str) -> Self:
