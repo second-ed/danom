@@ -6,7 +6,7 @@ from typing import (
 
 import attrs
 
-from danom.result import Result, T
+from danom._result import Result, T
 
 
 @attrs.define
@@ -21,6 +21,11 @@ class Ok(Result):
 
     def unwrap(self) -> T:
         return self.inner
+
+    def match(
+        self, if_ok_func: Callable[[T], Result], _if_err_func: Callable[[T], Result]
+    ) -> Result:
+        return if_ok_func(self.inner)
 
     def __getattr__(self, name: str) -> Callable:
         return getattr(self.inner, name)

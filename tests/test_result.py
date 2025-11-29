@@ -1,6 +1,6 @@
 import pytest
 
-from src.danom.result import Result, T
+from src.danom._result import Result, T
 
 
 @pytest.mark.parametrize(

@@ -10,10 +10,10 @@
 ├── src
 │   └── danom
 │       ├── __init__.py
-│       ├── err.py
-│       ├── ok.py
-│       ├── result.py
-│       └── safe.py
+│       ├── _err.py
+│       ├── _ok.py
+│       ├── _result.py
+│       └── _safe.py
 ├── tests
 │   ├── __init__.py
 │   ├── test_api.py

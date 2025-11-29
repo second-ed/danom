@@ -4,9 +4,9 @@ from typing import (
     Self,
 )
 
-from danom.err import Err
-from danom.ok import Ok
-from danom.result import P, Result, T
+from danom._err import Err
+from danom._ok import Ok
+from danom._result import P, Result, T
 
 
 def safe(func: Callable[[P], T]) -> Callable[[P], Result]:

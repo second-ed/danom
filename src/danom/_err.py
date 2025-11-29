@@ -10,7 +10,7 @@ from typing import (
 
 import attrs
 
-from danom.result import Result, T
+from danom._result import Result, T
 
 
 @attrs.define
@@ -53,6 +53,11 @@ class Err(Result):
 
     def unwrap(self) -> None:
         raise self.error
+
+    def match(
+        self, _if_ok_func: Callable[[T], Result], if_err_func: Callable[[T], Result]
+    ) -> Result:
+        return if_err_func(self.error)
 
     def __getattr__(self, _name: str) -> Self:
         def _(*_args: tuple, **_kwargs: dict) -> Self:
