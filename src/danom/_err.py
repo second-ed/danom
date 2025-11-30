@@ -15,19 +15,16 @@ from danom._result import Result, T
 
 @attrs.define
 class Err(Result):
-    input_args: Any = attrs.field(default=None, repr=False)
-    error: Exception | None = attrs.field(
-        default=None,
-        validator=attrs.validators.optional(attrs.validators.instance_of(Exception)),
-    )
+    input_args: tuple[T] = attrs.field(default=None, repr=False)
+    error: Exception | None = attrs.field(default=None)
     err_type: BaseException = attrs.field(init=False, repr=False)
     err_msg: str = attrs.field(init=False, repr=False)
-    details: list[dict[str, Any]] = attrs.field(init=False, repr=False)
+    details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)
 
     def __attrs_post_init__(self) -> None:
         self.err_type = type(self.error)
         self.err_msg = str(self.error)
-        if self.error:
+        if isinstance(self.error, Exception):
             self.details = self._extract_details(self.error.__traceback__)
 
     def _extract_details(self, tb: TracebackType | None) -> list[dict[str, Any]]:
