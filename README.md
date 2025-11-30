@@ -107,7 +107,7 @@ Unwrap the Err monad will raise the inner error.
 ```python
 safe(func: collections.abc.Callable[~P, ~T]) -> collections.abc.Callable[~P, danom._result.Result]
 ```
-Decorator for functions that wraps the function in a try except returns Ok on success else Err.
+Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
 ```python
 >>> @safe

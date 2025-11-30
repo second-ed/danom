@@ -10,7 +10,7 @@ from danom._result import P, Result, T
 
 
 def safe(func: Callable[[P], T]) -> Callable[[P], Result]:
-    """Decorator for functions that wraps the function in a try except returns Ok on success else Err.
+    """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     ```python
     >>> @safe
