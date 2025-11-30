@@ -1,9 +1,10 @@
+from functools import partial
 from typing import Any, Self
 
 import pytest
 
 from src.danom import safe, safe_method
-from src.danom.result import Result
+from src.danom._result import Result
 
 
 @safe
@@ -16,10 +17,20 @@ def mock_func_raises(_a: Any) -> Result[None, Exception]:
     raise TypeError
 
 
+@safe
+def mock_get_error_type(exception: Exception) -> str:
+    return exception.__class__.__name__
+
+
 def test_valid_safe_pipeline():
-    pipeline = mock_func(1, 2).and_then(mock_func, b=1).and_then(mock_func, b=1)
+    pipeline = (
+        mock_func(1, 2)
+        .and_then(mock_func, b=1)
+        .and_then(mock_func, b=1)
+        .match(partial(mock_func, b=1), mock_get_error_type)
+    )
     assert pipeline.is_ok()
-    assert pipeline.unwrap() == 5
+    assert pipeline.unwrap() == 6
 
 
 def test_invalid_safe_pipeline():
@@ -28,6 +39,17 @@ def test_invalid_safe_pipeline():
 
     with pytest.raises(TypeError):
         assert pipeline.unwrap()
+
+
+def test_invalid_safe_pipeline_with_match():
+    pipeline = (
+        mock_func(1, 2)
+        .and_then(mock_func_raises)
+        .and_then(mock_func, b=1)
+        .match(partial(mock_func, b=1), mock_get_error_type)
+    )
+    assert pipeline.is_ok()
+    assert pipeline.unwrap() == "TypeError"
 
 
 class Adder:

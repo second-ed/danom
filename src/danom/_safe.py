@@ -4,12 +4,23 @@ from typing import (
     Self,
 )
 
-from danom.err import Err
-from danom.ok import Ok
-from danom.result import P, Result, T
+from danom._err import Err
+from danom._ok import Ok
+from danom._result import P, Result, T
 
 
 def safe(func: Callable[[P], T]) -> Callable[[P], Result]:
+    """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
+
+    ```python
+    >>> @safe
+    ... def add_one(a: int) -> int:
+    ...     return a + 1
+
+    >>> add_one(1) == Ok(inner=2)
+    ```
+    """
+
     @functools.wraps(func)
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result:
         try:
@@ -21,6 +32,21 @@ def safe(func: Callable[[P], T]) -> Callable[[P], Result]:
 
 
 def safe_method(func: Callable[[P], T]) -> Callable[[P], Result]:
+    """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
+
+    ```python
+    >>> class Adder:
+    ...     def __init__(self, result: int = 0) -> None:
+    ...         self.result = result
+    ...
+    ...     @safe_method
+    ...     def add_one(self, a: int) -> int:
+    ...         return self.result + 1
+
+    >>> Adder.add_one(1) == Ok(inner=1)
+    ```
+    """
+
     @functools.wraps(func)
     def wrapper(self: Self, *args: P.args, **kwargs: P.kwargs) -> Result:
         try:

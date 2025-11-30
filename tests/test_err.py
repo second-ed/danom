@@ -31,3 +31,15 @@ def test_err_unwrap(monad, expected_result, expected_context):
 )
 def test_err_is_ok(monad, expected_result):
     assert monad.is_ok() == expected_result
+
+
+@pytest.mark.parametrize(
+    ("err", "expected_details"),
+    [
+        pytest.param(TypeError("an invalid type"), []),
+        pytest.param("A primative err", []),
+    ],
+)
+def test_err_details(err, expected_details):
+    monad = Err(error=err)
+    assert monad.details == expected_details

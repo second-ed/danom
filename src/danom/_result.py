@@ -25,5 +25,10 @@ class Result(ABC):
     @abstractmethod
     def unwrap(self) -> T: ...
 
+    @abstractmethod
+    def match(
+        self, if_ok_func: Callable[[T], Result], _if_err_func: Callable[[T], Result]
+    ) -> Result: ...
+
     def __class_getitem__(cls, _params: tuple) -> Self:
         return cls
