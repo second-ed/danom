@@ -155,14 +155,16 @@ The same as `safe` except it forwards on the `self` of the class instance to the
 │       ├── _err.py
 │       ├── _ok.py
 │       ├── _result.py
-│       └── _safe.py
+│       ├── _safe.py
+│       └── _stream.py
 ├── tests
 │   ├── __init__.py
 │   ├── test_api.py
 │   ├── test_err.py
 │   ├── test_ok.py
 │   ├── test_result.py
-│   └── test_safe.py
+│   ├── test_safe.py
+│   └── test_stream.py
 ├── .pre-commit-config.yaml
 ├── README.md
 ├── pyproject.toml
