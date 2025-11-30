@@ -102,6 +102,42 @@ Unwrap the Err monad will raise the inner error.
 
 
 ## safe
+
+### `safe`
+```python
+safe(func: collections.abc.Callable[~P, ~T]) -> collections.abc.Callable[~P, danom._result.Result]
+```
+Decorator for functions that wraps the function in a try except returns Ok on success else Err.
+
+```python
+>>> @safe
+... def add_one(a: int) -> int:
+...     return a + 1
+
+>>> add_one(1) == Ok(inner=2)
+```
+
+
+## safe_method
+
+### `safe_method`
+```python
+safe_method(func: collections.abc.Callable[~P, ~T]) -> collections.abc.Callable[~P, danom._result.Result]
+```
+The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
+
+```python
+>>> class Adder:
+...     def __init__(self, result: int = 0) -> None:
+...         self.result = result
+...
+...     @safe_method
+...     def add_one(self, a: int) -> int:
+...         return self.result + 1
+
+>>> Adder.add_one(1) == Ok(inner=1)
+```
+
 ::
 
 # Repo map
