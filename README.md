@@ -1,7 +1,12 @@
 # danom
+
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom)
+
 # API Reference
 
 ## Ok
+
+Frozen instance of an Ok monad used to wrap successful operations.
 
 ### `Ok.and_then`
 ```python
@@ -54,6 +59,8 @@ Unwrap the Ok monad and get the inner value.
 
 ## Err
 
+Frozen instance of an Err monad used to wrap failed operations.
+
 ### `Err.and_then`
 ```python
 Err.and_then(self, _: 'Callable[[T], Result]', **_kwargs: 'dict') -> 'Self'
@@ -98,6 +105,80 @@ Unwrap the Err monad will raise the inner error.
 
 ```python
 >>> Err(error=TypeError()).unwrap() raise TypeError(...)
+```
+
+
+## Stream
+
+A lazy iterator with functional operations.
+
+### `Stream.collect`
+```python
+Stream.collect(self) -> tuple
+```
+Materialise the sequence from the `Stream`.
+
+```python
+>>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+>>> stream.collect() == (1, 2, 3, 4)
+```
+
+
+### `Stream.filter`
+```python
+Stream.filter(self, fn: collections.abc.Callable) -> 'Stream'
+```
+Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
+
+```python
+>>> Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
+```
+
+
+### `Stream.from_iterable`
+```python
+Stream.from_iterable(it: collections.abc.Iterable) -> 'Stream'
+```
+This is the recommended way of creating a Stream object.
+
+```python
+>>> Stream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
+```
+
+
+### `Stream.map`
+```python
+Stream.map(self, fn: collections.abc.Callable) -> 'Stream'
+```
+Map a function to the elements in the `Stream`. Will return a new `Stream` with the modified sequence.
+
+```python
+>>> Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (1, 2, 3, 4)
+```
+
+This can also be mixed with `safe` functions:
+```python
+>>> Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (Ok(inner=1), Ok(inner=2), Ok(inner=3), Ok(inner=4))
+
+>>> @safe
+... def two_div_value(x: float) -> float:
+...     return 2 / x
+
+>>> Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(inner=2.0), Ok(inner=1.0), Ok(inner=0.5))
+```
+
+
+### `Stream.partition`
+```python
+Stream.partition(self, fn: collections.abc.Callable) -> tuple['Stream', 'Stream']
+```
+Similar to `filter` except splits the True and False values. Will return a two new `Stream` with the partitioned sequences.
+
+Each partition is independently replayable.
+```python
+>>> part1, part2 = Stream.from_iterable([0, 1, 2, 3]).partition(lambda x: x % 2 == 0)
+>>> part1.collect() == (0, 2)
+>>> part2.collect() == (1, 3)
 ```
 
 
@@ -155,14 +236,16 @@ The same as `safe` except it forwards on the `self` of the class instance to the
 │       ├── _err.py
 │       ├── _ok.py
 │       ├── _result.py
-│       └── _safe.py
+│       ├── _safe.py
+│       └── _stream.py
 ├── tests
 │   ├── __init__.py
 │   ├── test_api.py
 │   ├── test_err.py
 │   ├── test_ok.py
 │   ├── test_result.py
-│   └── test_safe.py
+│   ├── test_safe.py
+│   └── test_stream.py
 ├── .pre-commit-config.yaml
 ├── README.md
 ├── pyproject.toml
