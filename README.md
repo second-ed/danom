@@ -1,4 +1,7 @@
 # danom
+
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom)
+
 # API Reference
 
 ## Ok
