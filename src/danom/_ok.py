@@ -9,8 +9,10 @@ import attrs
 from danom._result import Result, T
 
 
-@attrs.define
+@attrs.define(frozen=True)
 class Ok(Result):
+    """Frozen instance of an Ok monad used to wrap successful operations."""
+
     inner: Any = attrs.field(default=None)
 
     def is_ok(self) -> Literal[True]:

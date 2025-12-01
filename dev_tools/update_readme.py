@@ -5,7 +5,7 @@ from pathlib import Path
 
 import attrs
 
-from danom import Err, Ok, safe, safe_method
+from danom import Err, Ok, Stream, safe, safe_method
 
 
 @attrs.define(frozen=True)
@@ -22,8 +22,9 @@ class ReadmeDoc:
 def create_readme_lines() -> str:
     readme_lines = []
 
-    for ent in [Ok, Err]:
+    for ent in [Ok, Err, Stream]:
         readme_lines.append(f"## {ent.__name__}")
+        readme_lines.append(ent.__doc__)
         readme_docs = [
             ReadmeDoc(f"{ent.__name__}.{k}", inspect.signature(v), v.__doc__)
             for k, v in inspect.getmembers(ent, inspect.isroutine)
