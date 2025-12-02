@@ -189,7 +189,7 @@ wheels = [
 
 [[package]]
 name = "danom"
-version = "0.1.2"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "attrs" },
