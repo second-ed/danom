@@ -1,4 +1,4 @@
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Generator, Iterable
 
 import attrs
 
@@ -23,7 +23,7 @@ class Stream:
             it = [it]
         return cls(lambda: iter(it))
 
-    def map(self, fn: Callable) -> "Stream":
+    def map[T, U](self, *fns: Callable[[T], U]) -> "Stream":
         """Map a function to the elements in the `Stream`. Will return a new `Stream` with the modified sequence.
 
         ```python
@@ -40,19 +40,37 @@ class Stream:
 
         >>> Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(inner=2.0), Ok(inner=1.0), Ok(inner=0.5))
         ```
-        """
-        return Stream(lambda: (fn(x) for x in self.seq()))
 
-    def filter(self, fn: Callable) -> "Stream":
+        Simple functions can be passed in sequence to compose more complex transformations
+        ```python
+        >>> Stream.from_iterable(range(5)).map(mul_two, add_one).collect() == (1, 3, 5, 7, 9)
+        ```
+        """
+
+        def generator() -> Generator[U, None, None]:
+            for elem in self.seq():
+                res = elem
+                for fn in fns:
+                    res = fn(res)
+                yield res
+
+        return Stream(generator)
+
+    def filter[T](self, *fns: Callable[[T], bool]) -> "Stream":
         """Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
 
         ```python
         >>> Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
         ```
-        """
-        return Stream(lambda: (x for x in self.seq() if fn(x)))
 
-    def partition(self, fn: Callable) -> tuple["Stream", "Stream"]:
+        Simple functions can be passed in sequence to compose more complex filters
+        ```python
+        >>> Stream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
+        ```
+        """
+        return Stream(lambda: (x for x in self.seq() if all(fn(x) for fn in fns)))
+
+    def partition[T](self, fn: Callable[[T], bool]) -> tuple["Stream", "Stream"]:
         """Similar to `filter` except splits the True and False values. Will return a two new `Stream` with the partitioned sequences.
 
         Each partition is independently replayable.
@@ -63,7 +81,7 @@ class Stream:
         ```
         """
         # have to materialise to be able to replay each side independently
-        seq_tuple = tuple(self.seq())
+        seq_tuple = self.collect()
         return (
             Stream(lambda: (x for x in seq_tuple if fn(x))),
             Stream(lambda: (x for x in seq_tuple if not fn(x))),

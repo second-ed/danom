@@ -126,12 +126,17 @@ Materialise the sequence from the `Stream`.
 
 ### `Stream.filter`
 ```python
-Stream.filter(self, fn: collections.abc.Callable) -> 'Stream'
+Stream.filter(self, *fns: collections.abc.Callable[[T], bool]) -> 'Stream'
 ```
 Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
 
 ```python
 >>> Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
+```
+
+Simple functions can be passed in sequence to compose more complex filters
+```python
+>>> Stream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
 ```
 
 
@@ -148,7 +153,7 @@ This is the recommended way of creating a Stream object.
 
 ### `Stream.map`
 ```python
-Stream.map(self, fn: collections.abc.Callable) -> 'Stream'
+Stream.map(self, *fns: collections.abc.Callable[[T], U]) -> 'Stream'
 ```
 Map a function to the elements in the `Stream`. Will return a new `Stream` with the modified sequence.
 
@@ -167,10 +172,15 @@ This can also be mixed with `safe` functions:
 >>> Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(inner=2.0), Ok(inner=1.0), Ok(inner=0.5))
 ```
 
+Simple functions can be passed in sequence to compose more complex transformations
+```python
+>>> Stream.from_iterable(range(5)).map(mul_two, add_one).collect() == (1, 3, 5, 7, 9)
+```
+
 
 ### `Stream.partition`
 ```python
-Stream.partition(self, fn: collections.abc.Callable) -> tuple['Stream', 'Stream']
+Stream.partition(self, fn: collections.abc.Callable[[T], bool]) -> tuple['Stream', 'Stream']
 ```
 Similar to `filter` except splits the True and False values. Will return a two new `Stream` with the partitioned sequences.
 
