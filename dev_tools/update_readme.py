@@ -5,7 +5,7 @@ from pathlib import Path
 
 import attrs
 
-from danom import Err, Ok, Stream, safe, safe_method
+from danom import Err, Ok, ParStream, Stream, safe, safe_method
 
 
 @attrs.define(frozen=True)
@@ -22,7 +22,7 @@ class ReadmeDoc:
 def create_readme_lines() -> str:
     readme_lines = []
 
-    for ent in [Ok, Err, Stream]:
+    for ent in [Ok, Err, Stream, ParStream]:
         readme_lines.append(f"## {ent.__name__}")
         readme_lines.append(ent.__doc__)
         readme_docs = [
