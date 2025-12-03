@@ -28,3 +28,13 @@ dev = [
     "repo-mapper-rs>=0.3.0",
     "ruff>=0.14.6",
 ]
+
+[tool.coverage.run]
+parallel = true
+concurrency = ["multiprocessing"]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
