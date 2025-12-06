@@ -347,6 +347,21 @@ The functions will be called in sequence with the result of one being used as th
 ```
 
 
+## identity
+
+### `identity`
+```python
+identity(x: T) -> T
+```
+Basic identity function.
+
+```python
+>>> identity("abc") == "abc"
+>>> identity(1) == 1
+>>> identity(ComplexDataType(a=1, b=2, c=3)) == ComplexDataType(a=1, b=2, c=3)
+```
+
+
 ## new_type
 
 ### `new_type`
@@ -399,7 +414,8 @@ Alternatively the map method can be used to return a new type instance with the 
 │       ├── _ok.py
 │       ├── _result.py
 │       ├── _safe.py
-│       └── _stream.py
+│       ├── _stream.py
+│       └── _utils.py
 ├── tests
 │   ├── __init__.py
 │   ├── test_api.py
@@ -408,7 +424,8 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── test_ok.py
 │   ├── test_result.py
 │   ├── test_safe.py
-│   └── test_stream.py
+│   ├── test_stream.py
+│   └── test_utils.py
 ├── .pre-commit-config.yaml
 ├── README.md
 ├── pyproject.toml
