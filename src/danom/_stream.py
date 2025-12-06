@@ -21,14 +21,6 @@ class _BaseStream(ABC):
     @abstractmethod
     def partition[T](self, fn: Callable[[T], bool]) -> tuple[Self, Self]: ...
 
-    def _compose[T, U](self, fns: Callable[[T], U]) -> Callable[[T], U]:
-        def wrapper(value: T) -> U:
-            for fn in fns:
-                value = fn(value)
-            return value
-
-        return wrapper
-
 
 @attrs.define(frozen=True)
 class Stream(_BaseStream):
@@ -86,7 +78,7 @@ class Stream(_BaseStream):
 
         def generator() -> Generator[U, None, None]:
             for elem in self.seq():
-                yield self._compose(fns)(elem)
+                yield compose(*fns)(elem)
 
         return Stream(generator)
 
@@ -221,6 +213,30 @@ class ParStream(_BaseStream):
             res = tuple(ex.map(_apply_fns_worker, ((x, self.ops) for x in self.seq)))
 
         return tuple(elem for elem in res if elem != _Nothing.NOTHING)
+
+
+def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
+    """Compose multiple functions into one.
+
+    The functions will be called in sequence with the result of one being used as the input for the next.
+
+    ```python
+    >>> add_two = compose(add_one, add_one)
+    >>> add_two(0) == 2
+    ```
+
+    ```python
+    >>> add_two = compose(add_one, add_one, is_even)
+    >>> add_two(0) == True
+    ```
+    """
+
+    def wrapper(value: T) -> U:
+        for fn in fns:
+            value = fn(value)
+        return value
+
+    return wrapper
 
 
 @unique
