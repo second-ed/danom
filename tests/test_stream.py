@@ -1,6 +1,6 @@
 import pytest
 
-from src.danom import ParStream, Stream
+from src.danom import ParStream, Stream, compose
 
 
 @pytest.mark.parametrize(
@@ -71,3 +71,14 @@ def test_stream_to_par_stream():
 def test_par_stream_partition():
     with pytest.raises(NotImplementedError):
         ParStream.from_iterable(range(10)).partition(divisible_by_3)
+
+
+@pytest.mark.parametrize(
+    ("inp_args", "fns", "expected_result"),
+    [
+        pytest.param(0, (add_one, add_one), 2),
+        pytest.param(0, (add_one, divisible_by_3), False),
+    ],
+)
+def test_compose(inp_args, fns, expected_result):
+    assert compose(*fns)(inp_args) == expected_result
