@@ -346,6 +346,40 @@ The functions will be called in sequence with the result of one being used as th
 >>> add_two(0) == True
 ```
 
+
+## new_type
+
+### `new_type`
+```python
+new_type(name: 'str', base_type: 'type', validators: 'Callable | Sequence[Callable] | None' = None, converters: 'Callable | Sequence[Callable] | None' = None, *, frozen: 'bool' = True)
+```
+Create a NewType based on another type.
+
+```python
+>>> def is_positive(value):
+...     return value >= 0
+
+>>> ValidBalance = new_type("ValidBalance", float, validators=[is_positive])
+>>> ValidBalance("20") == ValidBalance(inner=20.0)
+```
+
+Unlike an inherited class, the type will not return `True` for an isinstance check.
+```python
+>>> isinstance(ValidBalance(20.0), ValidBalance) == True
+>>> isinstance(ValidBalance(20.0), float) == False
+```
+
+The methods of the given `base_type` will be forwarded to the specialised type.
+Alternatively the map method can be used to return a new type instance with the transformation.
+```python
+>>> def has_len(email: str) -> bool:
+... return len(email) > 0
+
+>>> Email = new_type("Email", str, validators=[has_len])
+>>> Email("some_email@domain.com").upper() == "SOME_EMAIL@DOMAIN.COM"
+>>> Email("some_email@domain.com").map(str.upper) == Email(inner='SOME_EMAIL@DOMAIN.COM')
+```
+
 ::
 
 # Repo map
@@ -361,6 +395,7 @@ The functions will be called in sequence with the result of one being used as th
 │   └── danom
 │       ├── __init__.py
 │       ├── _err.py
+│       ├── _new_type.py
 │       ├── _ok.py
 │       ├── _result.py
 │       ├── _safe.py
@@ -369,6 +404,7 @@ The functions will be called in sequence with the result of one being used as th
 │   ├── __init__.py
 │   ├── test_api.py
 │   ├── test_err.py
+│   ├── test_new_type.py
 │   ├── test_ok.py
 │   ├── test_result.py
 │   ├── test_safe.py

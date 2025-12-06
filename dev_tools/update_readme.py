@@ -5,7 +5,7 @@ from pathlib import Path
 
 import attrs
 
-from danom import Err, Ok, ParStream, Stream, compose, safe, safe_method
+from danom import Err, Ok, ParStream, Stream, compose, new_type, safe, safe_method
 
 
 @attrs.define(frozen=True)
@@ -31,7 +31,7 @@ def create_readme_lines() -> str:
             if not k.startswith("_")
         ]
         readme_lines.extend([entry.to_readme() for entry in readme_docs])
-    for fn in [safe, safe_method, compose]:
+    for fn in [safe, safe_method, compose, new_type]:
         readme_lines.append(f"## {fn.__name__}")
         readme_docs = [ReadmeDoc(f"{fn.__name__}", inspect.signature(fn), fn.__doc__)]
         readme_lines.extend([entry.to_readme() for entry in readme_docs])
