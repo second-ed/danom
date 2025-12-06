@@ -325,6 +325,27 @@ The same as `safe` except it forwards on the `self` of the class instance to the
 >>> Adder.add_one(1) == Ok(inner=1)
 ```
 
+
+## compose
+
+### `compose`
+```python
+compose(*fns: 'Callable[[T], U]') -> 'Callable[[T], U]'
+```
+Compose multiple functions into one.
+
+The functions will be called in sequence with the result of one being used as the input for the next.
+
+```python
+>>> add_two = compose(add_one, add_one)
+>>> add_two(0) == 2
+```
+
+```python
+>>> add_two = compose(add_one, add_one, is_even)
+>>> add_two(0) == True
+```
+
 ::
 
 # Repo map
