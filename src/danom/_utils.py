@@ -44,6 +44,13 @@ class _AllOf[T, U]:
 
 
 def all_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+    """True if all of the given functions return True.
+
+    ```python
+    >>> is_valid_user = all_of(is_subscribed, is_active, has_2fa)
+    >>> is_valid_user(user) == True
+    ```
+    """
     return _AllOf(fns)
 
 
@@ -56,6 +63,13 @@ class _AnyOf[T, U]:
 
 
 def any_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+    """True if any of the given functions return True.
+
+    ```python
+    >>> is_eligible = any_of(has_coupon, is_vip, is_staff)
+    >>> is_eligible(user) == True
+    ```
+    """
     return _AnyOf(fns)
 
 

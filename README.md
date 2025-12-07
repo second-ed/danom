@@ -347,6 +347,34 @@ The functions will be called in sequence with the result of one being used as th
 ```
 
 
+## all_of
+
+### `all_of`
+```python
+all_of(*fns: collections.abc.Callable[[T], bool]) -> collections.abc.Callable[[T], bool]
+```
+True if all of the given functions return True.
+
+```python
+>>> is_valid_user = all_of(is_subscribed, is_active, has_2fa)
+>>> is_valid_user(user) == True
+```
+
+
+## any_of
+
+### `any_of`
+```python
+any_of(*fns: collections.abc.Callable[[T], bool]) -> collections.abc.Callable[[T], bool]
+```
+True if any of the given functions return True.
+
+```python
+>>> is_eligible = any_of(has_coupon, is_vip, is_staff)
+>>> is_eligible(user) == True
+```
+
+
 ## identity
 
 ### `identity`
