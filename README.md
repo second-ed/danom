@@ -362,6 +362,20 @@ Basic identity function.
 ```
 
 
+## invert
+
+### `invert`
+```python
+invert(func: collections.abc.Callable[~P, bool]) -> collections.abc.Callable[~P, bool]
+```
+Invert a boolean function so it returns False where it would've returned True.
+
+```python
+>>> invert(has_len)("abc") == False
+>>> invert(has_len)("") == True
+```
+
+
 ## new_type
 
 ### `new_type`
