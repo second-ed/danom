@@ -12,6 +12,9 @@ import attrs
 
 @attrs.define(frozen=True)
 class _BaseStream(ABC):
+    seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
+    ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
+
     @abstractmethod
     def map[T, U](self, *fns: Callable[[T], U]) -> Self: ...
 
@@ -25,9 +28,6 @@ class _BaseStream(ABC):
 @attrs.define(frozen=True)
 class Stream(_BaseStream):
     """A lazy iterator with functional operations."""
-
-    seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
-    ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
     @classmethod
     def from_iterable(cls, it: Iterable) -> Self:
@@ -125,9 +125,6 @@ class Stream(_BaseStream):
 @attrs.define(frozen=True)
 class ParStream(_BaseStream):
     """A parallel iterator with functional operations."""
-
-    seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
-    ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
     @classmethod
     def from_iterable(cls, it: Iterable) -> Self:
