@@ -7,7 +7,7 @@ from danom._result import P
 
 
 @attrs.define(frozen=True, hash=True, eq=True)
-class _Composer[T, U]:
+class _Compose[T, U]:
     fns: Sequence[Callable[[T], U]]
 
     def __call__(self, initial: T) -> U:
@@ -32,7 +32,7 @@ def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
     >>> add_two(0) == True
     ```
     """
-    return _Composer(fns)
+    return _Compose(fns)
 
 
 @attrs.define(frozen=True, hash=True, eq=True)
