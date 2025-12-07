@@ -2,14 +2,12 @@ from __future__ import annotations
 
 import os
 from abc import ABC, abstractmethod
-from collections.abc import Callable, Generator, Iterable
+from collections.abc import Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from enum import Enum, auto, unique
 from typing import Self
 
 import attrs
-
-from danom._utils import compose
 
 
 @attrs.define(frozen=True)
@@ -28,9 +26,8 @@ class _BaseStream(ABC):
 class Stream(_BaseStream):
     """A lazy iterator with functional operations."""
 
-    seq: Callable[[], Iterable] = attrs.field(
-        validator=attrs.validators.instance_of(Callable), repr=False
-    )
+    seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
+    ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
     @classmethod
     def from_iterable(cls, it: Iterable) -> Self:
@@ -42,7 +39,7 @@ class Stream(_BaseStream):
         """
         if not isinstance(it, Iterable):
             it = [it]
-        return cls(lambda: iter(it))
+        return cls(seq=iter(it))
 
     def to_par_stream(self) -> ParStream:
         """Convert `Stream` to `ParStream`. This will incur a `collect`.
@@ -77,12 +74,8 @@ class Stream(_BaseStream):
         >>> Stream.from_iterable(range(5)).map(mul_two, add_one).collect() == (1, 3, 5, 7, 9)
         ```
         """
-
-        def generator() -> Generator[U, None, None]:
-            for elem in self.seq():
-                yield compose(*fns)(elem)
-
-        return Stream(generator)
+        plan = (*self.ops, *tuple((_OpType.MAP, fn) for fn in fns))
+        return Stream(seq=self.seq, ops=plan)
 
     def filter[T](self, *fns: Callable[[T], bool]) -> Self:
         """Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
@@ -96,7 +89,8 @@ class Stream(_BaseStream):
         >>> Stream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
         ```
         """
-        return Stream(lambda: (x for x in self.seq() if all(fn(x) for fn in fns)))
+        plan = (*self.ops, *tuple((_OpType.FILTER, fn) for fn in fns))
+        return Stream(seq=self.seq, ops=plan)
 
     def partition[T](self, fn: Callable[[T], bool]) -> tuple[Self, Self]:
         """Similar to `filter` except splits the True and False values. Will return a two new `Stream` with the partitioned sequences.
@@ -111,8 +105,8 @@ class Stream(_BaseStream):
         # have to materialise to be able to replay each side independently
         seq_tuple = self.collect()
         return (
-            Stream(lambda: (x for x in seq_tuple if fn(x))),
-            Stream(lambda: (x for x in seq_tuple if not fn(x))),
+            Stream(seq=(x for x in seq_tuple if fn(x))),
+            Stream(seq=(x for x in seq_tuple if not fn(x))),
         )
 
     def collect(self) -> tuple:
@@ -123,7 +117,9 @@ class Stream(_BaseStream):
         >>> stream.collect() == (1, 2, 3, 4)
         ```
         """
-        return tuple(self.seq())
+        return tuple(
+            elem for x in self.seq if (elem := _apply_fns(x, self.ops)) != _Nothing.NOTHING
+        )
 
 
 @attrs.define(frozen=True)

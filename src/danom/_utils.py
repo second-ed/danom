@@ -1,7 +1,20 @@
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from operator import not_
 
+import attrs
+
 from danom._result import P
+
+
+@attrs.define(frozen=True, hash=True, eq=True)
+class _Composer[T, U]:
+    fns: Sequence[Callable[[T], U]]
+
+    def __call__(self, initial: T) -> U:
+        value = initial
+        for fn in self.fns:
+            value = fn(value)
+        return value
 
 
 def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
@@ -19,13 +32,31 @@ def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
     >>> add_two(0) == True
     ```
     """
+    return _Composer(fns)
 
-    def wrapper(value: T) -> U:
-        for fn in fns:
-            value = fn(value)
-        return value
 
-    return wrapper
+@attrs.define(frozen=True, hash=True, eq=True)
+class _AllOf[T, U]:
+    fns: Sequence[Callable[[T], U]]
+
+    def __call__(self, initial: T) -> U:
+        return all(fn(initial) for fn in self.fns)
+
+
+def all_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+    return _AllOf(fns)
+
+
+@attrs.define(frozen=True, hash=True, eq=True)
+class _AnyOf[T, U]:
+    fns: Sequence[Callable[[T], U]]
+
+    def __call__(self, initial: T) -> U:
+        return any(fn(initial) for fn in self.fns)
+
+
+def any_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+    return _AnyOf(fns)
 
 
 def identity[T](x: T) -> T:
@@ -48,5 +79,4 @@ def invert(func: Callable[[P], bool]) -> Callable[[P], bool]:
     >>> invert(has_len)("") == True
     ```
     """
-
     return compose(func, not_)

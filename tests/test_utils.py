@@ -1,7 +1,8 @@
 import pytest
 
 from src.danom import Ok, compose, identity, invert
-from tests.conftest import add_one, divisible_by_3, has_len
+from src.danom._utils import all_of, any_of
+from tests.conftest import add_one, divisible_by_3, divisible_by_5, has_len
 
 
 @pytest.mark.parametrize(
@@ -13,6 +14,31 @@ from tests.conftest import add_one, divisible_by_3, has_len
 )
 def test_compose(inp_args, fns, expected_result):
     assert compose(*fns)(inp_args) == expected_result
+
+
+@pytest.mark.parametrize(
+    ("inp_args", "fns", "expected_result"),
+    [
+        pytest.param(3, (divisible_by_3, divisible_by_5), False),
+        pytest.param(5, (divisible_by_3, divisible_by_5), False),
+        pytest.param(15, (divisible_by_3, divisible_by_5), True),
+    ],
+)
+def test_all_of(inp_args, fns, expected_result):
+    assert all_of(*fns)(inp_args) == expected_result
+
+
+@pytest.mark.parametrize(
+    ("inp_args", "fns", "expected_result"),
+    [
+        pytest.param(3, (divisible_by_3, divisible_by_5), True),
+        pytest.param(5, (divisible_by_3, divisible_by_5), True),
+        pytest.param(15, (divisible_by_3, divisible_by_5), True),
+        pytest.param(7, (divisible_by_3, divisible_by_5), False),
+    ],
+)
+def test_any_of(inp_args, fns, expected_result):
+    assert any_of(*fns)(inp_args) == expected_result
 
 
 @pytest.mark.parametrize(
