@@ -4,7 +4,7 @@ from danom._ok import Ok
 from danom._result import Result
 from danom._safe import safe, safe_method
 from danom._stream import ParStream, Stream, compose
-from danom._utils import identity
+from danom._utils import identity, invert
 
 __all__ = [
     "Err",
@@ -14,6 +14,7 @@ __all__ = [
     "Stream",
     "compose",
     "identity",
+    "invert",
     "new_type",
     "safe",
     "safe_method",
