@@ -1,6 +1,7 @@
 import pytest
 
-from src.danom import ParStream, Stream, compose
+from src.danom import ParStream, Stream
+from tests.conftest import add_one, divisible_by_3, divisible_by_5
 
 
 @pytest.mark.parametrize(
@@ -24,18 +25,6 @@ def test_stream_with_multiple_fns():
         .filter(lambda x: x % 5 == 0, lambda x: x < 10)
         .collect()
     ) == (5,)
-
-
-def add_one(x: int) -> int:
-    return x + 1
-
-
-def divisible_by_3(x: int) -> bool:
-    return x % 3 == 0
-
-
-def divisible_by_5(x: int) -> bool:
-    return x % 5 == 0
 
 
 @pytest.mark.parametrize(
@@ -71,14 +60,3 @@ def test_stream_to_par_stream():
 def test_par_stream_partition():
     with pytest.raises(NotImplementedError):
         ParStream.from_iterable(range(10)).partition(divisible_by_3)
-
-
-@pytest.mark.parametrize(
-    ("inp_args", "fns", "expected_result"),
-    [
-        pytest.param(0, (add_one, add_one), 2),
-        pytest.param(0, (add_one, divisible_by_3), False),
-    ],
-)
-def test_compose(inp_args, fns, expected_result):
-    assert compose(*fns)(inp_args) == expected_result

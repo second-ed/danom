@@ -3,8 +3,8 @@ from danom._new_type import new_type
 from danom._ok import Ok
 from danom._result import Result
 from danom._safe import safe, safe_method
-from danom._stream import ParStream, Stream, compose
-from danom._utils import identity, invert
+from danom._stream import ParStream, Stream
+from danom._utils import compose, identity, invert
 
 __all__ = [
     "Err",

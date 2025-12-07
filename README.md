@@ -330,7 +330,7 @@ The same as `safe` except it forwards on the `self` of the class instance to the
 
 ### `compose`
 ```python
-compose(*fns: 'Callable[[T], U]') -> 'Callable[[T], U]'
+compose(*fns: collections.abc.Callable[[T], U]) -> collections.abc.Callable[[T], U]
 ```
 Compose multiple functions into one.
 
@@ -432,6 +432,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │       └── _utils.py
 ├── tests
 │   ├── __init__.py
+│   ├── conftest.py
 │   ├── test_api.py
 │   ├── test_err.py
 │   ├── test_new_type.py

@@ -1,6 +1,31 @@
 from collections.abc import Callable
+from operator import not_
 
 from danom._result import P
+
+
+def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
+    """Compose multiple functions into one.
+
+    The functions will be called in sequence with the result of one being used as the input for the next.
+
+    ```python
+    >>> add_two = compose(add_one, add_one)
+    >>> add_two(0) == 2
+    ```
+
+    ```python
+    >>> add_two = compose(add_one, add_one, is_even)
+    >>> add_two(0) == True
+    ```
+    """
+
+    def wrapper(value: T) -> U:
+        for fn in fns:
+            value = fn(value)
+        return value
+
+    return wrapper
 
 
 def identity[T](x: T) -> T:
@@ -24,7 +49,4 @@ def invert(func: Callable[[P], bool]) -> Callable[[P], bool]:
     ```
     """
 
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> bool:
-        return not func(*args, **kwargs)
-
-    return wrapper
+    return compose(func, not_)
