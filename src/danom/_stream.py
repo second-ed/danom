@@ -159,7 +159,7 @@ class ParStream(_BaseStream):
         >>> ParStream.from_iterable([0, 1, 2, 3]).map(add_one, add_one).collect() == (2, 3, 4, 5)
         ```
         """
-        plan = (*self.ops, *tuple((OpType.MAP, fn) for fn in fns))
+        plan = (*self.ops, *tuple((_OpType.MAP, fn) for fn in fns))
         return ParStream(self.seq, ops=plan)
 
     def filter[T](self, *fns: Callable[[T], bool]) -> Self:
@@ -174,7 +174,7 @@ class ParStream(_BaseStream):
         >>> ParStream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
         ```
         """
-        plan = (*self.ops, *tuple((OpType.FILTER, fn) for fn in fns))
+        plan = (*self.ops, *tuple((_OpType.FILTER, fn) for fn in fns))
         return ParStream(self.seq, ops=plan)
 
     def partition[T](self, _fn: Callable[[T], bool]) -> tuple[Self, Self]:
@@ -240,7 +240,7 @@ def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
 
 
 @unique
-class OpType(Enum):
+class _OpType(Enum):
     MAP = auto()
     FILTER = auto()
 
@@ -249,16 +249,16 @@ class _Nothing(Enum):
     NOTHING = auto()
 
 
-def _apply_fns_worker[T, U](args: tuple[T, tuple[tuple[OpType, Callable], ...]]) -> U | None:
+def _apply_fns_worker[T, U](args: tuple[T, tuple[tuple[_OpType, Callable], ...]]) -> U | None:
     elem, ops = args
     return _apply_fns(elem, ops)
 
 
-def _apply_fns[T, U](elem: T, ops: tuple[tuple[OpType, Callable], ...]) -> U | None:
+def _apply_fns[T, U](elem: T, ops: tuple[tuple[_OpType, Callable], ...]) -> U | None:
     res = elem
     for op, op_fn in ops:
-        if op == OpType.MAP:
+        if op == _OpType.MAP:
             res = op_fn(res)
-        elif op == OpType.FILTER and not op_fn(res):
+        elif op == _OpType.FILTER and not op_fn(res):
             return _Nothing.NOTHING
     return res

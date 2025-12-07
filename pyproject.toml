@@ -1,6 +1,6 @@
 [project]
 name = "danom"
-version = "0.3.1"
+version = "0.4.0"
 description = "Functional streams and monads"
 readme = "README.md"
 license = "MIT"
@@ -40,3 +40,4 @@ source = ["src"]
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
+fail_under = 95
