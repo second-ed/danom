@@ -178,9 +178,35 @@ Simple functions can be passed in sequence to compose more complex transformatio
 ```
 
 
+### `Stream.par_collect`
+```python
+Stream.par_collect(self, workers: 'int' = 4, *, use_threads: 'bool' = False) -> 'tuple'
+```
+Materialise the sequence from the `Stream` in parallel.
+
+```python
+>>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+>>> stream.par_collect() == (1, 2, 3, 4)
+```
+
+Use the `workers` arg to select the number of workers to use. Use `-1` to use all available processors (except 1).
+Defaults to `4`.
+```python
+>>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+>>> stream.par_collect(workers=-1) == (1, 2, 3, 4)
+```
+
+For smaller I/O bound tasks use the `use_threads` flag as True.
+If False the processing will use `ProcessPoolExecutor` else it will use `ThreadPoolExecutor`.
+```python
+>>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+>>> stream.par_collect(use_threads=True) == (1, 2, 3, 4)
+```
+
+
 ### `Stream.partition`
 ```python
-Stream.partition(self, fn: 'Callable[[T], bool]') -> 'tuple[Self, Self]'
+Stream.partition(self, fn: 'Callable[[T], bool]', *, workers: 'int' = 1, use_threads: 'bool' = False) -> 'tuple[Self, Self]'
 ```
 Similar to `filter` except splits the True and False values. Will return a two new `Stream` with the partitioned sequences.
 
@@ -191,100 +217,11 @@ Each partition is independently replayable.
 >>> part2.collect() == (1, 3)
 ```
 
-
-### `Stream.to_par_stream`
+As `partition` triggers an action, the parameters will be forwarded to the `collect` call if the `workers` are greater than 1.
 ```python
-Stream.to_par_stream(self) -> 'ParStream'
-```
-Convert `Stream` to `ParStream`. This will incur a `collect`.
-
-```python
->>> Stream.from_iterable([0, 1, 2, 3]).to_par_stream().map(some_expensive_cpu_task).collect() == (1, 2, 3, 4)
-
-```
-
-
-## ParStream
-
-A parallel iterator with functional operations.
-
-### `ParStream.collect`
-```python
-ParStream.collect(self, workers: 'int' = 4, *, use_threads: 'bool' = False) -> 'tuple'
-```
-Materialise the sequence from the `ParStream`.
-
-```python
->>> stream = ParStream.from_iterable([0, 1, 2, 3]).map(add_one)
->>> stream.collect() == (1, 2, 3, 4)
-```
-
-Use the `workers` arg to select the number of workers to use. Use `-1` to use all available processors (except 1).
-Defaults to `4`.
-```python
->>> stream = ParStream.from_iterable([0, 1, 2, 3]).map(add_one)
->>> stream.collect(workers=-1) == (1, 2, 3, 4)
-```
-
-For smaller I/O bound tasks use the `use_threads` flag as True
-```python
->>> stream = ParStream.from_iterable([0, 1, 2, 3]).map(add_one)
->>> stream.collect(use_threads=True) == (1, 2, 3, 4)
-```
-
-
-### `ParStream.filter`
-```python
-ParStream.filter(self, *fns: 'Callable[[T], bool]') -> 'Self'
-```
-Filter the par stream based on a predicate. Will return a new `ParStream` with the modified sequence.
-
-```python
->>> ParStream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
-```
-
-Simple functions can be passed in sequence to compose more complex filters
-```python
->>> ParStream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
-```
-
-
-### `ParStream.from_iterable`
-```python
-ParStream.from_iterable(it: 'Iterable') -> 'Self'
-```
-This is the recommended way of creating a `ParStream` object.
-
-```python
->>> ParStream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
-```
-
-
-### `ParStream.map`
-```python
-ParStream.map(self, *fns: 'Callable[[T], U]') -> 'Self'
-```
-Map functions to the elements in the `ParStream` in parallel. Will return a new `ParStream` with the modified sequence.
-
-```python
->>> ParStream.from_iterable([0, 1, 2, 3]).map(add_one, add_one).collect() == (2, 3, 4, 5)
-```
-
-
-### `ParStream.partition`
-```python
-ParStream.partition(self, _fn: 'Callable[[T], bool]') -> 'tuple[Self, Self]'
-```
-Partition isn't implemented for `ParStream`. Convert to `Stream` with the `to_stream()` method and then call partition.
-
-### `ParStream.to_stream`
-```python
-ParStream.to_stream(self) -> 'Stream'
-```
-Convert `ParStream` to `Stream`. This will incur a `collect`.
-
-```python
->>> ParStream.from_iterable([0, 1, 2, 3]).to_stream().map(some_memory_hungry_task).collect() == (1, 2, 3, 4)
+>>> Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
+>>> part1.map(add_one).par_collect() == (4, 7, 10)
+>>> part2.collect() == (2, 4, 5, 7, 8, 10, 11)
 ```
 
 

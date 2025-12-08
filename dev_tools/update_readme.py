@@ -8,7 +8,6 @@ import attrs
 from danom import (
     Err,
     Ok,
-    ParStream,
     Stream,
     all_of,
     any_of,
@@ -35,7 +34,7 @@ class ReadmeDoc:
 def create_readme_lines() -> str:
     readme_lines = []
 
-    for ent in [Ok, Err, Stream, ParStream]:
+    for ent in [Ok, Err, Stream]:
         readme_lines.append(f"## {ent.__name__}")
         readme_lines.append(ent.__doc__)
         readme_docs = [
