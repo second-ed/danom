@@ -3,10 +3,7 @@ from contextlib import nullcontext
 import pytest
 
 from src.danom import new_type
-
-
-def has_len(value: str) -> bool:
-    return len(value) > 0
+from tests.conftest import has_len
 
 
 @pytest.mark.parametrize(

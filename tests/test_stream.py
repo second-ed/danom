@@ -1,6 +1,7 @@
 import pytest
 
-from src.danom import ParStream, Stream, compose
+from src.danom import Stream
+from tests.conftest import add_one, divisible_by_3, divisible_by_5
 
 
 @pytest.mark.parametrize(
@@ -26,18 +27,6 @@ def test_stream_with_multiple_fns():
     ) == (5,)
 
 
-def add_one(x: int) -> int:
-    return x + 1
-
-
-def divisible_by_3(x: int) -> bool:
-    return x % 3 == 0
-
-
-def divisible_by_5(x: int) -> bool:
-    return x % 5 == 0
-
-
 @pytest.mark.parametrize(
     ("it", "n_workers", "expected_result"),
     [
@@ -45,40 +34,19 @@ def divisible_by_5(x: int) -> bool:
         pytest.param(13, -1, (15,)),
     ],
 )
-def test_par_stream(it, n_workers, expected_result):
+def test_par_collect(it, n_workers, expected_result):
     assert (
-        ParStream.from_iterable(it)
+        Stream.from_iterable(it)
         .map(add_one, add_one)
         .filter(divisible_by_3, divisible_by_5)
-        .collect(workers=n_workers)
+        .par_collect(workers=n_workers)
         == expected_result
     )
 
 
 def test_stream_to_par_stream():
     part1, part2 = (
-        Stream.from_iterable(range(10))
-        .map(add_one)
-        .to_par_stream()
-        .map(add_one)
-        .to_stream()
-        .partition(divisible_by_3)
+        Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
     )
-    assert part1.to_par_stream().map(add_one).collect() == (4, 7, 10)
+    assert part1.map(add_one).collect() == (4, 7, 10)
     assert part2.collect() == (2, 4, 5, 7, 8, 10, 11)
-
-
-def test_par_stream_partition():
-    with pytest.raises(NotImplementedError):
-        ParStream.from_iterable(range(10)).partition(divisible_by_3)
-
-
-@pytest.mark.parametrize(
-    ("inp_args", "fns", "expected_result"),
-    [
-        pytest.param(0, (add_one, add_one), 2),
-        pytest.param(0, (add_one, divisible_by_3), False),
-    ],
-)
-def test_compose(inp_args, fns, expected_result):
-    assert compose(*fns)(inp_args) == expected_result

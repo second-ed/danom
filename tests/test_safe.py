@@ -1,40 +1,23 @@
 from functools import partial
-from typing import Any, Self
 
 import pytest
 
-from src.danom import safe, safe_method
-from src.danom._result import Result
-
-
-@safe
-def mock_func(a: int, b: int) -> Result[int, Exception]:
-    return a + b
-
-
-@safe
-def mock_func_raises(_a: Any) -> Result[None, Exception]:
-    raise TypeError
-
-
-@safe
-def mock_get_error_type(exception: Exception) -> str:
-    return exception.__class__.__name__
+from tests.conftest import Adder, safe_add, safe_get_error_type, safe_raise_type_error
 
 
 def test_valid_safe_pipeline():
     pipeline = (
-        mock_func(1, 2)
-        .and_then(mock_func, b=1)
-        .and_then(mock_func, b=1)
-        .match(partial(mock_func, b=1), mock_get_error_type)
+        safe_add(1, 2)
+        .and_then(safe_add, b=1)
+        .and_then(safe_add, b=1)
+        .match(partial(safe_add, b=1), safe_get_error_type)
     )
     assert pipeline.is_ok()
     assert pipeline.unwrap() == 6
 
 
 def test_invalid_safe_pipeline():
-    pipeline = mock_func(1, 2).and_then(mock_func_raises).and_then(mock_func, b=1)
+    pipeline = safe_add(1, 2).and_then(safe_raise_type_error).and_then(safe_add, b=1)
     assert not pipeline.is_ok()
 
     with pytest.raises(TypeError):
@@ -43,27 +26,13 @@ def test_invalid_safe_pipeline():
 
 def test_invalid_safe_pipeline_with_match():
     pipeline = (
-        mock_func(1, 2)
-        .and_then(mock_func_raises)
-        .and_then(mock_func, b=1)
-        .match(partial(mock_func, b=1), mock_get_error_type)
+        safe_add(1, 2)
+        .and_then(safe_raise_type_error)
+        .and_then(safe_add, b=1)
+        .match(partial(safe_add, b=1), safe_get_error_type)
     )
     assert pipeline.is_ok()
     assert pipeline.unwrap() == "TypeError"
-
-
-class Adder:
-    def __init__(self):
-        self.result = 0
-
-    @safe_method
-    def add(self, a: int, b: int) -> Self:
-        self.result += a + b
-        return self
-
-    @safe_method
-    def cls_raises(self, *args, **kwargs) -> None:
-        raise ValueError
 
 
 def test_valid_safe_method_pipeline():
