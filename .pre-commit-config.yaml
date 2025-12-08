@@ -1,5 +1,3 @@
-exclude: |
-    (^coverage\.json$)
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.5.26
