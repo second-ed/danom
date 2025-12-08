@@ -1,6 +1,6 @@
 # danom
 
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom) ![coverage](./coverage.svg)
 
 # API Reference
 
@@ -447,6 +447,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │       └── publish.yaml
 ├── dev_tools
 │   ├── __init__.py
+│   ├── update_cov.py
 │   └── update_readme.py
 ├── src
 │   └── danom
