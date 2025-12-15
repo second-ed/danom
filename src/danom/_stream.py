@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from enum import Enum, auto, unique
+from functools import reduce
 from typing import Self
 
 import attrs
@@ -14,6 +15,10 @@ import attrs
 class _BaseStream(ABC):
     seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
     ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
+
+    @classmethod
+    @abstractmethod
+    def from_iterable(cls, it: Iterable) -> Self: ...
 
     @abstractmethod
     def map[T, U](self, *fns: Callable[[T], U]) -> Self: ...
@@ -25,7 +30,15 @@ class _BaseStream(ABC):
     def partition[T](self, fn: Callable[[T], bool]) -> tuple[Self, Self]: ...
 
     @abstractmethod
+    def fold[T, U](
+        self, initial: T, fn: Callable[[T], U], *, workers: int = 1, use_threads: bool = False
+    ) -> U: ...
+
+    @abstractmethod
     def collect(self) -> tuple: ...
+
+    @abstractmethod
+    def par_collect(self) -> tuple: ...
 
 
 @attrs.define(frozen=True)
@@ -97,7 +110,7 @@ class Stream(_BaseStream):
         >>> part2.collect() == (1, 3)
         ```
 
-        As `partition` triggers an action, the parameters will be forwarded to the `collect` call if the `workers` are greater than 1.
+        As `partition` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
         ```python
         >>> Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
         >>> part1.map(add_one).par_collect() == (4, 7, 10)
@@ -113,6 +126,27 @@ class Stream(_BaseStream):
             Stream(seq=(x for x in seq_tuple if fn(x))),
             Stream(seq=(x for x in seq_tuple if not fn(x))),
         )
+
+    def fold[T, U](
+        self, initial: T, fn: Callable[[T], U], *, workers: int = 1, use_threads: bool = False
+    ) -> U:
+        """Fold the results into a single value. `fold` triggers an action so will incur a `collect`.
+
+        ```python
+        >>> Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
+        >>> Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
+        >>> Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
+        ```
+
+        As `fold` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
+        This will only effect the `collect` that is used to create the iterable to reduce, not the `fold` operation itself.
+        ```python
+        >>> Stream.from_iterable([1, 2, 3, 4]).map(some_expensive_fn).fold(0, add, workers=4, use_threads=False)
+        ```
+        """
+        if workers > 1:
+            return reduce(fn, self.par_collect(workers=workers, use_threads=use_threads), initial)
+        return reduce(fn, self.collect(), initial)
 
     def collect(self) -> tuple:
         """Materialise the sequence from the `Stream`.

@@ -1,7 +1,7 @@
 import pytest
 
 from src.danom import Stream
-from tests.conftest import add_one, divisible_by_3, divisible_by_5
+from tests.conftest import add, add_one, divisible_by_3, divisible_by_5
 
 
 @pytest.mark.parametrize(
@@ -50,3 +50,14 @@ def test_stream_to_par_stream():
     )
     assert part1.map(add_one).collect() == (4, 7, 10)
     assert part2.collect() == (2, 4, 5, 7, 8, 10, 11)
+
+
+@pytest.mark.parametrize(
+    ("starting", "initial", "fn", "workers", "expected_result"),
+    [
+        pytest.param(range(10), 0, add, 1, 45),
+        pytest.param(range(10), 0, add, 4, 45),
+    ],
+)
+def test_fold(starting, initial, fn, workers, expected_result):
+    assert Stream.from_iterable(starting).fold(initial, fn, workers=workers) == expected_result
