@@ -57,6 +57,7 @@ def test_stream_to_par_stream():
     [
         pytest.param(range(10), 0, add, 1, 45),
         pytest.param(range(10), 0, add, 4, 45),
+        pytest.param(range(10), 5, add, 4, 50),
     ],
 )
 def test_fold(starting, initial, fn, workers, expected_result):
