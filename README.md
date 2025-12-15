@@ -140,6 +140,25 @@ Simple functions can be passed in sequence to compose more complex filters
 ```
 
 
+### `Stream.fold`
+```python
+Stream.fold(self, initial: 'T', fn: 'Callable[[T], U]', *, workers: 'int' = 1, use_threads: 'bool' = False) -> 'U'
+```
+Fold the results into a single value. `fold` triggers an action so will incur a `collect`.
+
+```python
+>>> Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
+>>> Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
+>>> Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
+```
+
+As `fold` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
+This will only effect the `collect` that is used to create the iterable to reduce, not the `fold` operation itself.
+```python
+>>> Stream.from_iterable([1, 2, 3, 4]).map(some_expensive_fn).fold(0, add, workers=4, use_threads=False)
+```
+
+
 ### `Stream.from_iterable`
 ```python
 Stream.from_iterable(it: 'Iterable') -> 'Self'
@@ -217,7 +236,7 @@ Each partition is independently replayable.
 >>> part2.collect() == (1, 3)
 ```
 
-As `partition` triggers an action, the parameters will be forwarded to the `collect` call if the `workers` are greater than 1.
+As `partition` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
 ```python
 >>> Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
 >>> part1.map(add_one).par_collect() == (4, 7, 10)

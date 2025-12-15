@@ -4,6 +4,10 @@ from src.danom import safe, safe_method
 from src.danom._result import Result
 
 
+def add[T](a: T, b: T) -> T:
+    return a + b
+
+
 def has_len(value: str) -> bool:
     return len(value) > 0
 
