@@ -12,16 +12,24 @@ def has_len(value: str) -> bool:
     return len(value) > 0
 
 
-def add_one(x: int) -> int:
+def add_one[T](x: T) -> T:
     return x + 1
 
 
-def divisible_by_3(x: int) -> bool:
+def double[T](x: T) -> T:
+    return x * 2
+
+
+def divisible_by_3[T](x: float) -> bool:
     return x % 3 == 0
 
 
-def divisible_by_5(x: int) -> bool:
+def divisible_by_5(x: float) -> bool:
     return x % 5 == 0
+
+
+def lt_10(x: float) -> bool:
+    return x < 10  # noqa: PLR2004
 
 
 @safe

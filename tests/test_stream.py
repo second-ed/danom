@@ -18,28 +18,28 @@ def test_stream_pipeline(it, expected_part1, expected_part2):
     assert part2.collect() == expected_part2
 
 
-def test_stream_with_multiple_fns():
-    assert (
-        Stream.from_iterable(range(10))
-        .map(lambda x: x * 2, lambda x: x + 1)
-        .filter(lambda x: x % 5 == 0, lambda x: x < 10)
-        .collect()
-    ) == (5,)
-
-
 @pytest.mark.parametrize(
-    ("it", "n_workers", "expected_result"),
+    ("it", "expected_result"),
     [
-        pytest.param(range(15), 4, (15,)),
-        pytest.param(13, -1, (15,)),
+        pytest.param(range(30), (15, 30), id="works with iterator"),
+        pytest.param(28, (30,), id="works with single value"),
     ],
 )
-def test_par_collect(it, n_workers, expected_result):
+@pytest.mark.parametrize(
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("par_collect", {"workers": 4}, id="`par_collect` with workers passed in"),
+        pytest.param("par_collect", {"workers": -1}, id="`par_collect` with n-1 workers"),
+        pytest.param("par_collect", {"use_threads": True}, id="`par_collect` with threads True"),
+    ],
+)
+def test_collect_methods(it, collect_fn, kwargs, expected_result):
     assert (
-        Stream.from_iterable(it)
-        .map(add_one, add_one)
-        .filter(divisible_by_3, divisible_by_5)
-        .par_collect(workers=n_workers)
+        getattr(
+            Stream.from_iterable(it).map(add_one, add_one).filter(divisible_by_3, divisible_by_5),
+            collect_fn,
+        )(**kwargs)
         == expected_result
     )
 
