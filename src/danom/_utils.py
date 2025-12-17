@@ -37,9 +37,9 @@ def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
 
 @attrs.define(frozen=True, hash=True, eq=True)
 class _AllOf[T, U]:
-    fns: Sequence[Callable[[T], U]]
+    fns: Sequence[Callable[[T], bool]]
 
-    def __call__(self, initial: T) -> U:
+    def __call__(self, initial: T) -> bool:
         return all(fn(initial) for fn in self.fns)
 
 
@@ -56,9 +56,9 @@ def all_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
 
 @attrs.define(frozen=True, hash=True, eq=True)
 class _AnyOf[T, U]:
-    fns: Sequence[Callable[[T], U]]
+    fns: Sequence[Callable[[T], bool]]
 
-    def __call__(self, initial: T) -> U:
+    def __call__(self, initial: T) -> bool:
         return any(fn(initial) for fn in self.fns)
 
 
@@ -71,6 +71,17 @@ def any_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
     ```
     """
     return _AnyOf(fns)
+
+
+def none_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+    """True if none of the given functions return True.
+
+    ```python
+    >>> is_valid = none_of(is_empty, exceeds_size_limit, contains_unsupported_format)
+    >>> is_valid(submission) == True
+    ```
+    """
+    return compose(_AnyOf(fns), not_)
 
 
 def identity[T](x: T) -> T:
