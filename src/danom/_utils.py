@@ -36,7 +36,7 @@ def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
 
 
 @attrs.define(frozen=True, hash=True, eq=True)
-class _AllOf[T, U]:
+class _AllOf[T]:
     fns: Sequence[Callable[[T], bool]]
 
     def __call__(self, initial: T) -> bool:
@@ -55,7 +55,7 @@ def all_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
 
 
 @attrs.define(frozen=True, hash=True, eq=True)
-class _AnyOf[T, U]:
+class _AnyOf[T]:
     fns: Sequence[Callable[[T], bool]]
 
     def __call__(self, initial: T) -> bool:
