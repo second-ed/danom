@@ -1,7 +1,11 @@
+import asyncio
+from pathlib import Path
 from typing import Any, Self
 
 from src.danom import safe, safe_method
 from src.danom._result import Result
+
+REPO_ROOT = Path(__file__).parents[1]
 
 
 def add[T](a: T, b: T) -> T:
@@ -30,6 +34,15 @@ def divisible_by_5(x: float) -> bool:
 
 def lt_10(x: float) -> bool:
     return x < 10  # noqa: PLR2004
+
+
+async def async_is_file(path: Path) -> bool:
+    return path.is_file()
+
+
+async def async_read_text(path: str) -> str:
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, Path(path).read_text)
 
 
 @safe

@@ -1,7 +1,17 @@
+from pathlib import Path
+
 import pytest
 
 from src.danom import Stream
-from tests.conftest import add, add_one, divisible_by_3, divisible_by_5
+from tests.conftest import (
+    REPO_ROOT,
+    add,
+    add_one,
+    async_is_file,
+    async_read_text,
+    divisible_by_3,
+    divisible_by_5,
+)
 
 
 @pytest.mark.parametrize(
@@ -62,3 +72,28 @@ def test_stream_to_par_stream():
 )
 def test_fold(starting, initial, fn, workers, expected_result):
     assert Stream.from_iterable(starting).fold(initial, fn, workers=workers) == expected_result
+
+
+@pytest.mark.asyncio
+async def test_async_collect():
+    assert await Stream.from_iterable(
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
+    ).filter(async_is_file).map(async_read_text).async_collect() == (
+        "",
+        "x = 1\n",
+        "y = 2\n",
+        "z = 3\n",
+    )
+
+
+@pytest.mark.asyncio
+async def test_async_collect_no_fns():
+    assert await Stream.from_iterable(
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
+    ).async_collect() == (
+        Path(f"{REPO_ROOT}/tests/mock_data/__init__.py"),
+        Path(f"{REPO_ROOT}/tests/mock_data/dir_should_skip"),
+        Path(f"{REPO_ROOT}/tests/mock_data/file_a.py"),
+        Path(f"{REPO_ROOT}/tests/mock_data/file_b.py"),
+        Path(f"{REPO_ROOT}/tests/mock_data/file_c.py"),
+    )

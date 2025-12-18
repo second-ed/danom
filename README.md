@@ -112,6 +112,23 @@ Unwrap the Err monad will raise the inner error.
 
 A lazy iterator with functional operations.
 
+### `Stream.async_collect`
+```python
+Stream.async_collect(self) -> 'tuple'
+```
+Async version of collect. Note that all functions in the stream should be `Awaitable`.
+
+```python
+>>> Stream.from_iterable(file_paths).map(async_read_files).async_collect()
+```
+
+If there are no operations in the `Stream` then this will act as a normal collect.
+
+```python
+>>> Stream.from_iterable(file_paths).async_collect()
+```
+
+
 ### `Stream.collect`
 ```python
 Stream.collect(self) -> 'tuple'
@@ -221,6 +238,8 @@ If False the processing will use `ProcessPoolExecutor` else it will use `ThreadP
 >>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
 >>> stream.par_collect(use_threads=True) == (1, 2, 3, 4)
 ```
+
+Note that all operations should be pickle-able, for that reason `Stream` does not support lambdas or closures.
 
 
 ### `Stream.partition`

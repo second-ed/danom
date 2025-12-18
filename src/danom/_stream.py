@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import os
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable
@@ -181,6 +182,8 @@ class Stream(_BaseStream):
         >>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
         >>> stream.par_collect(use_threads=True) == (1, 2, 3, 4)
         ```
+
+        Note that all operations should be pickle-able, for that reason `Stream` does not support lambdas or closures.
         """
         if workers == -1:
             workers = (os.cpu_count() - 1) or 4
@@ -190,6 +193,25 @@ class Stream(_BaseStream):
         with executor_cls(max_workers=workers) as ex:
             res = tuple(ex.map(_apply_fns_worker, ((x, self.ops) for x in self.seq)))
 
+        return tuple(elem for elem in res if elem != _Nothing.NOTHING)
+
+    async def async_collect(self) -> tuple:
+        """Async version of collect. Note that all functions in the stream should be `Awaitable`.
+
+        ```python
+        >>> Stream.from_iterable(file_paths).map(async_read_files).async_collect()
+        ```
+
+        If there are no operations in the `Stream` then this will act as a normal collect.
+
+        ```python
+        >>> Stream.from_iterable(file_paths).async_collect()
+        ```
+        """
+        if not self.ops:
+            return self.collect()
+
+        res = await asyncio.gather(*(_async_apply_fns(x, self.ops) for x in self.seq))
         return tuple(elem for elem in res if elem != _Nothing.NOTHING)
 
 
@@ -214,5 +236,15 @@ def _apply_fns[T, U](elem: T, ops: tuple[tuple[_OpType, Callable], ...]) -> U | 
         if op == _OpType.MAP:
             res = op_fn(res)
         elif op == _OpType.FILTER and not op_fn(res):
+            return _Nothing.NOTHING
+    return res
+
+
+async def _async_apply_fns[T, U](elem: T, ops: tuple[tuple[_OpType, Callable], ...]) -> U | None:
+    res = elem
+    for op, op_fn in ops:
+        if op == _OpType.MAP:
+            res = await op_fn(res)
+        elif op == _OpType.FILTER and not await op_fn(res):
             return _Nothing.NOTHING
     return res
