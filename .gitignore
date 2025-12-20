@@ -12,3 +12,4 @@ envs/
 scrap/
 .coverage
 .DS_Store
+.benchmarks/

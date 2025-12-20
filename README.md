@@ -42,7 +42,7 @@ number of keywords: `11`
 
 keyword breakdown: `{'for': 1, 'in': 1, 'if': 3, 'not': 3, 'continue': 3}`
 
-After a bit of experience with python you might use list comprehensions, however this iterates multiple times over the same data
+After a bit of experience with python you might use list comprehensions, however this is arguably _less_ clear and iterates multiple times over the same data
 ```python
 >>> mul_three = [triple(x) for x in range(1_000_000)]
 >>> gt_ten = [x for x in mul_three if is_gt_ten(x)]
