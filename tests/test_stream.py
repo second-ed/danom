@@ -44,16 +44,12 @@ def test_stream_pipeline(it, expected_part1, expected_part2):
         pytest.param("par_collect", {"use_threads": True}, id="`par_collect` with threads True"),
     ],
 )
-def test_collect_methods(benchmark, it, collect_fn, kwargs, expected_result):
+def test_collect_methods(it, collect_fn, kwargs, expected_result):
     assert (
-        benchmark(
-            lambda: getattr(
-                Stream.from_iterable(it)
-                .map(add_one, add_one)
-                .filter(divisible_by_3, divisible_by_5),
-                collect_fn,
-            )(**kwargs)
-        )
+        getattr(
+            Stream.from_iterable(it).map(add_one, add_one).filter(divisible_by_3, divisible_by_5),
+            collect_fn,
+        )(**kwargs)
         == expected_result
     )
 

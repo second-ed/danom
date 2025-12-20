@@ -27,7 +27,7 @@ dev = [
     "pre-commit>=4.5.0",
     "pytest>=9.0.1",
     "pytest-asyncio>=1.3.0",
-    "pytest-benchmark>=5.2.3",
+    "pytest-codspeed>=4.2.0",
     "pytest-cov>=7.0.0",
     "repo-mapper-rs>=0.3.0",
     "ruff>=0.14.6",
@@ -45,4 +45,4 @@ skip_covered = true
 fail_under = 95
 
 [tool.pytest]
-addopts = ["--benchmark-autosave"]
+# addopts = ["--codspeed"]

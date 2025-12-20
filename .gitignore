@@ -13,3 +13,4 @@ scrap/
 .coverage
 .DS_Store
 .benchmarks/
+.codspeed/

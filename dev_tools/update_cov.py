@@ -25,10 +25,10 @@ BADGE_STR = """<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20">
 
 def update_cov_badge(root: str) -> int:
     cov_report = json.loads(Path(f"{root}/coverage.json").read_text())
-    new_pct = cov_report["totals"]["percent_covered"]
+    new_pct = to_2dp_float_str(cov_report["totals"]["percent_covered"])
 
     curr_badge = Path(f"{root}/coverage.svg").read_text()
-    curr_pct = float(
+    curr_pct = to_2dp_float_str(
         re.findall(r'<text x="90" y="14">([0-9]+(?:\.[0-9]+)?)%</text>', curr_badge)[0]
     )
 
@@ -51,7 +51,11 @@ def make_badge(badge_str: str, pct: int) -> str:
         if pct < 90  # noqa: PLR2004
         else "green"
     )
-    return badge_str.format(colour=colour, pct=pct)
+    return badge_str.format(colour=colour, pct=f"{pct:.2f}")
+
+
+def to_2dp_float_str(pct: float) -> str:
+    return f"{float(pct) : .2f}"
 
 
 if __name__ == "__main__":
