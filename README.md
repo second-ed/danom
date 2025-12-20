@@ -4,113 +4,84 @@
 
 # API Reference
 
-## Ok
-
-Frozen instance of an Ok monad used to wrap successful operations.
-
-### `Ok.and_then`
-```python
-Ok.and_then(self, func: collections.abc.Callable[[~T], danom._result.Result], **kwargs: dict) -> danom._result.Result
-```
-Pipe another function that returns a monad.
-
-```python
->>> Ok(1).and_then(add_one) == Ok(2)
->>> Ok(1).and_then(raise_err) == Err(error=TypeError())
-```
-
-
-### `Ok.is_ok`
-```python
-Ok.is_ok(self) -> Literal[True]
-```
-Returns True if the result type is Ok.
-
-```python
->>> Ok().is_ok() == True
-```
-
-
-### `Ok.match`
-```python
-Ok.match(self, if_ok_func: collections.abc.Callable[[~T], danom._result.Result], _if_err_func: collections.abc.Callable[[~T], danom._result.Result]) -> danom._result.Result
-```
-Map Ok func to Ok and Err func to Err
-
-```python
->>> Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
->>> Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
->>> Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
-```
-
-
-### `Ok.unwrap`
-```python
-Ok.unwrap(self) -> ~T
-```
-Unwrap the Ok monad and get the inner value.
-
-```python
->>> Ok().unwrap() == None
->>> Ok(1).unwrap() == 1
->>> Ok("ok").unwrap() == 'ok'
-```
-
-
-## Err
-
-Frozen instance of an Err monad used to wrap failed operations.
-
-### `Err.and_then`
-```python
-Err.and_then(self, _: 'Callable[[T], Result]', **_kwargs: 'dict') -> 'Self'
-```
-Pipe another function that returns a monad. For Err will return original error.
-
-```python
->>> Err(error=TypeError()).and_then(add_one) == Err(error=TypeError())
->>> Err(error=TypeError()).and_then(raise_value_err) == Err(error=TypeError())
-```
-
-
-### `Err.is_ok`
-```python
-Err.is_ok(self) -> 'Literal[False]'
-```
-Returns False if the result type is Err.
-
-```python
-Err().is_ok() == False
-```
-
-
-### `Err.match`
-```python
-Err.match(self, _if_ok_func: 'Callable[[T], Result]', if_err_func: 'Callable[[T], Result]') -> 'Result'
-```
-Map Ok func to Ok and Err func to Err
-
-```python
->>> Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
->>> Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
->>> Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
-```
-
-
-### `Err.unwrap`
-```python
-Err.unwrap(self) -> 'None'
-```
-Unwrap the Err monad will raise the inner error.
-
-```python
->>> Err(error=TypeError()).unwrap() raise TypeError(...)
-```
-
-
 ## Stream
 
-A lazy iterator with functional operations.
+An immutable lazy iterator with functional operations.
+
+#### Why bother?
+Readability counts, abstracting common operations helps reduce cognitive complexity when reading code.
+
+#### Comparison
+Take this imperative pipeline of operations, it iterates once over the :
+
+```python
+>>> res = []
+...
+>>> for x in range(1_000_000):
+...     item = triple(x)
+...
+...     if not is_gt_ten(item):
+...         continue
+...
+...     item = min_two(item)
+...
+...     if not is_even_num(item):
+...         continue
+...
+...     item = square(item)
+...
+...     if not is_lt_400(item):
+...         continue
+...
+...     res.append(item)
+>>> [100, 256]
+```
+number of tokens: `90`
+
+number of keywords: `11`
+
+keyword breakdown: `{'for': 1, 'in': 1, 'if': 3, 'not': 3, 'continue': 3}`
+
+After a bit of experience with python you might use list comprehensions, however this iterates multiple times over the same data
+```python
+>>> mul_three = [triple(x) for x in range(1_000_000)]
+>>> gt_ten = [x for x in mul_three if is_gt_ten(x)]
+>>> sub_two = [min_two(x) for x in gt_ten]
+>>> is_even = [x for x in sub_two if is_even_num(x)]
+>>> squared = [square(x) for x in is_even]
+>>> lt_400 = [x for x in squared if is_lt_400(x)]
+>>> [100, 256]
+```
+number of tokens: `92`
+
+number of keywords: `15`
+
+keyword breakdown: `{'for': 6, 'in': 6, 'if': 3}`
+
+This still has a lot of tokens that the developer has to read to understand the code. The extra keywords add noise that cloud the actual transformations.
+
+Using a `Stream` results in this:
+```python
+>>> (
+...     Stream.from_iterable(range(1_000_000))
+...     .map(triple)
+...     .filter(is_gt_ten)
+...     .map(min_two)
+...     .filter(is_even_num)
+...     .map(square)
+...     .filter(is_lt_400)
+...     .collect()
+... )
+>>> (100, 256)
+```
+number of tokens: `60`
+
+number of keywords: `0`
+
+keyword breakdown: `{}`
+
+The business logic is arguably much clearer like this.
+
 
 ### `Stream.async_collect`
 ```python
@@ -260,6 +231,110 @@ As `partition` triggers an action, the parameters will be forwarded to the `par_
 >>> Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
 >>> part1.map(add_one).par_collect() == (4, 7, 10)
 >>> part2.collect() == (2, 4, 5, 7, 8, 10, 11)
+```
+
+
+## Ok
+
+Frozen instance of an Ok monad used to wrap successful operations.
+
+### `Ok.and_then`
+```python
+Ok.and_then(self, func: collections.abc.Callable[[~T], danom._result.Result], **kwargs: dict) -> danom._result.Result
+```
+Pipe another function that returns a monad.
+
+```python
+>>> Ok(1).and_then(add_one) == Ok(2)
+>>> Ok(1).and_then(raise_err) == Err(error=TypeError())
+```
+
+
+### `Ok.is_ok`
+```python
+Ok.is_ok(self) -> Literal[True]
+```
+Returns True if the result type is Ok.
+
+```python
+>>> Ok().is_ok() == True
+```
+
+
+### `Ok.match`
+```python
+Ok.match(self, if_ok_func: collections.abc.Callable[[~T], danom._result.Result], _if_err_func: collections.abc.Callable[[~T], danom._result.Result]) -> danom._result.Result
+```
+Map Ok func to Ok and Err func to Err
+
+```python
+>>> Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
+>>> Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
+>>> Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
+```
+
+
+### `Ok.unwrap`
+```python
+Ok.unwrap(self) -> ~T
+```
+Unwrap the Ok monad and get the inner value.
+
+```python
+>>> Ok().unwrap() == None
+>>> Ok(1).unwrap() == 1
+>>> Ok("ok").unwrap() == 'ok'
+```
+
+
+## Err
+
+Frozen instance of an Err monad used to wrap failed operations.
+
+### `Err.and_then`
+```python
+Err.and_then(self, _: 'Callable[[T], Result]', **_kwargs: 'dict') -> 'Self'
+```
+Pipe another function that returns a monad. For Err will return original error.
+
+```python
+>>> Err(error=TypeError()).and_then(add_one) == Err(error=TypeError())
+>>> Err(error=TypeError()).and_then(raise_value_err) == Err(error=TypeError())
+```
+
+
+### `Err.is_ok`
+```python
+Err.is_ok(self) -> 'Literal[False]'
+```
+Returns False if the result type is Err.
+
+```python
+Err().is_ok() == False
+```
+
+
+### `Err.match`
+```python
+Err.match(self, _if_ok_func: 'Callable[[T], Result]', if_err_func: 'Callable[[T], Result]') -> 'Result'
+```
+Map Ok func to Ok and Err func to Err
+
+```python
+>>> Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
+>>> Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
+>>> Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
+```
+
+
+### `Err.unwrap`
+```python
+Err.unwrap(self) -> 'None'
+```
+Unwrap the Err monad will raise the inner error.
+
+```python
+>>> Err(error=TypeError()).unwrap() raise TypeError(...)
 ```
 
 

@@ -27,16 +27,16 @@ class ReadmeDoc:
     doc: str
 
     def to_readme(self) -> str:
-        docs = "\n".join([line.strip() for line in self.doc.splitlines()])
+        docs = strip_doc(self.doc)
         return "\n".join([f"### `{self.name}`", f"```python\n{self.name}{self.sig}\n```", docs])
 
 
 def create_readme_lines() -> str:
     readme_lines = []
 
-    for ent in [Ok, Err, Stream]:
+    for ent in [Stream, Ok, Err]:
         readme_lines.append(f"## {ent.__name__}")
-        readme_lines.append(ent.__doc__)
+        readme_lines.append(strip_doc(ent.__doc__))
         readme_docs = [
             ReadmeDoc(f"{ent.__name__}.{k}", inspect.signature(v), v.__doc__)
             for k, v in inspect.getmembers(ent, inspect.isroutine)
@@ -60,6 +60,10 @@ def update_readme(new_docs: str, readme_path: str = "./README.md") -> None:
         readme_path.write_text(updated_readme)
         return 1
     return 0
+
+
+def strip_doc(doc: str) -> str:
+    return "\n".join([line.strip() for line in doc.splitlines()])
 
 
 if __name__ == "__main__":
