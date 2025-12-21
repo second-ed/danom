@@ -7,12 +7,12 @@ from src.danom import Err
     ("monad", "expected_result", "expected_context"),
     [
         pytest.param(
-            Err(input_args=(), error=TypeError("should raise this")),
+            Err(error=TypeError("should raise this"), input_args=()),
             None,
             pytest.raises(TypeError),
         ),
         pytest.param(
-            Err(input_args=(), error=ValueError("should raise this")),
+            Err(error=ValueError("should raise this"), input_args=()),
             None,
             pytest.raises(ValueError),
         ),
@@ -31,7 +31,7 @@ def test_err_unwrap(monad, expected_result, expected_context):
 @pytest.mark.parametrize(
     ("monad", "expected_result"),
     [
-        pytest.param(Err(input_args=(), error=TypeError("should raise this")), False),
+        pytest.param(Err(error=TypeError("should raise this"), input_args=()), False),
     ],
 )
 def test_err_is_ok(monad, expected_result):

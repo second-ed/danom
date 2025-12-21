@@ -14,12 +14,11 @@ from danom._result import Result, T
 
 
 @attrs.define(frozen=True)
-class Err(Result):
+class Err[E](Result):
     """Frozen instance of an Err monad used to wrap failed operations."""
 
-    inner: Any = attrs.field(default=None)
+    error: E | Exception | None = attrs.field(default=None)
     input_args: tuple[T] = attrs.field(default=None, repr=False)
-    error: Exception | None = attrs.field(default=None)
     details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)
 
     def __attrs_post_init__(self) -> None:
@@ -68,9 +67,9 @@ class Err(Result):
         >>> Err(error=TypeError()).unwrap() raise TypeError(...)
         ```
         """
-        if self.error is not None:
+        if isinstance(self.error, Exception):
             raise self.error
-        raise ValueError(f"Err does not have a caught error to raise: {self.inner = }")
+        raise ValueError(f"Err does not have a caught error to raise: {self.error = }")
 
     def match(
         self, _if_ok_func: Callable[[T], Result], if_err_func: Callable[[T], Result]
