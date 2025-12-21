@@ -37,14 +37,14 @@ def test_invalid_safe_pipeline_with_match():
 
 def test_valid_safe_method_pipeline():
     cls = Adder()
-    res = cls.add(2, 2).add(2, 2).add(2, 2)
+    res = cls.add(2, 2).and_then(lambda cls: cls.add(2, 2)).and_then(lambda cls: cls.add(2, 2))
     assert res.is_ok()
     assert res.unwrap().result == 12
 
 
 def test_invalid_safe_method_pipeline():
     cls = Adder()
-    res = cls.add(2, 2).cls_raises().add(2, 2)
+    res = cls.add(2, 2).and_then(lambda cls: cls.cls_raises()).and_then(lambda cls: cls.add(2, 2))
     assert not res.is_ok()
     with pytest.raises(ValueError):
         res.unwrap()

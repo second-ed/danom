@@ -342,7 +342,7 @@ Unwrap the Err monad will raise the inner error.
 
 ### `safe`
 ```python
-safe(func: collections.abc.Callable[~P, ~T]) -> collections.abc.Callable[~P, danom._result.Result]
+safe(func: collections.abc.Callable[[T], U]) -> collections.abc.Callable[[T], danom._result.Result]
 ```
 Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
@@ -359,7 +359,7 @@ Decorator for functions that wraps the function in a try except returns `Ok` on 
 
 ### `safe_method`
 ```python
-safe_method(func: collections.abc.Callable[~P, ~T]) -> collections.abc.Callable[~P, danom._result.Result]
+safe_method(func: collections.abc.Callable[[T], U]) -> collections.abc.Callable[[T], danom._result.Result]
 ```
 The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 

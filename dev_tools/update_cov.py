@@ -40,6 +40,7 @@ def update_cov_badge(root: str) -> int:
 
 
 def make_badge(badge_str: str, pct: int) -> str:
+    pct = float(pct)
     colour = (
         "red"
         if pct < 50  # noqa: PLR2004
@@ -55,7 +56,7 @@ def make_badge(badge_str: str, pct: int) -> str:
 
 
 def to_2dp_float_str(pct: float) -> str:
-    return f"{float(pct) : .2f}"
+    return f"{float(pct):.2f}"
 
 
 if __name__ == "__main__":

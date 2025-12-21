@@ -6,10 +6,10 @@ from typing import (
 
 from danom._err import Err
 from danom._ok import Ok
-from danom._result import P, Result, T
+from danom._result import P, Result
 
 
-def safe(func: Callable[[P], T]) -> Callable[[P], Result]:
+def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     ```python
@@ -26,12 +26,12 @@ def safe(func: Callable[[P], T]) -> Callable[[P], Result]:
         try:
             return Ok(func(*args, **kwargs))
         except Exception as e:  # noqa: BLE001
-            return Err((args, kwargs), e)
+            return Err(input_args=(args, kwargs), error=e)
 
     return wrapper
 
 
-def safe_method(func: Callable[[P], T]) -> Callable[[P], Result]:
+def safe_method[T, U, E](func: Callable[[T], U]) -> Callable[[T], Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
     ```python
@@ -48,10 +48,10 @@ def safe_method(func: Callable[[P], T]) -> Callable[[P], Result]:
     """
 
     @functools.wraps(func)
-    def wrapper(self: Self, *args: P.args, **kwargs: P.kwargs) -> Result:
+    def wrapper(self: Self, *args: P.args, **kwargs: P.kwargs) -> Result[U, E]:
         try:
             return Ok(func(self, *args, **kwargs))
         except Exception as e:  # noqa: BLE001
-            return Err((self, args, kwargs), e)
+            return Err(input_args=(self, args, kwargs), error=e)
 
     return wrapper
