@@ -53,7 +53,7 @@ class Stream(_BaseStream):
     Readability counts, abstracting common operations helps reduce cognitive complexity when reading code.
 
     #### Comparison
-    Take this imperative pipeline of operations, it iterates once over the :
+    Take this imperative pipeline of operations, it iterates once over the data, skipping the value if it fails one of the filter checks:
 
     ```python
     >>> res = []
