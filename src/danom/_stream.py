@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import os
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable
@@ -38,12 +39,90 @@ class _BaseStream(ABC):
     def collect(self) -> tuple: ...
 
     @abstractmethod
-    def par_collect(self) -> tuple: ...
+    def par_collect(self, workers: int = 4, *, use_threads: bool = False) -> tuple: ...
+
+    @abstractmethod
+    async def async_collect(self) -> tuple: ...
 
 
 @attrs.define(frozen=True)
 class Stream(_BaseStream):
-    """A lazy iterator with functional operations."""
+    """An immutable lazy iterator with functional operations.
+
+    #### Why bother?
+    Readability counts, abstracting common operations helps reduce cognitive complexity when reading code.
+
+    #### Comparison
+    Take this imperative pipeline of operations, it iterates once over the :
+
+    ```python
+    >>> res = []
+    ...
+    >>> for x in range(1_000_000):
+    ...     item = triple(x)
+    ...
+    ...     if not is_gt_ten(item):
+    ...         continue
+    ...
+    ...     item = min_two(item)
+    ...
+    ...     if not is_even_num(item):
+    ...         continue
+    ...
+    ...     item = square(item)
+    ...
+    ...     if not is_lt_400(item):
+    ...         continue
+    ...
+    ...     res.append(item)
+    >>> [100, 256]
+    ```
+    number of tokens: `90`
+
+    number of keywords: `11`
+
+    keyword breakdown: `{'for': 1, 'in': 1, 'if': 3, 'not': 3, 'continue': 3}`
+
+    After a bit of experience with python you might use list comprehensions, however this is arguably _less_ clear and iterates multiple times over the same data
+    ```python
+    >>> mul_three = [triple(x) for x in range(1_000_000)]
+    >>> gt_ten = [x for x in mul_three if is_gt_ten(x)]
+    >>> sub_two = [min_two(x) for x in gt_ten]
+    >>> is_even = [x for x in sub_two if is_even_num(x)]
+    >>> squared = [square(x) for x in is_even]
+    >>> lt_400 = [x for x in squared if is_lt_400(x)]
+    >>> [100, 256]
+    ```
+    number of tokens: `92`
+
+    number of keywords: `15`
+
+    keyword breakdown: `{'for': 6, 'in': 6, 'if': 3}`
+
+    This still has a lot of tokens that the developer has to read to understand the code. The extra keywords add noise that cloud the actual transformations.
+
+    Using a `Stream` results in this:
+    ```python
+    >>> (
+    ...     Stream.from_iterable(range(1_000_000))
+    ...     .map(triple)
+    ...     .filter(is_gt_ten)
+    ...     .map(min_two)
+    ...     .filter(is_even_num)
+    ...     .map(square)
+    ...     .filter(is_lt_400)
+    ...     .collect()
+    ... )
+    >>> (100, 256)
+    ```
+    number of tokens: `60`
+
+    number of keywords: `0`
+
+    keyword breakdown: `{}`
+
+    The business logic is arguably much clearer like this.
+    """
 
     @classmethod
     def from_iterable(cls, it: Iterable) -> Self:
@@ -181,6 +260,8 @@ class Stream(_BaseStream):
         >>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
         >>> stream.par_collect(use_threads=True) == (1, 2, 3, 4)
         ```
+
+        Note that all operations should be pickle-able, for that reason `Stream` does not support lambdas or closures.
         """
         if workers == -1:
             workers = (os.cpu_count() - 1) or 4
@@ -190,6 +271,25 @@ class Stream(_BaseStream):
         with executor_cls(max_workers=workers) as ex:
             res = tuple(ex.map(_apply_fns_worker, ((x, self.ops) for x in self.seq)))
 
+        return tuple(elem for elem in res if elem != _Nothing.NOTHING)
+
+    async def async_collect(self) -> tuple:
+        """Async version of collect. Note that all functions in the stream should be `Awaitable`.
+
+        ```python
+        >>> Stream.from_iterable(file_paths).map(async_read_files).async_collect()
+        ```
+
+        If there are no operations in the `Stream` then this will act as a normal collect.
+
+        ```python
+        >>> Stream.from_iterable(file_paths).async_collect()
+        ```
+        """
+        if not self.ops:
+            return self.collect()
+
+        res = await asyncio.gather(*(_async_apply_fns(x, self.ops) for x in self.seq))
         return tuple(elem for elem in res if elem != _Nothing.NOTHING)
 
 
@@ -214,5 +314,15 @@ def _apply_fns[T, U](elem: T, ops: tuple[tuple[_OpType, Callable], ...]) -> U | 
         if op == _OpType.MAP:
             res = op_fn(res)
         elif op == _OpType.FILTER and not op_fn(res):
+            return _Nothing.NOTHING
+    return res
+
+
+async def _async_apply_fns[T, U](elem: T, ops: tuple[tuple[_OpType, Callable], ...]) -> U | None:
+    res = elem
+    for op, op_fn in ops:
+        if op == _OpType.MAP:
+            res = await op_fn(res)
+        elif op == _OpType.FILTER and not await op_fn(res):
             return _Nothing.NOTHING
     return res

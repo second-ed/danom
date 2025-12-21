@@ -17,18 +17,14 @@ from danom._result import Result, T
 class Err(Result):
     """Frozen instance of an Err monad used to wrap failed operations."""
 
+    inner: Any = attrs.field(default=None)
     input_args: tuple[T] = attrs.field(default=None, repr=False)
     error: Exception | None = attrs.field(default=None)
-    err_type: BaseException = attrs.field(init=False, repr=False)
-    err_msg: str = attrs.field(init=False, repr=False)
     details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)
 
     def __attrs_post_init__(self) -> None:
-        # little hack explained here: https://www.attrs.org/en/stable/init.html#post-init
-        object.__setattr__(self, "err_type", type(self.error))
-        object.__setattr__(self, "err_msg", str(self.error))
-
         if isinstance(self.error, Exception):
+            # little hack explained here: https://www.attrs.org/en/stable/init.html#post-init
             object.__setattr__(self, "details", self._extract_details(self.error.__traceback__))
 
     def _extract_details(self, tb: TracebackType | None) -> list[dict[str, Any]]:
@@ -72,7 +68,9 @@ class Err(Result):
         >>> Err(error=TypeError()).unwrap() raise TypeError(...)
         ```
         """
-        raise self.error
+        if self.error is not None:
+            raise self.error
+        raise ValueError(f"Err does not have a caught error to raise: {self.inner = }")
 
     def match(
         self, _if_ok_func: Callable[[T], Result], if_err_func: Callable[[T], Result]
@@ -86,9 +84,3 @@ class Err(Result):
         ```
         """
         return if_err_func(self.error)
-
-    def __getattr__(self, _name: str) -> Self:
-        def _(*_args: tuple, **_kwargs: dict) -> Self:
-            return self
-
-        return _

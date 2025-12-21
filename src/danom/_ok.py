@@ -57,6 +57,3 @@ class Ok(Result):
         ```
         """
         return if_ok_func(self.inner)
-
-    def __getattr__(self, name: str) -> Callable:
-        return getattr(self.inner, name)
