@@ -51,6 +51,11 @@ def safe_add(a: int, b: int) -> Result[int, Exception]:
 
 
 @safe
+def safe_add_one[T](x: T) -> T:
+    return x + 1
+
+
+@safe
 def safe_raise_type_error(_a: Any) -> Result[None, Exception]:  # noqa: ANN401
     raise TypeError
 
