@@ -181,7 +181,7 @@ class Stream(_BaseStream):
     def tap[T](self, *fns: Callable[[T], None]) -> Self:
         """Tap the values to another process that returns None. Will return a new `Stream` with the modified sequence.
 
-        The value passed to the tap function will be deepcopied to avoid any modification in the called function.
+        The value passed to the tap function will be deep-copied to avoid any modification to the `Stream` item for downstream consumers.
 
         ```python
         >>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value).collect() == (0, 1, 2, 3)
@@ -190,6 +190,22 @@ class Stream(_BaseStream):
         Simple functions can be passed in sequence for multiple `tap` operations
         ```python
         >>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value, print_value).collect() == (0, 1, 2, 3)
+        ```
+
+        `tap` is useful for logging and similar actions without effecting the individual items, in this example eligible and dormant users are logged using `tap`:
+
+        ```python
+        >>> active_users, inactive_users = (
+        ...     Stream.from_iterable(users).map(parse_user_objects).partition(inactive_users)
+        ... )
+        ...
+        >>> active_users.filter(eligible_for_promotion).tap(log_eligible_users).map(
+        ...     construct_promo_email, send_with_confirmation
+        ... ).collect()
+        ...
+        >>> inactive_users.tap(log_inactive_users).map(
+        ...     create_dormant_user_entry, add_to_dormant_table
+        ... ).collect()
         ```
         """
         plan = (*self.ops, *tuple((_OpType.TAP, fn) for fn in fns))
