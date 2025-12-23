@@ -234,6 +234,24 @@ As `partition` triggers an action, the parameters will be forwarded to the `par_
 ```
 
 
+### `Stream.tap`
+```python
+Stream.tap(self, *fns: 'Callable[[T], None]') -> 'Self'
+```
+Tap the values to another process that returns None. Will return a new `Stream` with the modified sequence.
+
+The value passed to the tap function will be deepcopied to avoid any modification in the called function.
+
+```python
+>>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value).collect() == (0, 1, 2, 3)
+```
+
+Simple functions can be passed in sequence for multiple `tap` operations
+```python
+>>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value, print_value).collect() == (0, 1, 2, 3)
+```
+
+
 ## Ok
 
 Frozen instance of an Ok monad used to wrap successful operations.

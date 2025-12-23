@@ -5,6 +5,7 @@ import os
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from copy import deepcopy
 from enum import Enum, auto, unique
 from functools import reduce
 from typing import Self
@@ -177,6 +178,23 @@ class Stream(_BaseStream):
         plan = (*self.ops, *tuple((_OpType.FILTER, fn) for fn in fns))
         return Stream(seq=self.seq, ops=plan)
 
+    def tap[T](self, *fns: Callable[[T], None]) -> Self:
+        """Tap the values to another process that returns None. Will return a new `Stream` with the modified sequence.
+
+        The value passed to the tap function will be deepcopied to avoid any modification in the called function.
+
+        ```python
+        >>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value).collect() == (0, 1, 2, 3)
+        ```
+
+        Simple functions can be passed in sequence for multiple `tap` operations
+        ```python
+        >>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value, print_value).collect() == (0, 1, 2, 3)
+        ```
+        """
+        plan = (*self.ops, *tuple((_OpType.TAP, fn) for fn in fns))
+        return Stream(seq=self.seq, ops=plan)
+
     def partition[T](
         self, fn: Callable[[T], bool], *, workers: int = 1, use_threads: bool = False
     ) -> tuple[Self, Self]:
@@ -297,6 +315,7 @@ class Stream(_BaseStream):
 class _OpType(Enum):
     MAP = auto()
     FILTER = auto()
+    TAP = auto()
 
 
 class _Nothing(Enum):
@@ -315,6 +334,8 @@ def _apply_fns[T, U](elem: T, ops: tuple[tuple[_OpType, Callable], ...]) -> U | 
             res = op_fn(res)
         elif op == _OpType.FILTER and not op_fn(res):
             return _Nothing.NOTHING
+        elif op == _OpType.TAP:
+            op_fn(deepcopy(res))
     return res
 
 
@@ -325,4 +346,6 @@ async def _async_apply_fns[T, U](elem: T, ops: tuple[tuple[_OpType, Callable], .
             res = await op_fn(res)
         elif op == _OpType.FILTER and not await op_fn(res):
             return _Nothing.NOTHING
+        elif op == _OpType.TAP:
+            await op_fn(deepcopy(res))
     return res

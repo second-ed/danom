@@ -72,3 +72,19 @@ class Adder:
     @safe_method
     def cls_raises(self, *_args: tuple, **_kwargs: dict) -> None:
         raise ValueError
+
+
+class ValueLogger:
+    def __init__(self) -> None:
+        self.values = []
+
+    def __call__[T](self, value: T) -> None:
+        self.values.append(value)
+
+
+class AsyncValueLogger:
+    def __init__(self) -> None:
+        self.values = set()
+
+    async def __call__[T](self, value: T) -> None:
+        self.values.add(value)
