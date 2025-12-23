@@ -1,12 +1,13 @@
 import functools
 from collections.abc import Callable
 from typing import (
+    ParamSpec,
     Self,
 )
 
-from danom._err import Err
-from danom._ok import Ok
-from danom._result import P, Result
+from danom._result import Err, Ok, Result
+
+P = ParamSpec("P")
 
 
 def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:

@@ -268,89 +268,55 @@ Simple functions can be passed in sequence for multiple `tap` operations
 ```
 
 
-## Ok
+## Result
 
-Frozen instance of an Ok monad used to wrap successful operations.
+`Result` monad. Consists of `Ok` and `Err` for successful and failed operations respectively.
+Each monad is a frozen instance to prevent further mutation.
 
-### `Ok.and_then`
+
+### `Result.and_then`
 ```python
-Ok.and_then(self, func: collections.abc.Callable[[~T], danom._result.Result], **kwargs: dict) -> danom._result.Result
+Result.and_then(self, func: 'Callable[[T], Result[U]]', **kwargs: 'dict') -> 'Result[U]'
 ```
-Pipe another function that returns a monad.
+Pipe another function that returns a monad. For `Err` will return original error.
 
 ```python
 >>> Ok(1).and_then(add_one) == Ok(2)
 >>> Ok(1).and_then(raise_err) == Err(error=TypeError())
-```
-
-
-### `Ok.is_ok`
-```python
-Ok.is_ok(self) -> Literal[True]
-```
-Returns True if the result type is Ok.
-
-```python
->>> Ok().is_ok() == True
-```
-
-
-### `Ok.match`
-```python
-Ok.match(self, if_ok_func: collections.abc.Callable[[~T], danom._result.Result], _if_err_func: collections.abc.Callable[[~T], danom._result.Result]) -> danom._result.Result
-```
-Map Ok func to Ok and Err func to Err
-
-```python
->>> Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
->>> Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
->>> Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
-```
-
-
-### `Ok.unwrap`
-```python
-Ok.unwrap(self) -> ~T
-```
-Unwrap the Ok monad and get the inner value.
-
-```python
->>> Ok().unwrap() == None
->>> Ok(1).unwrap() == 1
->>> Ok("ok").unwrap() == 'ok'
-```
-
-
-## Err
-
-Frozen instance of an Err monad used to wrap failed operations.
-
-### `Err.and_then`
-```python
-Err.and_then(self, _: 'Callable[[T], Result]', **_kwargs: 'dict') -> 'Self'
-```
-Pipe another function that returns a monad. For Err will return original error.
-
-```python
 >>> Err(error=TypeError()).and_then(add_one) == Err(error=TypeError())
 >>> Err(error=TypeError()).and_then(raise_value_err) == Err(error=TypeError())
 ```
 
 
-### `Err.is_ok`
+### `Result.is_ok`
 ```python
-Err.is_ok(self) -> 'Literal[False]'
+Result.is_ok(self) -> 'bool'
 ```
+Returns True if the result type is Ok.
 Returns False if the result type is Err.
 
 ```python
-Err().is_ok() == False
+>>> Ok().is_ok() == True
+>>> Err().is_ok() == False
 ```
 
 
-### `Err.match`
+### `Result.map`
 ```python
-Err.match(self, _if_ok_func: 'Callable[[T], Result]', if_err_func: 'Callable[[T], Result]') -> 'Result'
+Result.map(self, func: 'Callable[[T], U]', **kwargs: 'dict') -> 'Result[U]'
+```
+Pipe a pure function and wrap the return value with `Ok`.
+Given an `Err` will return self.
+
+```python
+>>> Ok(1).map(add_one) == Ok(2)
+>>> Err(error=TypeError()).map(add_one) == Err(error=TypeError())
+```
+
+
+### `Result.match`
+```python
+Result.match(self, if_ok_func: 'Callable[[T], Result]', _if_err_func: 'Callable[[T], Result]') -> 'Result'
 ```
 Map Ok func to Ok and Err func to Err
 
@@ -361,13 +327,29 @@ Map Ok func to Ok and Err func to Err
 ```
 
 
-### `Err.unwrap`
+### `Result.unit`
 ```python
-Err.unwrap(self) -> 'None'
+Result.unit(inner: 'T') -> 'Ok[T]'
 ```
-Unwrap the Err monad will raise the inner error.
+Unit method. Given an item of type `T` return `Ok(T)`
 
 ```python
+>>> Result.unit(0) == Ok(inner=0)
+>>> Ok.unit(0) == Ok(inner=0)
+>>> Err.unit(0) == Ok(inner=0)
+```
+
+
+### `Result.unwrap`
+```python
+Result.unwrap(self) -> 'T'
+```
+Unwrap the `Ok` monad and get the inner value.
+Unwrap the `Err` monad will raise the inner error.
+```python
+>>> Ok().unwrap() == None
+>>> Ok(1).unwrap() == 1
+>>> Ok("ok").unwrap() == 'ok'
 >>> Err(error=TypeError()).unwrap() raise TypeError(...)
 ```
 
@@ -478,7 +460,7 @@ Basic identity function.
 
 ### `invert`
 ```python
-invert(func: collections.abc.Callable[~P, bool]) -> collections.abc.Callable[~P, bool]
+invert(func: collections.abc.Callable[[T], bool]) -> collections.abc.Callable[[T], bool]
 ```
 Invert a boolean function so it returns False where it would've returned True.
 
@@ -536,9 +518,7 @@ Alternatively the map method can be used to return a new type instance with the 
 ├── src
 │   └── danom
 │       ├── __init__.py
-│       ├── _err.py
 │       ├── _new_type.py
-│       ├── _ok.py
 │       ├── _result.py
 │       ├── _safe.py
 │       ├── _stream.py
@@ -547,9 +527,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── __init__.py
 │   ├── conftest.py
 │   ├── test_api.py
-│   ├── test_err.py
 │   ├── test_new_type.py
-│   ├── test_ok.py
 │   ├── test_result.py
 │   ├── test_safe.py
 │   ├── test_stream.py

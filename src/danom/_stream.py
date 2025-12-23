@@ -29,6 +29,9 @@ class _BaseStream(ABC):
     def filter[T](self, *fns: Callable[[T], bool]) -> Self: ...
 
     @abstractmethod
+    def tap[T](self, *fns: Callable[[T], None]) -> Self: ...
+
+    @abstractmethod
     def partition[T](self, fn: Callable[[T], bool]) -> tuple[Self, Self]: ...
 
     @abstractmethod

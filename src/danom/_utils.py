@@ -3,8 +3,6 @@ from operator import not_
 
 import attrs
 
-from danom._result import P
-
 
 @attrs.define(frozen=True, hash=True, eq=True)
 class _Compose[T, U]:
@@ -96,7 +94,7 @@ def identity[T](x: T) -> T:
     return x
 
 
-def invert(func: Callable[[P], bool]) -> Callable[[P], bool]:
+def invert[T](func: Callable[[T], bool]) -> Callable[[T], bool]:
     """Invert a boolean function so it returns False where it would've returned True.
 
     ```python
