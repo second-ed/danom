@@ -23,6 +23,7 @@ class Result[T, U](ABC):
         """Unit method. Given an item of type `T` return `Ok(T)`
 
         ```python
+        >>> from danom import Err, Ok, Result
         >>> Result.unit(0) == Ok(inner=0)
         >>> Ok.unit(0) == Ok(inner=0)
         >>> Err.unit(0) == Ok(inner=0)
@@ -32,10 +33,11 @@ class Result[T, U](ABC):
 
     @abstractmethod
     def is_ok(self) -> bool:
-        """Returns True if the result type is Ok.
-        Returns False if the result type is Err.
+        """Returns `True` if the result type is `Ok`.
+        Returns `False` if the result type is `Err`.
 
         ```python
+        >>> from danom import Err, Ok
         >>> Ok().is_ok() == True
         >>> Err().is_ok() == False
         ```
@@ -48,6 +50,7 @@ class Result[T, U](ABC):
         Given an `Err` will return self.
 
         ```python
+        >>> from danom import Err, Ok
         >>> Ok(1).map(add_one) == Ok(2)
         >>> Err(error=TypeError()).map(add_one) == Err(error=TypeError())
         ```
@@ -59,6 +62,7 @@ class Result[T, U](ABC):
         """Pipe another function that returns a monad. For `Err` will return original error.
 
         ```python
+        >>> from danom import Err, Ok
         >>> Ok(1).and_then(add_one) == Ok(2)
         >>> Ok(1).and_then(raise_err) == Err(error=TypeError())
         >>> Err(error=TypeError()).and_then(add_one) == Err(error=TypeError())
@@ -72,6 +76,7 @@ class Result[T, U](ABC):
         """Unwrap the `Ok` monad and get the inner value.
         Unwrap the `Err` monad will raise the inner error.
         ```python
+        >>> from danom import Err, Ok
         >>> Ok().unwrap() == None
         >>> Ok(1).unwrap() == 1
         >>> Ok("ok").unwrap() == 'ok'
@@ -82,11 +87,12 @@ class Result[T, U](ABC):
 
     @abstractmethod
     def match(
-        self, if_ok_func: Callable[[T], Result], _if_err_func: Callable[[T], Result]
+        self, if_ok_func: Callable[[T], Result], if_err_func: Callable[[T], Result]
     ) -> Result:
-        """Map Ok func to Ok and Err func to Err
+        """Map `ok_func` to `Ok` and `err_func` to `Err`
 
         ```python
+        >>> from danom import Err, Ok
         >>> Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
         >>> Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
         >>> Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
