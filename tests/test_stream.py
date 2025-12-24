@@ -5,6 +5,8 @@ import pytest
 from src.danom import Stream
 from tests.conftest import (
     REPO_ROOT,
+    AsyncValueLogger,
+    ValueLogger,
     add,
     add_one,
     async_is_file,
@@ -97,3 +99,27 @@ async def test_async_collect_no_fns():
         Path(f"{REPO_ROOT}/tests/mock_data/file_b.py"),
         Path(f"{REPO_ROOT}/tests/mock_data/file_c.py"),
     )
+
+
+def test_tap():
+    val_logger = ValueLogger()
+    val_logger_2 = ValueLogger()
+
+    assert Stream.from_iterable(range(4)).tap(val_logger, val_logger_2).collect() == (0, 1, 2, 3)
+    assert sorted(val_logger.values) == [0, 1, 2, 3]
+    assert sorted(val_logger_2.values) == [0, 1, 2, 3]
+
+
+@pytest.mark.asyncio
+async def test_async_tap():
+    val_logger = AsyncValueLogger()
+    val_logger_2 = AsyncValueLogger()
+
+    assert await Stream.from_iterable(range(4)).tap(val_logger, val_logger_2).async_collect() == (
+        0,
+        1,
+        2,
+        3,
+    )
+    assert sorted(val_logger.values) == [0, 1, 2, 3]
+    assert sorted(val_logger_2.values) == [0, 1, 2, 3]

@@ -51,6 +51,11 @@ def safe_add(a: int, b: int) -> Result[int, Exception]:
 
 
 @safe
+def safe_add_one[T](x: T) -> T:
+    return x + 1
+
+
+@safe
 def safe_raise_type_error(_a: Any) -> Result[None, Exception]:  # noqa: ANN401
     raise TypeError
 
@@ -72,3 +77,19 @@ class Adder:
     @safe_method
     def cls_raises(self, *_args: tuple, **_kwargs: dict) -> None:
         raise ValueError
+
+
+class ValueLogger:
+    def __init__(self) -> None:
+        self.values = []
+
+    def __call__[T](self, value: T) -> None:
+        self.values.append(value)
+
+
+class AsyncValueLogger:
+    def __init__(self) -> None:
+        self.values = set()
+
+    async def __call__[T](self, value: T) -> None:
+        self.values.add(value)

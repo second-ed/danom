@@ -1,18 +1,20 @@
 import functools
 from collections.abc import Callable
 from typing import (
+    ParamSpec,
     Self,
 )
 
-from danom._err import Err
-from danom._ok import Ok
-from danom._result import P, Result
+from danom._result import Err, Ok, Result
+
+P = ParamSpec("P")
 
 
 def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     ```python
+    >>> from danom import safe
     >>> @safe
     ... def add_one(a: int) -> int:
     ...     return a + 1
@@ -35,6 +37,7 @@ def safe_method[T, U, E](func: Callable[[T], U]) -> Callable[[T], Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
     ```python
+    >>> from danom import safe_method
     >>> class Adder:
     ...     def __init__(self, result: int = 0) -> None:
     ...         self.result = result

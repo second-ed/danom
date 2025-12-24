@@ -19,6 +19,7 @@ def new_type(  # noqa: ANN202
     """Create a NewType based on another type.
 
     ```python
+    >>> from danom import new_type
     >>> def is_positive(value):
     ...     return value >= 0
 
@@ -35,6 +36,7 @@ def new_type(  # noqa: ANN202
     The methods of the given `base_type` will be forwarded to the specialised type.
     Alternatively the map method can be used to return a new type instance with the transformation.
     ```python
+    >>> from danom import new_type
     >>> def has_len(email: str) -> bool:
     ... return len(email) > 0
 
