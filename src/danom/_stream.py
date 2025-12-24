@@ -60,7 +60,6 @@ class Stream(_BaseStream):
     Take this imperative pipeline of operations, it iterates once over the data, skipping the value if it fails one of the filter checks:
 
     ```python
-        >>> from danom import Stream
     >>> res = []
     ...
     >>> for x in range(1_000_000):
@@ -90,7 +89,6 @@ class Stream(_BaseStream):
 
     After a bit of experience with python you might use list comprehensions, however this is arguably _less_ clear and iterates multiple times over the same data
     ```python
-        >>> from danom import Stream
     >>> mul_three = [triple(x) for x in range(1_000_000)]
     >>> gt_ten = [x for x in mul_three if is_gt_ten(x)]
     >>> sub_two = [min_two(x) for x in gt_ten]
@@ -109,7 +107,7 @@ class Stream(_BaseStream):
 
     Using a `Stream` results in this:
     ```python
-        >>> from danom import Stream
+    >>> from danom import Stream
     >>> (
     ...     Stream.from_iterable(range(1_000_000))
     ...     .map(triple)

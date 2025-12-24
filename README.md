@@ -15,7 +15,6 @@ Readability counts, abstracting common operations helps reduce cognitive complex
 Take this imperative pipeline of operations, it iterates once over the data, skipping the value if it fails one of the filter checks:
 
 ```python
->>> from danom import Stream
 >>> res = []
 ...
 >>> for x in range(1_000_000):
@@ -45,7 +44,6 @@ keyword breakdown: `{'for': 1, 'in': 1, 'if': 3, 'not': 3, 'continue': 3}`
 
 After a bit of experience with python you might use list comprehensions, however this is arguably _less_ clear and iterates multiple times over the same data
 ```python
->>> from danom import Stream
 >>> mul_three = [triple(x) for x in range(1_000_000)]
 >>> gt_ten = [x for x in mul_three if is_gt_ten(x)]
 >>> sub_two = [min_two(x) for x in gt_ten]
