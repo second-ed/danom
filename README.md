@@ -559,6 +559,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── __init__.py
 │   ├── conftest.py
 │   ├── test_api.py
+│   ├── test_monad_laws.py
 │   ├── test_new_type.py
 │   ├── test_result.py
 │   ├── test_safe.py

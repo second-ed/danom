@@ -14,3 +14,4 @@ scrap/
 .DS_Store
 .benchmarks/
 .codspeed/
+.hypothesis/

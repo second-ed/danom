@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import asyncio
 from pathlib import Path
 from typing import Any, Self
 
 from src.danom import safe, safe_method
-from src.danom._result import Result
+from src.danom._result import Err, Ok, Result
 
 REPO_ROOT = Path(__file__).parents[1]
 
@@ -50,9 +52,17 @@ def safe_add(a: int, b: int) -> Result[int, Exception]:
     return a + b
 
 
+def safe_add_one(x: float | str) -> Result[float | str, TypeError]:
+    if isinstance(x, (int, float)):
+        return Ok(x + 1)
+    if isinstance(x, str):
+        return Ok(x + "1")
+    return Err(TypeError(f"unsupported type: {type(x)}"))
+
+
 @safe
-def safe_add_one[T](x: T) -> T:
-    return x + 1
+def safe_double[T](x: T) -> T:
+    return x * 2
 
 
 @safe

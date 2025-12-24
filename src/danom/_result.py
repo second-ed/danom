@@ -104,7 +104,7 @@ class Result[T, U](ABC):
         return cls
 
 
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, hash=True)
 class Ok[T, U](Result):
     inner: Any = attrs.field(default=None)
 
@@ -126,7 +126,7 @@ class Ok[T, U](Result):
         return if_ok_func(self.inner)
 
 
-@attrs.define(frozen=True)
+@attrs.define(frozen=True, hash=True)
 class Err[T, U, E](Result):
     error: E | Exception | None = attrs.field(default=None)
     input_args: tuple[T] = attrs.field(default=None, repr=False)
@@ -170,3 +170,13 @@ class Err[T, U, E](Result):
         self, _if_ok_func: Callable[[T], Result], if_err_func: Callable[[T], Result]
     ) -> Result:
         return if_err_func(self.error)
+
+    def __eq__(self, other: Err) -> bool:
+        return all(
+            (
+                isinstance(other, Err),
+                type(self.error) is type(other.error),
+                str(self.error) == str(other.error),
+                self.input_args == other.input_args,
+            )
+        )
