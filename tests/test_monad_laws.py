@@ -2,12 +2,13 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from src.danom import Err, Result
-from tests.conftest import safe_add, safe_add_one, safe_double
+from tests.conftest import safe_add_one, safe_double
 
-
-def test_monadic_left_identity():
-    assert Result.unit(0).and_then(safe_add, b=1) == safe_add(0, 1)
-
+inners = st.one_of(
+    st.integers().map(Result.unit),
+    st.text().map(Result.unit),
+    st.floats(allow_nan=False, allow_infinity=False).map(Result.unit),
+)
 
 results = st.one_of(
     st.integers().map(Result.unit),
@@ -17,12 +18,17 @@ results = st.one_of(
 )
 
 
+safe_fns = st.sampled_from([safe_double, safe_add_one])
+
+
+@given(inner=inners, f=safe_fns)
+def test_monadic_left_identity(inner, f):
+    assert Result.unit(inner).and_then(f) == f(inner)
+
+
 @given(results)
 def test_monadic_right_identity(monad):
     assert monad.and_then(Result.unit) == monad
-
-
-safe_fns = st.sampled_from([safe_double, safe_add_one])
 
 
 @given(monad=results, f=safe_fns, g=safe_fns)
