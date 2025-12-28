@@ -53,35 +53,39 @@ class _BaseStream(ABC):
 class Stream(_BaseStream):
     """An immutable lazy iterator with functional operations.
 
-    #### Why bother?
+    Why bother?
+    -----------
+
     Readability counts, abstracting common operations helps reduce cognitive complexity when reading code.
 
-    #### Comparison
+    Comparison
+    ----------
+
     Take this imperative pipeline of operations, it iterates once over the data, skipping the value if it fails one of the filter checks:
 
-    ```python
-        >>> from danom import Stream
-    >>> res = []
-    ...
-    >>> for x in range(1_000_000):
-    ...     item = triple(x)
-    ...
-    ...     if not is_gt_ten(item):
-    ...         continue
-    ...
-    ...     item = min_two(item)
-    ...
-    ...     if not is_even_num(item):
-    ...         continue
-    ...
-    ...     item = square(item)
-    ...
-    ...     if not is_lt_400(item):
-    ...         continue
-    ...
-    ...     res.append(item)
-    >>> [100, 256]
-    ```
+    .. code-block:: python
+
+        res = []
+
+        for x in range(1_000_000):
+            item = triple(x)
+
+            if not is_gt_ten(item):
+                continue
+
+            item = min_two(item)
+
+            if not is_even_num(item):
+                continue
+
+            item = square(item)
+
+            if not is_lt_400(item):
+                continue
+
+            res.append(item)
+        [100, 256]
+
     number of tokens: `90`
 
     number of keywords: `11`
@@ -89,16 +93,17 @@ class Stream(_BaseStream):
     keyword breakdown: `{'for': 1, 'in': 1, 'if': 3, 'not': 3, 'continue': 3}`
 
     After a bit of experience with python you might use list comprehensions, however this is arguably _less_ clear and iterates multiple times over the same data
-    ```python
-        >>> from danom import Stream
-    >>> mul_three = [triple(x) for x in range(1_000_000)]
-    >>> gt_ten = [x for x in mul_three if is_gt_ten(x)]
-    >>> sub_two = [min_two(x) for x in gt_ten]
-    >>> is_even = [x for x in sub_two if is_even_num(x)]
-    >>> squared = [square(x) for x in is_even]
-    >>> lt_400 = [x for x in squared if is_lt_400(x)]
-    >>> [100, 256]
-    ```
+
+    .. code-block:: python
+
+        mul_three = [triple(x) for x in range(1_000_000)]
+        gt_ten = [x for x in mul_three if is_gt_ten(x)]
+        sub_two = [min_two(x) for x in gt_ten]
+        is_even = [x for x in sub_two if is_even_num(x)]
+        squared = [square(x) for x in is_even]
+        lt_400 = [x for x in squared if is_lt_400(x)]
+        [100, 256]
+
     number of tokens: `92`
 
     number of keywords: `15`
@@ -108,20 +113,23 @@ class Stream(_BaseStream):
     This still has a lot of tokens that the developer has to read to understand the code. The extra keywords add noise that cloud the actual transformations.
 
     Using a `Stream` results in this:
-    ```python
-        >>> from danom import Stream
-    >>> (
-    ...     Stream.from_iterable(range(1_000_000))
-    ...     .map(triple)
-    ...     .filter(is_gt_ten)
-    ...     .map(min_two)
-    ...     .filter(is_even_num)
-    ...     .map(square)
-    ...     .filter(is_lt_400)
-    ...     .collect()
-    ... )
-    >>> (100, 256)
-    ```
+
+    .. code-block:: python
+
+        from danom import Stream
+
+        (
+            Stream.from_iterable(range(1_000_000))
+            .map(triple)
+            .filter(is_gt_ten)
+            .map(min_two)
+            .filter(is_even_num)
+            .map(square)
+            .filter(is_lt_400)
+            .collect()
+        )
+        (100, 256)
+
     number of tokens: `60`
 
     number of keywords: `0`
@@ -135,10 +143,12 @@ class Stream(_BaseStream):
     def from_iterable(cls, it: Iterable) -> Self:
         """This is the recommended way of creating a `Stream` object.
 
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
+
         """
         if not isinstance(it, Iterable):
             it = [it]
@@ -147,28 +157,35 @@ class Stream(_BaseStream):
     def map[T, U](self, *fns: Callable[[T], U]) -> Self:
         """Map a function to the elements in the `Stream`. Will return a new `Stream` with the modified sequence.
 
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (1, 2, 3, 4)
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (1, 2, 3, 4)
 
         This can also be mixed with `safe` functions:
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (Ok(inner=1), Ok(inner=2), Ok(inner=3), Ok(inner=4))
 
-        >>> @safe
-        ... def two_div_value(x: float) -> float:
-        ...     return 2 / x
+        .. code-block:: python
 
-        >>> Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(inner=2.0), Ok(inner=1.0), Ok(inner=0.5))
-        ```
+            from danom import Stream
+
+            Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (Ok(inner=1), Ok(inner=2), Ok(inner=3), Ok(inner=4))
+
+            @safe
+            def two_div_value(x: float) -> float:
+                return 2 / x
+
+            Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(inner=2.0), Ok(inner=1.0), Ok(inner=0.5))
+
 
         Simple functions can be passed in sequence to compose more complex transformations
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable(range(5)).map(mul_two, add_one).collect() == (1, 3, 5, 7, 9)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable(range(5)).map(mul_two, add_one).collect() == (1, 3, 5, 7, 9)
+
         """
         plan = (*self.ops, *tuple((_OpType.MAP, fn) for fn in fns))
         return Stream(seq=self.seq, ops=plan)
@@ -176,16 +193,21 @@ class Stream(_BaseStream):
     def filter[T](self, *fns: Callable[[T], bool]) -> Self:
         """Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
 
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
+
 
         Simple functions can be passed in sequence to compose more complex filters
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
+
         """
         plan = (*self.ops, *tuple((_OpType.FILTER, fn) for fn in fns))
         return Stream(seq=self.seq, ops=plan)
@@ -195,33 +217,40 @@ class Stream(_BaseStream):
 
         The value passed to the tap function will be deep-copied to avoid any modification to the `Stream` item for downstream consumers.
 
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value).collect() == (0, 1, 2, 3)
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable([0, 1, 2, 3]).tap(log_value).collect() == (0, 1, 2, 3)
+
 
         Simple functions can be passed in sequence for multiple `tap` operations
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([0, 1, 2, 3]).tap(log_value, print_value).collect() == (0, 1, 2, 3)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable([0, 1, 2, 3]).tap(log_value, print_value).collect() == (0, 1, 2, 3)
+
 
         `tap` is useful for logging and similar actions without effecting the individual items, in this example eligible and dormant users are logged using `tap`:
 
-        ```python
-        >>> from danom import Stream
-        >>> active_users, inactive_users = (
-        ...     Stream.from_iterable(users).map(parse_user_objects).partition(inactive_users)
-        ... )
-        ...
-        >>> active_users.filter(eligible_for_promotion).tap(log_eligible_users).map(
-        ...     construct_promo_email, send_with_confirmation
-        ... ).collect()
-        ...
-        >>> inactive_users.tap(log_inactive_users).map(
-        ...     create_dormant_user_entry, add_to_dormant_table
-        ... ).collect()
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            active_users, inactive_users = (
+                Stream.from_iterable(users).map(parse_user_objects).partition(inactive_users)
+            )
+
+            active_users.filter(eligible_for_promotion).tap(log_eligible_users).map(
+                construct_promo_email, send_with_confirmation
+            ).collect()
+
+            inactive_users.tap(log_inactive_users).map(
+                create_dormant_user_entry, add_to_dormant_table
+            ).collect()
+
         """
         plan = (*self.ops, *tuple((_OpType.TAP, fn) for fn in fns))
         return Stream(seq=self.seq, ops=plan)
@@ -232,20 +261,26 @@ class Stream(_BaseStream):
         """Similar to `filter` except splits the True and False values. Will return a two new `Stream` with the partitioned sequences.
 
         Each partition is independently replayable.
-        ```python
-        >>> from danom import Stream
-        >>> part1, part2 = Stream.from_iterable([0, 1, 2, 3]).partition(lambda x: x % 2 == 0)
-        >>> part1.collect() == (0, 2)
-        >>> part2.collect() == (1, 3)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            part1, part2 = Stream.from_iterable([0, 1, 2, 3]).partition(lambda x: x % 2 == 0)
+            part1.collect() == (0, 2)
+            part2.collect() == (1, 3)
+
 
         As `partition` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
-        >>> part1.map(add_one).par_collect() == (4, 7, 10)
-        >>> part2.collect() == (2, 4, 5, 7, 8, 10, 11)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
+            part1.map(add_one).par_collect() == (4, 7, 10)
+            part2.collect() == (2, 4, 5, 7, 8, 10, 11)
+
         """
         # have to materialise to be able to replay each side independently
         if workers > 1:
@@ -262,19 +297,24 @@ class Stream(_BaseStream):
     ) -> U:
         """Fold the results into a single value. `fold` triggers an action so will incur a `collect`.
 
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
-        >>> Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
-        >>> Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
+            Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
+            Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
+
 
         As `fold` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
         This will only effect the `collect` that is used to create the iterable to reduce, not the `fold` operation itself.
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable([1, 2, 3, 4]).map(some_expensive_fn).fold(0, add, workers=4, use_threads=False)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable([1, 2, 3, 4]).map(some_expensive_fn).fold(0, add, workers=4, use_threads=False)
+
         """
         if workers > 1:
             return reduce(fn, self.par_collect(workers=workers, use_threads=use_threads), initial)
@@ -283,11 +323,13 @@ class Stream(_BaseStream):
     def collect(self) -> tuple:
         """Materialise the sequence from the `Stream`.
 
-        ```python
-        >>> from danom import Stream
-        >>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
-        >>> stream.collect() == (1, 2, 3, 4)
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+            stream.collect() == (1, 2, 3, 4)
+
         """
         return tuple(
             elem for x in self.seq if (elem := _apply_fns(x, self.ops)) != _Nothing.NOTHING
@@ -296,27 +338,32 @@ class Stream(_BaseStream):
     def par_collect(self, workers: int = 4, *, use_threads: bool = False) -> tuple:
         """Materialise the sequence from the `Stream` in parallel.
 
-        ```python
-        >>> from danom import Stream
-        >>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
-        >>> stream.par_collect() == (1, 2, 3, 4)
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+            stream.par_collect() == (1, 2, 3, 4)
 
         Use the `workers` arg to select the number of workers to use. Use `-1` to use all available processors (except 1).
         Defaults to `4`.
-        ```python
-        >>> from danom import Stream
-        >>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
-        >>> stream.par_collect(workers=-1) == (1, 2, 3, 4)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+            stream.par_collect(workers=-1) == (1, 2, 3, 4)
 
         For smaller I/O bound tasks use the `use_threads` flag as True.
         If False the processing will use `ProcessPoolExecutor` else it will use `ThreadPoolExecutor`.
-        ```python
-        >>> from danom import Stream
-        >>> stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
-        >>> stream.par_collect(use_threads=True) == (1, 2, 3, 4)
-        ```
+
+        .. code-block:: python
+
+            from danom import Stream
+
+            stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
+            stream.par_collect(use_threads=True) == (1, 2, 3, 4)
 
         Note that all operations should be pickle-able, for that reason `Stream` does not support lambdas or closures.
         """
@@ -333,17 +380,20 @@ class Stream(_BaseStream):
     async def async_collect(self) -> tuple:
         """Async version of collect. Note that all functions in the stream should be `Awaitable`.
 
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable(file_paths).map(async_read_files).async_collect()
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable(file_paths).map(async_read_files).async_collect()
 
         If there are no operations in the `Stream` then this will act as a normal collect.
 
-        ```python
-        >>> from danom import Stream
-        >>> Stream.from_iterable(file_paths).async_collect()
-        ```
+        .. code-block:: python
+
+            from danom import Stream
+
+            Stream.from_iterable(file_paths).async_collect()
+
         """
         if not self.ops:
             return self.collect()

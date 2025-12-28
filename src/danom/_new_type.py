@@ -18,32 +18,36 @@ def new_type(  # noqa: ANN202
 ):
     """Create a NewType based on another type.
 
-    ```python
-    >>> from danom import new_type
-    >>> def is_positive(value):
-    ...     return value >= 0
+    .. code-block:: python
 
-    >>> ValidBalance = new_type("ValidBalance", float, validators=[is_positive])
-    >>> ValidBalance("20") == ValidBalance(inner=20.0)
-    ```
+        from danom import new_type
+
+        def is_positive(value):
+            return value >= 0
+
+        ValidBalance = new_type("ValidBalance", float, validators=[is_positive])
+        ValidBalance("20") == ValidBalance(inner=20.0)
 
     Unlike an inherited class, the type will not return `True` for an isinstance check.
-    ```python
-    >>> isinstance(ValidBalance(20.0), ValidBalance) == True
-    >>> isinstance(ValidBalance(20.0), float) == False
-    ```
+
+    .. code-block:: python
+
+        isinstance(ValidBalance(20.0), ValidBalance) == True
+        isinstance(ValidBalance(20.0), float) == False
 
     The methods of the given `base_type` will be forwarded to the specialised type.
     Alternatively the map method can be used to return a new type instance with the transformation.
-    ```python
-    >>> from danom import new_type
-    >>> def has_len(email: str) -> bool:
-    ... return len(email) > 0
 
-    >>> Email = new_type("Email", str, validators=[has_len])
-    >>> Email("some_email@domain.com").upper() == "SOME_EMAIL@DOMAIN.COM"
-    >>> Email("some_email@domain.com").map(str.upper) == Email(inner='SOME_EMAIL@DOMAIN.COM')
-    ```
+    .. code-block:: python
+
+        from danom import new_type
+
+        def has_len(email: str) -> bool:
+        return len(email) > 0
+
+        Email = new_type("Email", str, validators=[has_len])
+        Email("some_email@domain.com").upper() == "SOME_EMAIL@DOMAIN.COM"
+        Email("some_email@domain.com").map(str.upper) == Email(inner='SOME_EMAIL@DOMAIN.COM')
     """
     kwargs = _callables_to_kwargs(base_type, validators, converters)
 
