@@ -18,7 +18,11 @@ clean:
 	@uv run $(SPHINXBUILD) -M clean "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O);
 
 deploy:
-	cd docs-build && git worktree add -f html gh-pages || true
+	@if [ -d "docs-build/html" ]; then \
+	    echo "Removing existing worktree..."; \
+	    git worktree remove -f docs-build/html; \
+	fi
+	@cd docs-build && git worktree add -f html gh-pages || true
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
