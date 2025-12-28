@@ -31,6 +31,7 @@ dev = [
     "pytest-cov>=7.0.0",
     "repo-mapper-rs>=0.3.0",
     "ruff>=0.14.6",
+    "sphinx>=9.0.4",
 ]
 
 [tool.coverage.run]

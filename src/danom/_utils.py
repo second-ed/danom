@@ -20,13 +20,14 @@ def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
 
     The functions will be called in sequence with the result of one being used as the input for the next.
 
-    ```python
-    >>> from danom import compose
-    >>> add_two = compose(add_one, add_one)
-    >>> add_two(0) == 2
-    >>> add_two_is_even = compose(add_one, add_one, is_even)
-    >>> add_two_is_even(0) == True
-    ```
+    .. code-block:: python
+
+        from danom import compose
+
+        add_two = compose(add_one, add_one)
+        add_two(0) == 2
+        add_two_is_even = compose(add_one, add_one, is_even)
+        add_two_is_even(0) == True
     """
     return _Compose(fns)
 
@@ -42,11 +43,12 @@ class _AllOf[T]:
 def all_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
     """True if all of the given functions return True.
 
-    ```python
-    >>> from danom import all_of
-    >>> is_valid_user = all_of(is_subscribed, is_active, has_2fa)
-    >>> is_valid_user(user) == True
-    ```
+    .. code-block:: python
+
+        from danom import all_of
+
+        is_valid_user = all_of(is_subscribed, is_active, has_2fa)
+        is_valid_user(user) == True
     """
     return _AllOf(fns)
 
@@ -62,11 +64,12 @@ class _AnyOf[T]:
 def any_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
     """True if any of the given functions return True.
 
-    ```python
-    >>> from danom import any_of
-    >>> is_eligible = any_of(has_coupon, is_vip, is_staff)
-    >>> is_eligible(user) == True
-    ```
+    .. code-block:: python
+
+        from danom import any_of
+
+        is_eligible = any_of(has_coupon, is_vip, is_staff)
+        is_eligible(user) == True
     """
     return _AnyOf(fns)
 
@@ -74,11 +77,12 @@ def any_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
 def none_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
     """True if none of the given functions return True.
 
-    ```python
-    >>> from danom import none_of
-    >>> is_valid = none_of(is_empty, exceeds_size_limit, contains_unsupported_format)
-    >>> is_valid(submission) == True
-    ```
+    .. code-block:: python
+
+        from danom import none_of
+
+        is_valid = none_of(is_empty, exceeds_size_limit, contains_unsupported_format)
+        is_valid(submission) == True
     """
     return compose(_AnyOf(fns), not_)
 
@@ -86,12 +90,13 @@ def none_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
 def identity[T](x: T) -> T:
     """Basic identity function.
 
-    ```python
-    >>> from danom import identity
-    >>> identity("abc") == "abc"
-    >>> identity(1) == 1
-    >>> identity(ComplexDataType(a=1, b=2, c=3)) == ComplexDataType(a=1, b=2, c=3)
-    ```
+    .. code-block:: python
+
+        from danom import identity
+
+        identity("abc") == "abc"
+        identity(1) == 1
+        identity(ComplexDataType(a=1, b=2, c=3)) == ComplexDataType(a=1, b=2, c=3)
     """
     return x
 
@@ -99,10 +104,11 @@ def identity[T](x: T) -> T:
 def invert[T](func: Callable[[T], bool]) -> Callable[[T], bool]:
     """Invert a boolean function so it returns False where it would've returned True.
 
-    ```python
-    >>> from danom import invert
-    >>> invert(has_len)("abc") == False
-    >>> invert(has_len)("") == True
-    ```
+    .. code-block:: python
+
+        from danom import invert
+
+        invert(has_len)("abc") == False
+        invert(has_len)("") == True
     """
     return compose(func, not_)

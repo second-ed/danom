@@ -13,14 +13,15 @@ P = ParamSpec("P")
 def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
-    ```python
-    >>> from danom import safe
-    >>> @safe
-    ... def add_one(a: int) -> int:
-    ...     return a + 1
+    .. code-block:: python
 
-    >>> add_one(1) == Ok(inner=2)
-    ```
+        from danom import safe
+
+        @safe
+        def add_one(a: int) -> int:
+            return a + 1
+
+        add_one(1) == Ok(inner=2)
     """
 
     @functools.wraps(func)
@@ -36,18 +37,19 @@ def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:
 def safe_method[T, U, E](func: Callable[[T], U]) -> Callable[[T], Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
-    ```python
-    >>> from danom import safe_method
-    >>> class Adder:
-    ...     def __init__(self, result: int = 0) -> None:
-    ...         self.result = result
-    ...
-    ...     @safe_method
-    ...     def add_one(self, a: int) -> int:
-    ...         return self.result + 1
+    .. code-block:: python
 
-    >>> Adder.add_one(1) == Ok(inner=1)
-    ```
+        from danom import safe_method
+
+        class Adder:
+            def __init__(self, result: int = 0) -> None:
+                self.result = result
+
+            @safe_method
+            def add_one(self, a: int) -> int:
+                return self.result + 1
+
+        Adder.add_one(1) == Ok(inner=1)
     """
 
     @functools.wraps(func)

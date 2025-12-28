@@ -26,7 +26,7 @@ def double[T](x: T) -> T:
     return x * 2
 
 
-def divisible_by_3[T](x: float) -> bool:
+def divisible_by_3(x: float) -> bool:
     return x % 3 == 0
 
 
