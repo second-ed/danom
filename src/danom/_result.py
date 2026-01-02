@@ -19,8 +19,8 @@ E_co = TypeVar("E_co", covariant=True)
 P = ParamSpec("P")
 
 Mappable = Callable[P, U_co]
-ReturnedResult = TypeVar("ReturnedResult", bound="Result[U_co, E_co]")
-Bindable = Callable[P, ReturnedResult]
+ResultReturnType = TypeVar("ResultReturnType", bound="Result[U_co, E_co]")
+Bindable = Callable[P, ResultReturnType]
 
 
 @attrs.define(frozen=True)
@@ -58,7 +58,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def map(self, func: Mappable, **kwargs: P.kwargs) -> ReturnedResult:
+    def map(self, func: Mappable, **kwargs: P.kwargs) -> ResultReturnType:
         """Pipe a pure function and wrap the return value with `Ok`.
         Given an `Err` will return self.
 
@@ -72,7 +72,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ReturnedResult:
+    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
         """Pipe another function that returns a monad. For `Err` will return original error.
 
         .. code-block:: python
@@ -103,7 +103,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ReturnedResult:
+    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ResultReturnType:
         """Map `ok_func` to `Ok` and `err_func` to `Err`
 
         .. code-block:: python
@@ -130,13 +130,13 @@ class Ok(Result):
     def map(self, func: Mappable, **kwargs: P.kwargs) -> Ok[U_co]:
         return Ok(func(self.inner, **kwargs))
 
-    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ReturnedResult:
+    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
         return func(self.inner, **kwargs)
 
     def unwrap(self) -> T_co:
         return self.inner
 
-    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ReturnedResult:  # noqa: ARG002
+    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ResultReturnType:  # noqa: ARG002
         return if_ok_func(self.inner)
 
 
@@ -184,7 +184,7 @@ class Err(Result):
             raise self.error
         raise ValueError(f"Err does not have a caught error to raise: {self.error = }")
 
-    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ReturnedResult:  # noqa: ARG002
+    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ResultReturnType:  # noqa: ARG002
         return if_err_func(self.error)
 
     def __eq__(self, other: object) -> bool:
