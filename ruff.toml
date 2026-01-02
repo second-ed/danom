@@ -32,6 +32,7 @@ ignore = [
     "PT011",   # Don't care about exception messages
     "ANN"      # Who typehints their tests?
 ]
+"conf.py" = ["ALL"]
 [format]
 quote-style = "double"
 indent-style = "space"

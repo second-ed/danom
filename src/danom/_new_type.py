@@ -96,7 +96,7 @@ def _callables_to_kwargs(
 
 
 def _validate_bool_func[T](
-    bool_fn: Callable[[...], bool],
+    bool_fn: Callable[..., bool],
 ) -> Callable[[attrs.AttrsInstance, attrs.Attribute, T], None]:
     if not isinstance(bool_fn, Callable):
         raise TypeError("provided boolean function must be callable")
@@ -110,7 +110,7 @@ def _validate_bool_func[T](
     return wrapper
 
 
-def _to_list(value: Callable | Sequence[Callable]) -> list[Callable]:
+def _to_list(value: Callable | Sequence[Callable] | None) -> list[Callable]:
     if value is None:
         return []
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
