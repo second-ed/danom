@@ -5,6 +5,7 @@ from collections.abc import Callable
 from types import TracebackType
 from typing import (
     Any,
+    Generic,
     Literal,
     ParamSpec,
     Self,
@@ -15,7 +16,7 @@ import attrs
 
 T_co = TypeVar("T_co", covariant=True)
 U_co = TypeVar("U_co", covariant=True)
-E_co = TypeVar("E_co", covariant=True)
+E_co = TypeVar("E_co", bound=object, covariant=True)
 P = ParamSpec("P")
 
 Mappable = Callable[P, U_co]
@@ -121,7 +122,7 @@ class Result(ABC):
 
 
 @attrs.define(frozen=True, hash=True)
-class Ok(Result):
+class Ok(Generic[T_co], Result):
     inner: Any = attrs.field(default=None)
 
     def is_ok(self) -> Literal[True]:
@@ -145,8 +146,8 @@ SafeMethodArgs = tuple[object, tuple[Any, ...], dict[str, Any]]
 
 
 @attrs.define(frozen=True)
-class Err(Result):
-    error: E_co | Exception | None = attrs.field(default=None)
+class Err(Generic[E_co], Result):
+    error: E_co | Exception = attrs.field(default=None)
     input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(default=(), repr=False)
     details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)
 
