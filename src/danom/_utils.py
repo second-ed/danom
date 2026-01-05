@@ -97,7 +97,7 @@ def none_of(*fns: Filterable) -> Filterable:
     return compose(_AnyOf(fns), not_)
 
 
-def identity(x: T_co) -> T_co:
+def identity[T_co](x: T_co) -> T_co:
     """Basic identity function.
 
     .. code-block:: python

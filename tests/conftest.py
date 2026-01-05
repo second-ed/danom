@@ -2,17 +2,15 @@ from __future__ import annotations
 
 import asyncio
 from pathlib import Path
-from typing import Any, Self, TypeVar
+from typing import Any, Self
 
 from src.danom import safe, safe_method
 from src.danom._result import Err, Ok, Result
 
 REPO_ROOT = Path(__file__).parents[1]
 
-Primitive = TypeVar("Primitive", str, float, int)
 
-
-def add(a: Primitive, b: Primitive) -> Primitive:
+def add[T: (str, float, int)](a: T, b: T) -> T:
     return a + b  # ty: ignore[unsupported-operator]
 
 
@@ -24,7 +22,7 @@ def add_one(x: float) -> float:
     return x + 1
 
 
-def double(x: Primitive) -> Primitive:
+def double[T: (str, float, int)](x: T) -> T:
     return x * 2  # ty: ignore[unsupported-operator]
 
 
@@ -63,7 +61,7 @@ def safe_add_one(x: float | str) -> Result[float | str, TypeError]:
 
 
 @safe
-def safe_double(x: Primitive) -> Primitive:
+def safe_double[T: (str, float, int)](x: T) -> T:
     return x * 2  # ty: ignore[unsupported-operator]
 
 

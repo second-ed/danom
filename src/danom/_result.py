@@ -5,7 +5,6 @@ from collections.abc import Callable
 from types import TracebackType
 from typing import (
     Any,
-    Generic,
     Literal,
     ParamSpec,
     Self,
@@ -122,7 +121,7 @@ class Result(ABC):
 
 
 @attrs.define(frozen=True, hash=True)
-class Ok(Generic[T_co], Result):
+class Ok[T_co](Result):
     inner: Any = attrs.field(default=None)
 
     def is_ok(self) -> Literal[True]:
@@ -146,7 +145,7 @@ SafeMethodArgs = tuple[object, tuple[Any, ...], dict[str, Any]]
 
 
 @attrs.define(frozen=True)
-class Err(Generic[E_co], Result):
+class Err[E_co](Result):
     error: E_co | Exception = attrs.field(default=None)
     input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(default=(), repr=False)
     details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)

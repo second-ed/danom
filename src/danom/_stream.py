@@ -8,7 +8,7 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import deepcopy
 from enum import Enum, auto, unique
 from functools import reduce
-from typing import ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar, cast
 
 import attrs
 
@@ -30,7 +30,7 @@ AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 
 @attrs.define(frozen=True)
-class _BaseStream[T](ABC):
+class _BaseStream(ABC):
     seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
     ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
@@ -48,21 +48,21 @@ class _BaseStream[T](ABC):
     def tap(self, *fns: TapFn | AsyncTapFn) -> _BaseStream[T]: ...
 
     @abstractmethod
-    def partition[T](self, fn: FilterFn) -> tuple[_BaseStream[T], _BaseStream[U]]: ...
+    def partition(self, fn: FilterFn) -> tuple[_BaseStream[T], _BaseStream[U]]: ...
 
     @abstractmethod
-    def fold[T, U](
+    def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
-    ) -> U: ...
+    ) -> T: ...
 
     @abstractmethod
-    def collect(self) -> tuple[T, ...]: ...
+    def collect(self) -> tuple[U, ...]: ...
 
     @abstractmethod
     def par_collect(self, workers: int = 4, *, use_threads: bool = False) -> tuple[U, ...]: ...
 
     @abstractmethod
-    async def async_collect(self) -> tuple[Awaitable[T], ...]: ...
+    async def async_collect(self) -> Awaitable[tuple[U, ...]]: ...
 
 
 @attrs.define(frozen=True)
@@ -308,9 +308,9 @@ class Stream(_BaseStream):
             Stream(seq=(x for x in seq_tuple if not fn(x))),
         )
 
-    def fold[T, U](
+    def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
-    ) -> U:
+    ) -> T:
         """Fold the results into a single value. `fold` triggers an action so will incur a `collect`.
 
         .. code-block:: python
@@ -336,7 +336,7 @@ class Stream(_BaseStream):
             return reduce(fn, self.par_collect(workers=workers, use_threads=use_threads), initial)
         return reduce(fn, self.collect(), initial)
 
-    def collect(self) -> tuple[T, ...]:
+    def collect(self) -> tuple[U, ...]:
         """Materialise the sequence from the `Stream`.
 
         .. code-block:: python
@@ -347,8 +347,9 @@ class Stream(_BaseStream):
             stream.collect() == (1, 2, 3, 4)
 
         """
-        return tuple(
-            elem for x in self.seq if (elem := _apply_fns(x, self.ops)) != _Nothing.NOTHING
+        return cast(
+            tuple[U, ...],
+            tuple(elem for x in self.seq if (elem := _apply_fns(x, self.ops)) != _Nothing.NOTHING),
         )
 
     def par_collect(self, workers: int = 4, *, use_threads: bool = False) -> tuple[U, ...]:
@@ -391,9 +392,9 @@ class Stream(_BaseStream):
         with executor_cls(max_workers=workers) as ex:
             res = tuple(ex.map(_apply_fns_worker, ((x, self.ops) for x in self.seq)))
 
-        return tuple(elem for elem in res if elem != _Nothing.NOTHING)
+        return cast(tuple[U, ...], tuple(elem for elem in res if elem != _Nothing.NOTHING))
 
-    async def async_collect(self) -> tuple[Awaitable[T], ...]:
+    async def async_collect(self) -> Awaitable[tuple[U, ...]]:
         """Async version of collect. Note that all functions in the stream should be `Awaitable`.
 
         .. code-block:: python
@@ -412,10 +413,12 @@ class Stream(_BaseStream):
 
         """
         if not self.ops:
-            return self.collect()
+            return cast(Awaitable[tuple[U, ...]], self.collect())
 
         res = await asyncio.gather(*(_async_apply_fns(x, self.ops) for x in self.seq))
-        return tuple(elem for elem in res if elem != _Nothing.NOTHING)
+        return cast(
+            Awaitable[tuple[U, ...]], tuple(elem for elem in res if elem != _Nothing.NOTHING)
+        )
 
 
 @unique
@@ -433,34 +436,32 @@ PlannedOps = tuple[_OpType, StreamFn]
 AsyncPlannedOps = tuple[_OpType, AsyncStreamFn]
 
 
-def _apply_fns_worker[T, U](
+def _apply_fns_worker[T](
     args: tuple[T, tuple[PlannedOps, ...]],
 ) -> T | U | _Nothing:
     elem, ops = args
     return _apply_fns(elem, ops)
 
 
-def _apply_fns[T, U](elem: T, ops: tuple[PlannedOps, ...]) -> U | _Nothing:
+def _apply_fns[T](elem: T, ops: tuple[PlannedOps, ...]) -> T | _Nothing:
     res = elem
     for op, op_fn in ops:
         if op == _OpType.MAP:
-            res = op_fn(res)
-        elif op == _OpType.FILTER and not op_fn(res):
+            res = cast(MapFn[Any, Any], op_fn)(res)
+        elif op == _OpType.FILTER and not cast(FilterFn[Any], op_fn)(res):
             return _Nothing.NOTHING
         elif op == _OpType.TAP:
-            op_fn(deepcopy(res))
+            cast(TapFn[Any], op_fn)(deepcopy(res))
     return res
 
 
-async def _async_apply_fns[T, U](
-    elem: T, ops: tuple[AsyncPlannedOps, ...]
-) -> Awaitable[U] | _Nothing:
+async def _async_apply_fns[T](elem: T, ops: tuple[AsyncPlannedOps, ...]) -> T | _Nothing:
     res = elem
     for op, op_fn in ops:
         if op == _OpType.MAP:
-            res = await op_fn(res)
-        elif op == _OpType.FILTER and not await op_fn(res):
+            res = await cast(AsyncMapFn, op_fn)(res)
+        elif op == _OpType.FILTER and not await cast(AsyncFilterFn, op_fn)(res):
             return _Nothing.NOTHING
         elif op == _OpType.TAP:
-            await op_fn(deepcopy(res))
+            await cast(AsyncTapFn, op_fn)(deepcopy(res))
     return res

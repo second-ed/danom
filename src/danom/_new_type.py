@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Callable, Sequence
-from typing import Self
+from functools import wraps
+from typing import TypeVar
 
 import attrs
 
@@ -72,7 +73,7 @@ def _create_forward_methods(base_type: type) -> dict[str, Callable]:
             continue
 
         def make_forwarder(name: str) -> Callable:
-            def method[T](self: Self, *args: tuple, **kwargs: dict) -> T:
+            def method[T](self, *args: tuple, **kwargs: dict) -> T:  # noqa: ANN001
                 return getattr(self.inner, name)(*args, **kwargs)
 
             method.__name__ = name
@@ -101,6 +102,7 @@ def _validate_bool_func[T](
     if not isinstance(bool_fn, Callable):
         raise TypeError("provided boolean function must be callable")
 
+    @wraps(bool_fn)
     def wrapper(_instance: attrs.AttrsInstance, attribute: attrs.Attribute, value: T) -> None:
         if not bool_fn(value):
             raise ValueError(
@@ -110,7 +112,10 @@ def _validate_bool_func[T](
     return wrapper
 
 
-def _to_list(value: Callable | Sequence[Callable] | None) -> list[Callable]:
+C = TypeVar("C", bound=Callable[..., object])
+
+
+def _to_list(value: C | Sequence[C] | None) -> list[C]:
     if value is None:
         return []
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
