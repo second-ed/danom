@@ -1,16 +1,13 @@
 import functools
 from collections.abc import Callable
-from typing import (
-    ParamSpec,
-    Self,
-)
+from typing import ParamSpec
 
 from danom._result import Err, Ok, Result
 
 P = ParamSpec("P")
 
 
-def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:
+def safe[U, E](func: Callable[..., U]) -> Callable[..., Result[U, E]]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     .. code-block:: python
@@ -25,7 +22,7 @@ def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:
     """
 
     @functools.wraps(func)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result:
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[U, E]:
         try:
             return Ok(func(*args, **kwargs))
         except Exception as e:  # noqa: BLE001
@@ -34,7 +31,7 @@ def safe[T, U](func: Callable[[T], U]) -> Callable[[T], Result]:
     return wrapper
 
 
-def safe_method[T, U, E](func: Callable[[T], U]) -> Callable[[T], Result[U, E]]:
+def safe_method[U, E](func: Callable[..., U]) -> Callable[..., Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
     .. code-block:: python
@@ -53,7 +50,7 @@ def safe_method[T, U, E](func: Callable[[T], U]) -> Callable[[T], Result[U, E]]:
     """
 
     @functools.wraps(func)
-    def wrapper(self: Self, *args: P.args, **kwargs: P.kwargs) -> Result[U, E]:
+    def wrapper(self, *args: P.args, **kwargs: P.kwargs) -> Result[U, E]:  # noqa: ANN001
         try:
             return Ok(func(self, *args, **kwargs))
         except Exception as e:  # noqa: BLE001

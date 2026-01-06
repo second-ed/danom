@@ -20,6 +20,18 @@ def test_unit(monad, inner):
 
 
 @pytest.mark.parametrize(
+    ("left", "right", "expected_result"),
+    [
+        pytest.param(Ok(), Err(), False),
+        pytest.param(Ok(), Ok(), True),
+        pytest.param(Err(), Err(), True),
+    ],
+)
+def test_result_equality(left, right, expected_result):
+    assert (left == right) == expected_result
+
+
+@pytest.mark.parametrize(
     ("monad", "expected_result", "expected_context"),
     [
         pytest.param(Result, None, pytest.raises(TypeError)),
@@ -37,12 +49,12 @@ def test_result_unwrap(monad, expected_result, expected_context):
         pytest.param(Ok(0), 0, nullcontext()),
         pytest.param(Ok("ok"), "ok", nullcontext()),
         pytest.param(
-            Err(error=TypeError("should raise this"), input_args=()),
+            Err(error=TypeError("should raise this")),
             None,
             pytest.raises(TypeError),
         ),
         pytest.param(
-            Err(error=ValueError("should raise this"), input_args=()),
+            Err(error=ValueError("should raise this")),
             None,
             pytest.raises(ValueError),
         ),

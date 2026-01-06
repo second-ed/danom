@@ -4,6 +4,9 @@
 
 # API Reference
 
+[danom API docs](https://second-ed.github.io/danom/)
+
+
 ## Stream
 
 An immutable lazy iterator with functional operations.

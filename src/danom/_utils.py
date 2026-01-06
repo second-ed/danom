@@ -1,21 +1,31 @@
+from __future__ import annotations
+
 from collections.abc import Callable, Sequence
 from operator import not_
+from typing import ParamSpec, TypeVar
 
 import attrs
 
+P = ParamSpec("P")
+T_co = TypeVar("T_co", covariant=True)
+U_co = TypeVar("U_co", covariant=True)
+
+Composable = Callable[[T_co], T_co | U_co]
+Filterable = Callable[[T_co], bool]
+
 
 @attrs.define(frozen=True, hash=True, eq=True)
-class _Compose[T, U]:
-    fns: Sequence[Callable[[T], U]]
+class _Compose:
+    fns: Sequence[Composable]
 
-    def __call__(self, initial: T) -> U:
+    def __call__(self, initial: T_co) -> T_co | U_co:
         value = initial
         for fn in self.fns:
             value = fn(value)
         return value
 
 
-def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
+def compose(*fns: Composable) -> Composable:
     """Compose multiple functions into one.
 
     The functions will be called in sequence with the result of one being used as the input for the next.
@@ -33,14 +43,14 @@ def compose[T, U](*fns: Callable[[T], U]) -> Callable[[T], U]:
 
 
 @attrs.define(frozen=True, hash=True, eq=True)
-class _AllOf[T]:
-    fns: Sequence[Callable[[T], bool]]
+class _AllOf:
+    fns: Sequence[Filterable]
 
-    def __call__(self, initial: T) -> bool:
+    def __call__(self, initial: T_co) -> bool:
         return all(fn(initial) for fn in self.fns)
 
 
-def all_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+def all_of(*fns: Filterable) -> Filterable:
     """True if all of the given functions return True.
 
     .. code-block:: python
@@ -54,14 +64,14 @@ def all_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
 
 
 @attrs.define(frozen=True, hash=True, eq=True)
-class _AnyOf[T]:
-    fns: Sequence[Callable[[T], bool]]
+class _AnyOf:
+    fns: Sequence[Filterable]
 
-    def __call__(self, initial: T) -> bool:
+    def __call__(self, initial: T_co) -> bool:
         return any(fn(initial) for fn in self.fns)
 
 
-def any_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+def any_of(*fns: Filterable) -> Filterable:
     """True if any of the given functions return True.
 
     .. code-block:: python
@@ -74,7 +84,7 @@ def any_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
     return _AnyOf(fns)
 
 
-def none_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
+def none_of(*fns: Filterable) -> Filterable:
     """True if none of the given functions return True.
 
     .. code-block:: python
@@ -87,7 +97,7 @@ def none_of[T](*fns: Callable[[T], bool]) -> Callable[[T], bool]:
     return compose(_AnyOf(fns), not_)
 
 
-def identity[T](x: T) -> T:
+def identity[T_co](x: T_co) -> T_co:
     """Basic identity function.
 
     .. code-block:: python
@@ -101,7 +111,7 @@ def identity[T](x: T) -> T:
     return x
 
 
-def invert[T](func: Callable[[T], bool]) -> Callable[[T], bool]:
+def invert(func: Filterable) -> Filterable:
     """Invert a boolean function so it returns False where it would've returned True.
 
     .. code-block:: python

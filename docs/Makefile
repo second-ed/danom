@@ -24,6 +24,10 @@ deploy:
 	fi
 	@cd docs-build && git worktree add -f html gh-pages || true
 
+
+local:
+	@uv run sphinx-apidoc -o source src/danom/ --separate ; uv run sphinx-build source docs-build/html
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile

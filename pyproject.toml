@@ -1,6 +1,6 @@
 [project]
 name = "danom"
-version = "0.8.1"
+version = "0.8.2"
 description = "Functional streams and monads"
 readme = "README.md"
 license = "MIT"
@@ -32,6 +32,7 @@ dev = [
     "repo-mapper-rs>=0.3.0",
     "ruff>=0.14.6",
     "sphinx>=9.0.4",
+    "ty>=0.0.8",
 ]
 
 [tool.coverage.run]
@@ -47,3 +48,6 @@ fail_under = 95
 
 [tool.pytest]
 # addopts = ["--codspeed"]
+
+[tool.ty.src]
+include = ["src", "tests"]

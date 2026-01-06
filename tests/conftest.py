@@ -10,20 +10,24 @@ from src.danom._result import Err, Ok, Result
 REPO_ROOT = Path(__file__).parents[1]
 
 
-def add[T](a: T, b: T) -> T:
-    return a + b
+def add[T: (str, float, int)](a: T, b: T) -> T:
+    return a + b  # ty: ignore[unsupported-operator]
 
 
 def has_len(value: str) -> bool:
     return len(value) > 0
 
 
-def add_one[T](x: T) -> T:
+def add_one(x: float) -> float:
     return x + 1
 
 
-def double[T](x: T) -> T:
-    return x * 2
+def double[T: (str, float, int)](x: T) -> T:
+    return x * 2  # ty: ignore[unsupported-operator]
+
+
+def is_even(x: float) -> bool:
+    return x % 2 == 0
 
 
 def divisible_by_3(x: float) -> bool:
@@ -61,12 +65,12 @@ def safe_add_one(x: float | str) -> Result[float | str, TypeError]:
 
 
 @safe
-def safe_double[T](x: T) -> T:
-    return x * 2
+def safe_double[T: (str, float, int)](x: T) -> T:
+    return x * 2  # ty: ignore[unsupported-operator]
 
 
 @safe
-def safe_raise_type_error(_a: Any) -> Result[None, Exception]:  # noqa: ANN401
+def safe_raise_type_error(_a: Any) -> None:  # noqa: ANN401
     raise TypeError
 
 
@@ -90,8 +94,8 @@ class Adder:
 
 
 class ValueLogger:
-    def __init__(self) -> None:
-        self.values = []
+    def __init__(self, values: list | None = None) -> None:
+        self.values = values if values is not None else []
 
     def __call__[T](self, value: T) -> None:
         self.values.append(value)
