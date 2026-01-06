@@ -306,8 +306,8 @@ class Stream(_BaseStream):
         else:
             seq_tuple = self.collect()
         return (
-            Stream(seq=(x for x in seq_tuple if fn(x))),
-            Stream(seq=(x for x in seq_tuple if not fn(x))),
+            Stream(seq=tuple(x for x in seq_tuple if fn(x))),
+            Stream(seq=tuple(x for x in seq_tuple if not fn(x))),
         )
 
     def fold(
@@ -457,7 +457,7 @@ def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[
                 valid = False
                 break
             elif op == _TAP:
-                op_fn(res)
+                op_fn(deepcopy(res))
         if valid:
             yield res
 
@@ -474,7 +474,7 @@ def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> list[T
                 valid = False
                 break
             elif op == _TAP:
-                op_fn(res)
+                op_fn(deepcopy(res))
         if valid:
             results.append(res)
     return results

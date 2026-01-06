@@ -26,6 +26,10 @@ def double[T: (str, float, int)](x: T) -> T:
     return x * 2  # ty: ignore[unsupported-operator]
 
 
+def is_even(x: float) -> bool:
+    return x % 2 == 0
+
+
 def divisible_by_3(x: float) -> bool:
     return x % 3 == 0
 
@@ -90,8 +94,8 @@ class Adder:
 
 
 class ValueLogger:
-    def __init__(self) -> None:
-        self.values = []
+    def __init__(self, values: list | None = None) -> None:
+        self.values = values if values is not None else []
 
     def __call__[T](self, value: T) -> None:
         self.values.append(value)

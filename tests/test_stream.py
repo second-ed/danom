@@ -1,3 +1,4 @@
+from multiprocessing import Manager
 from pathlib import Path
 
 import pytest
@@ -13,9 +14,26 @@ from tests.conftest import (
     async_read_text,
     divisible_by_3,
     divisible_by_5,
+    is_even,
 )
 
 
+def _get_attr_collect(stream: Stream, collect_fn: str, kwargs: dict) -> tuple:
+    return getattr(
+        stream,
+        collect_fn,
+    )(**kwargs)
+
+
+@pytest.mark.parametrize(
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("par_collect", {"workers": 4}, id="`par_collect` with workers passed in"),
+        pytest.param("par_collect", {"workers": -1}, id="`par_collect` with n-1 workers"),
+        pytest.param("par_collect", {"use_threads": True}, id="`par_collect` with threads True"),
+    ],
+)
 @pytest.mark.parametrize(
     ("it", "expected_part1", "expected_part2"),
     [
@@ -23,11 +41,14 @@ from tests.conftest import (
         pytest.param(0, (), (1,)),
     ],
 )
-def test_stream_pipeline(it, expected_part1, expected_part2):
-    part1, part2 = Stream.from_iterable(it).map(lambda x: x + 1).partition(lambda x: x % 2 == 0)
+def test_stream_pipeline(collect_fn, kwargs, it, expected_part1, expected_part2):
+    part1, part2 = Stream.from_iterable(it).map(add_one).partition(is_even)
 
-    assert part1.map(lambda x: x + 2).filter(lambda x: x % 3 == 0).collect() == expected_part1
-    assert part2.collect() == expected_part2
+    assert (
+        _get_attr_collect(part1.map(add_one, add_one).filter(divisible_by_3), collect_fn, kwargs)
+        == expected_part1
+    )
+    assert _get_attr_collect(part2, collect_fn, kwargs) == expected_part2
 
 
 @pytest.mark.parametrize(
@@ -46,22 +67,32 @@ def test_stream_pipeline(it, expected_part1, expected_part2):
         pytest.param("par_collect", {"use_threads": True}, id="`par_collect` with threads True"),
     ],
 )
-def test_collect_methods(it, collect_fn, kwargs, expected_result):
+def test_collect_methods(collect_fn, kwargs, it, expected_result):
     assert (
-        getattr(
+        _get_attr_collect(
             Stream.from_iterable(it).map(add_one, add_one).filter(divisible_by_3, divisible_by_5),
             collect_fn,
-        )(**kwargs)
+            kwargs,
+        )
         == expected_result
     )
 
 
-def test_stream_to_par_stream():
+@pytest.mark.parametrize(
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("par_collect", {"workers": 4}, id="`par_collect` with workers passed in"),
+        pytest.param("par_collect", {"workers": -1}, id="`par_collect` with n-1 workers"),
+        pytest.param("par_collect", {"use_threads": True}, id="`par_collect` with threads True"),
+    ],
+)
+def test_stream_to_par_stream(collect_fn, kwargs):
     part1, part2 = (
         Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
     )
-    assert part1.map(add_one).collect() == (4, 7, 10)
-    assert part2.collect() == (2, 4, 5, 7, 8, 10, 11)
+    assert _get_attr_collect(part1.map(add_one), collect_fn, kwargs) == (4, 7, 10)
+    assert _get_attr_collect(part2, collect_fn, kwargs) == (2, 4, 5, 7, 8, 10, 11)
 
 
 @pytest.mark.parametrize(
@@ -74,6 +105,34 @@ def test_stream_to_par_stream():
 )
 def test_fold(starting, initial, fn, workers, expected_result):
     assert Stream.from_iterable(starting).fold(initial, fn, workers=workers) == expected_result
+
+
+@pytest.mark.parametrize(
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("par_collect", {"workers": 4}, id="`par_collect` with workers passed in"),
+        pytest.param("par_collect", {"workers": -1}, id="`par_collect` with n-1 workers"),
+        pytest.param("par_collect", {"use_threads": True}, id="`par_collect` with threads True"),
+    ],
+)
+def test_tap(collect_fn, kwargs):
+    with Manager() as manager:
+        values = manager.list()
+        val_logger = ValueLogger(values)
+
+        assert _get_attr_collect(
+            Stream.from_iterable(range(4)).tap(val_logger), collect_fn, kwargs
+        ) == (
+            0,
+            1,
+            2,
+            3,
+        )
+        assert sorted(values) == [0, 1, 2, 3]
+
+
+# async tests
 
 
 @pytest.mark.asyncio
@@ -99,15 +158,6 @@ async def test_async_collect_no_fns():
         Path(f"{REPO_ROOT}/tests/mock_data/file_b.py"),
         Path(f"{REPO_ROOT}/tests/mock_data/file_c.py"),
     )
-
-
-def test_tap():
-    val_logger = ValueLogger()
-    val_logger_2 = ValueLogger()
-
-    assert Stream.from_iterable(range(4)).tap(val_logger, val_logger_2).collect() == (0, 1, 2, 3)
-    assert sorted(val_logger.values) == [0, 1, 2, 3]
-    assert sorted(val_logger_2.values) == [0, 1, 2, 3]
 
 
 @pytest.mark.asyncio
