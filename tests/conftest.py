@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from multiprocessing.managers import ListProxy
 from pathlib import Path
 from typing import Any, Self
 
@@ -94,7 +95,7 @@ class Adder:
 
 
 class ValueLogger:
-    def __init__(self, values: list | None = None) -> None:
+    def __init__(self, values: list | ListProxy | None = None) -> None:
         self.values = values if values is not None else []
 
     def __call__[T](self, value: T) -> None:

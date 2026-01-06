@@ -33,7 +33,7 @@ AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 @attrs.define(frozen=True)
 class _BaseStream(ABC):
-    seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
+    seq: tuple = attrs.field(validator=attrs.validators.instance_of(tuple), repr=False)
     ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
     @classmethod
@@ -440,13 +440,13 @@ AsyncPlannedOps = tuple[str, AsyncStreamFn]
 
 
 def _apply_fns_worker[T](
-    args: tuple[T, tuple[PlannedOps, ...]],
+    args: tuple[tuple[T], tuple[PlannedOps, ...]],
 ) -> tuple[T]:
     seq, ops = args
     return _par_apply_fns(seq, ops)
 
 
-def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[None, None, T]:
+def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[T, None, None]:
     for elem in elements:
         valid = True
         res = elem
@@ -462,7 +462,7 @@ def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[
             yield res
 
 
-def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> list[T]:
+def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> tuple[T]:
     results = []
     for elem in elements:
         valid = True
@@ -477,7 +477,7 @@ def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> list[T
                 op_fn(deepcopy(res))
         if valid:
             results.append(res)
-    return results
+    return tuple(results)
 
 
 async def _async_apply_fns[T](elem: T, ops: tuple[AsyncPlannedOps, ...]) -> T | _Nothing:
