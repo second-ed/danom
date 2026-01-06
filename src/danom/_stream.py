@@ -33,7 +33,7 @@ AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 @attrs.define(frozen=True)
 class _BaseStream(ABC):
-    seq: tuple = attrs.field(validator=attrs.validators.instance_of(tuple), repr=False)
+    seq: tuple = attrs.field(validator=attrs.validators.instance_of(tuple))
     ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
     @classmethod
@@ -206,7 +206,8 @@ class Stream(_BaseStream):
 
         """
         plan = (*self.ops, *tuple((_MAP, fn) for fn in fns))
-        return Stream(seq=self.seq, ops=plan)
+        object.__setattr__(self, "ops", plan)
+        return self
 
     def filter(self, *fns: FilterFn | AsyncFilterFn) -> Stream[T]:
         """Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
@@ -228,7 +229,8 @@ class Stream(_BaseStream):
 
         """
         plan = (*self.ops, *tuple((_FILTER, fn) for fn in fns))
-        return Stream(seq=self.seq, ops=plan)
+        object.__setattr__(self, "ops", plan)
+        return self
 
     def tap(self, *fns: TapFn | AsyncTapFn) -> Stream[T]:
         """Tap the values to another process that returns None. Will return a new `Stream` with the modified sequence.
@@ -271,7 +273,8 @@ class Stream(_BaseStream):
 
         """
         plan = (*self.ops, *tuple((_TAP, fn) for fn in fns))
-        return Stream(seq=self.seq, ops=plan)
+        object.__setattr__(self, "ops", plan)
+        return self
 
     def partition(
         self, fn: FilterFn, *, workers: int = 1, use_threads: bool = False
