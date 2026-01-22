@@ -161,12 +161,12 @@ class Stream(_BaseStream):
     def from_iterable(cls, it: Iterable) -> Stream[T]:
         """This is the recommended way of creating a `Stream` object.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Stream
+            >>> from danom import Stream
 
-            Stream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
-
+            >>> Stream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
+            True
         """
         if not isinstance(it, Iterable):
             it = [it]
@@ -319,13 +319,16 @@ class Stream(_BaseStream):
     ) -> T:
         """Fold the results into a single value. `fold` triggers an action so will incur a `collect`.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Stream
+            >>> from danom import Stream
 
-            Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
-            Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
-            Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
+            >>> Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
+            True
+            >>> Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
+            True
+            >>> Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
+            True
 
 
         As `fold` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
