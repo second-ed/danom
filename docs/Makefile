@@ -24,6 +24,8 @@ deploy:
 	fi
 	@cd docs-build && git worktree add -f html gh-pages || true
 
+doctest:
+	@uv run sphinx-build -b doctest ./source ./docs-build/doctest
 
 local:
 	@uv run sphinx-apidoc -o source src/danom/ --separate ; uv run sphinx-build source docs-build/html

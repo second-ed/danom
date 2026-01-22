@@ -212,12 +212,12 @@ class Stream(_BaseStream):
     def filter(self, *fns: FilterFn | AsyncFilterFn) -> Stream[T]:
         """Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Stream
+            >>> from danom import Stream
 
-            Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
-
+            >>> Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
+            True
 
         Simple functions can be passed in sequence to compose more complex filters
 
@@ -283,14 +283,15 @@ class Stream(_BaseStream):
 
         Each partition is independently replayable.
 
-        .. code-block:: python
+        .. doctest::
 
             from danom import Stream
 
-            part1, part2 = Stream.from_iterable([0, 1, 2, 3]).partition(lambda x: x % 2 == 0)
-            part1.collect() == (0, 2)
-            part2.collect() == (1, 3)
-
+            >>> part1, part2 = Stream.from_iterable([0, 1, 2, 3]).partition(lambda x: x % 2 == 0)
+            >>> part1.collect() == (0, 2)
+            True
+            >>> part2.collect() == (1, 3)
+            True
 
         As `partition` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
 
