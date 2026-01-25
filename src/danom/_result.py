@@ -33,13 +33,18 @@ class Result(ABC):
     def unit(cls, inner: T_co) -> Ok[T_co]:
         """Unit method. Given an item of type `T_co` return `Ok(T_co)`
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Err, Ok, Result
+            >>> from danom import Err, Ok, Result
 
-            Result.unit(0) == Ok(inner=0)
-            Ok.unit(0) == Ok(inner=0)
-            Err.unit(0) == Ok(inner=0)
+            >>> Result.unit(0) == Ok(inner=0)
+            True
+
+            >>> Ok.unit(0) == Ok(inner=0)
+            True
+
+            >>> Err.unit(0) == Ok(inner=0)
+            True
         """
         return Ok(inner)
 
@@ -48,12 +53,15 @@ class Result(ABC):
         """Returns `True` if the result type is `Ok`.
         Returns `False` if the result type is `Err`.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Err, Ok
+            >>> from danom import Err, Ok
 
-            Ok().is_ok() == True
-            Err().is_ok() == False
+            >>> Ok().is_ok() == True
+            True
+
+            >>> Err().is_ok() == False
+            True
         """
         ...
 
@@ -91,14 +99,23 @@ class Result(ABC):
         """Unwrap the `Ok` monad and get the inner value.
         Unwrap the `Err` monad will raise the inner error.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Err, Ok
+            >>> from danom import Err, Ok
 
-            Ok().unwrap() == None
-            Ok(1).unwrap() == 1
-            Ok("ok").unwrap() == 'ok'
-            Err(error=TypeError()).unwrap() raise TypeError(...)
+            >>> Ok().unwrap() == None
+            True
+
+            >>> Ok(1).unwrap() == 1
+            True
+
+            >>> Ok("ok").unwrap() == 'ok'
+            True
+
+            >>> Err(error=TypeError()).unwrap()
+            Traceback (most recent call last):
+            ...
+            TypeError:
         """
         ...
 
