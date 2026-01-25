@@ -286,5 +286,7 @@ Alternatively the map method can be used to return a new type instance with the 
 ├── pyproject.toml
 ├── ruff.toml
 └── uv.lock
+
+(generated with repo-mapper-rs)
 ::
 ```
