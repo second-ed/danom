@@ -81,18 +81,12 @@ def test_new_type_map(initial_value, base_type, map_fn, get_attr, expected_inner
 @given(
     st.one_of(
         st.tuples(
-            st.functions(
-                like=lambda x: True,
-                returns=st.just(True),
-            ),
+            st.functions(like=lambda x: True, returns=st.just(True)),
             st.integers(),
             st.just(nullcontext()),
         ),
         st.tuples(
-            st.functions(
-                like=lambda x: False,
-                returns=st.just(False),
-            ),
+            st.functions(like=lambda x: False, returns=st.just(False)),
             st.integers(),
             st.just(pytest.raises(ValueError)),
         ),
