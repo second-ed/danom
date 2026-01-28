@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>danom documentation &#8212; danom 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=cb975c41"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">danom 2025 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">danom documentation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-danom">
+<span id="danom-documentation"></span><h1>danom documentation<a class="headerlink" href="#module-danom" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="danom.Err">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">Err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#danom.Err" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#danom.Result" title="danom._result.Result"><code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Err.and_then">
+<span class="sig-name descname"><span class="pre">and_then</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.ResultReturnType],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Err" title="danom._result.Err"><span class="pre">Err</span></a></span></span><a class="headerlink" href="#danom.Err.and_then" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe another function that returns a monad. For <cite>Err</cite> will return original error.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">raise_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">raise_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danom.Err.details">
+<span class="sig-name descname"><span class="pre">details</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#danom.Err.details" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danom.Err.error">
+<span class="sig-name descname"><span class="pre">error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></span><a class="headerlink" href="#danom.Err.error" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danom.Err.input_args">
+<span class="sig-name descname"><span class="pre">input_args</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#danom.Err.input_args" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Err.is_ok">
+<span class="sig-name descname"><span class="pre">is_ok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">False</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Err.is_ok" title="Link to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the result type is <cite>Ok</cite>.
+Returns <cite>False</cite> if the result type is <cite>Err</cite>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">()</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Err</span><span class="p">()</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Err.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.U_co],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Err" title="danom._result.Err"><span class="pre">Err</span></a></span></span><a class="headerlink" href="#danom.Err.map" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a pure function and wrap the return value with <cite>Ok</cite>.
+Given an <cite>Err</cite> will return self.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Err.map_err">
+<span class="sig-name descname"><span class="pre">map_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.U_co],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Err" title="danom._result.Err"><span class="pre">Err</span></a></span></span><a class="headerlink" href="#danom.Err.map_err" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a pure function and wrap the return value with <cite>Err</cite>.
+Given an <cite>Ok</cite> will return self.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">map_err</span><span class="p">(</span><span class="n">type_err_to_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">ValueError</span><span class="p">())</span>
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">type_err_to_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Err.or_else">
+<span class="sig-name descname"><span class="pre">or_else</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.ResultReturnType],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultReturnType</span></span></span><a class="headerlink" href="#danom.Err.or_else" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a function that returns a monad to recover from an <cite>Err</cite>. For <cite>Ok</cite> will return original <cite>Result</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">replace_err_with_zero</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">replace_err_with_zero</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Err.unwrap">
+<span class="sig-name descname"><span class="pre">unwrap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#danom.Err.unwrap" title="Link to this definition">¶</a></dt>
+<dd><p>Unwrap the <cite>Ok</cite> monad and get the inner value.
+Unwrap the <cite>Err</cite> monad will raise the inner error.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">()</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="kc">None</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ok&#39;</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">TypeError</span><span class="w">:</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="danom.Ok">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">Ok</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#danom.Ok" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#danom.Result" title="danom._result.Result"><code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Ok.and_then">
+<span class="sig-name descname"><span class="pre">and_then</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.ResultReturnType],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultReturnType</span></span></span><a class="headerlink" href="#danom.Ok.and_then" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe another function that returns a monad. For <cite>Err</cite> will return original error.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">raise_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">raise_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danom.Ok.inner">
+<span class="sig-name descname"><span class="pre">inner</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></span><a class="headerlink" href="#danom.Ok.inner" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Ok.is_ok">
+<span class="sig-name descname"><span class="pre">is_ok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="k"><span class="pre">True</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Ok.is_ok" title="Link to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the result type is <cite>Ok</cite>.
+Returns <cite>False</cite> if the result type is <cite>Err</cite>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">()</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Err</span><span class="p">()</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Ok.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.U_co],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Ok" title="danom._result.Ok"><span class="pre">Ok</span></a></span></span><a class="headerlink" href="#danom.Ok.map" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a pure function and wrap the return value with <cite>Ok</cite>.
+Given an <cite>Err</cite> will return self.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Ok.map_err">
+<span class="sig-name descname"><span class="pre">map_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.U_co],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Ok" title="danom._result.Ok"><span class="pre">Ok</span></a></span></span><a class="headerlink" href="#danom.Ok.map_err" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a pure function and wrap the return value with <cite>Err</cite>.
+Given an <cite>Ok</cite> will return self.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">map_err</span><span class="p">(</span><span class="n">type_err_to_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">ValueError</span><span class="p">())</span>
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">type_err_to_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Ok.or_else">
+<span class="sig-name descname"><span class="pre">or_else</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.ResultReturnType],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Ok" title="danom._result.Ok"><span class="pre">Ok</span></a></span></span><a class="headerlink" href="#danom.Ok.or_else" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a function that returns a monad to recover from an <cite>Err</cite>. For <cite>Ok</cite> will return original <cite>Result</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">replace_err_with_zero</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">replace_err_with_zero</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Ok.unwrap">
+<span class="sig-name descname"><span class="pre">unwrap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T_co</span></span></span><a class="headerlink" href="#danom.Ok.unwrap" title="Link to this definition">¶</a></dt>
+<dd><p>Unwrap the <cite>Ok</cite> monad and get the inner value.
+Unwrap the <cite>Err</cite> monad will raise the inner error.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">()</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="kc">None</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ok&#39;</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">TypeError</span><span class="w">:</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="danom.Result">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">Result</span></span><a class="headerlink" href="#danom.Result" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p><cite>Result</cite> monad. Consists of <cite>Ok</cite> and <cite>Err</cite> for successful and failed operations respectively.
+Each monad is a frozen instance to prevent further mutation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Result.and_then">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">and_then</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.ResultReturnType],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultReturnType</span></span></span><a class="headerlink" href="#danom.Result.and_then" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe another function that returns a monad. For <cite>Err</cite> will return original error.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">raise_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">and_then</span><span class="p">(</span><span class="n">raise_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Result.is_ok">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_ok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#danom.Result.is_ok" title="Link to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if the result type is <cite>Ok</cite>.
+Returns <cite>False</cite> if the result type is <cite>Err</cite>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">()</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Err</span><span class="p">()</span><span class="o">.</span><span class="n">is_ok</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Result.map">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.U_co],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultReturnType</span></span></span><a class="headerlink" href="#danom.Result.map" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a pure function and wrap the return value with <cite>Ok</cite>.
+Given an <cite>Err</cite> will return self.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Result.map_err">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">map_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.U_co],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultReturnType</span></span></span><a class="headerlink" href="#danom.Result.map_err" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a pure function and wrap the return value with <cite>Err</cite>.
+Given an <cite>Ok</cite> will return self.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">map_err</span><span class="p">(</span><span class="n">type_err_to_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">ValueError</span><span class="p">())</span>
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">type_err_to_value_err</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Result.or_else">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">or_else</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">func:</span> <span class="pre">~collections.abc.Callable[[~P],</span> <span class="pre">~danom._result.ResultReturnType],</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.~P</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultReturnType</span></span></span><a class="headerlink" href="#danom.Result.or_else" title="Link to this definition">¶</a></dt>
+<dd><p>Pipe a function that returns a monad to recover from an <cite>Err</cite>. For <cite>Ok</cite> will return original <cite>Result</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">replace_err_with_zero</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">or_else</span><span class="p">(</span><span class="n">replace_err_with_zero</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Result.unit">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T_co</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Ok" title="danom._result.Ok"><span class="pre">Ok</span></a></span></span><a class="headerlink" href="#danom.Result.unit" title="Link to this definition">¶</a></dt>
+<dd><p>Unit method. Given an item of type <cite>T_co</cite> return <cite>Ok(T_co)</cite></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span><span class="p">,</span> <span class="n">Result</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Result</span><span class="o">.</span><span class="n">unit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="o">.</span><span class="n">unit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Err</span><span class="o">.</span><span class="n">unit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Result.unwrap">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">unwrap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T_co</span></span></span><a class="headerlink" href="#danom.Result.unwrap" title="Link to this definition">¶</a></dt>
+<dd><p>Unwrap the <cite>Ok</cite> monad and get the inner value.
+Unwrap the <cite>Err</cite> monad will raise the inner error.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Err</span><span class="p">,</span> <span class="n">Ok</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">()</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="kc">None</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Ok</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ok&#39;</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">())</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">TypeError</span><span class="w">:</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="danom.Stream">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">Stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ops</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#danom.Stream" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseStream</span></code></p>
+<p>An immutable lazy iterator with functional operations.</p>
+<section id="why-bother">
+<h2>Why bother?<a class="headerlink" href="#why-bother" title="Link to this heading">¶</a></h2>
+<p>Readability counts, abstracting common operations helps reduce cognitive complexity when reading code.</p>
+</section>
+<section id="comparison">
+<h2>Comparison<a class="headerlink" href="#comparison" title="Link to this heading">¶</a></h2>
+<p>Take this imperative pipeline of operations, it iterates once over the data, skipping the value if it fails one of the filter checks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1_000_000</span><span class="p">):</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">triple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_gt_ten</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">continue</span>
+
+    <span class="n">item</span> <span class="o">=</span> <span class="n">min_two</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_even_num</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">continue</span>
+
+    <span class="n">item</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_lt_400</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">continue</span>
+
+    <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">256</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>number of tokens: <cite>90</cite></p>
+<p>number of keywords: <cite>11</cite></p>
+<p>keyword breakdown: <cite>{‘for’: 1, ‘in’: 1, ‘if’: 3, ‘not’: 3, ‘continue’: 3}</cite></p>
+<p>After a bit of experience with python you might use list comprehensions, however this is arguably _less_ clear and iterates multiple times over the same data</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mul_three</span> <span class="o">=</span> <span class="p">[</span><span class="n">triple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1_000_000</span><span class="p">)]</span>
+<span class="n">gt_ten</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mul_three</span> <span class="k">if</span> <span class="n">is_gt_ten</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+<span class="n">sub_two</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_two</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">gt_ten</span><span class="p">]</span>
+<span class="n">is_even</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sub_two</span> <span class="k">if</span> <span class="n">is_even_num</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+<span class="n">squared</span> <span class="o">=</span> <span class="p">[</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">is_even</span><span class="p">]</span>
+<span class="n">lt_400</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">squared</span> <span class="k">if</span> <span class="n">is_lt_400</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+<span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">256</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>number of tokens: <cite>92</cite></p>
+<p>number of keywords: <cite>15</cite></p>
+<p>keyword breakdown: <cite>{‘for’: 6, ‘in’: 6, ‘if’: 3}</cite></p>
+<p>This still has a lot of tokens that the developer has to read to understand the code. The extra keywords add noise that cloud the actual transformations.</p>
+<p>Using a <cite>Stream</cite> results in this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="p">(</span>
+    <span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1_000_000</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">is_gt_ten</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">min_two</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">is_even_num</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">is_lt_400</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>number of tokens: <cite>60</cite></p>
+<p>number of keywords: <cite>0</cite></p>
+<p>keyword breakdown: <cite>{}</cite></p>
+<p>The business logic is arguably much clearer like this.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.async_collect">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">async_collect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">U</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.async_collect" title="Link to this definition">¶</a></dt>
+<dd><p>Async version of collect. Note that all functions in the stream should be <cite>Awaitable</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">file_paths</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">async_read_files</span><span class="p">)</span><span class="o">.</span><span class="n">async_collect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If there are no operations in the <cite>Stream</cite> then this will act as a normal collect.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">file_paths</span><span class="p">)</span><span class="o">.</span><span class="n">async_collect</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.collect">
+<span class="sig-name descname"><span class="pre">collect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">U</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.collect" title="Link to this definition">¶</a></dt>
+<dd><p>Materialise the sequence from the <cite>Stream</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FilterFn</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">AsyncFilterFn</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Stream" title="danom.Stream"><span class="pre">Stream</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.filter" title="Link to this definition">¶</a></dt>
+<dd><p>Filter the stream based on a predicate. Will return a new <cite>Stream</cite> with the modified sequence.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Simple functions can be passed in sequence to compose more complex filters</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">divisible_by_3</span><span class="p">,</span> <span class="n">divisible_by_5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.fold">
+<span class="sig-name descname"><span class="pre">fold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">U</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#danom.Stream.fold" title="Link to this definition">¶</a></dt>
+<dd><p>Fold the results into a single value. <cite>fold</cite> triggers an action so will incur a <cite>collect</cite>.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">fold</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="mi">10</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]])</span><span class="o">.</span><span class="n">fold</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">fold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="mi">24</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>As <cite>fold</cite> triggers an action, the parameters will be forwarded to the <cite>par_collect</cite> call if the <cite>workers</cite> are greater than 1.
+This will only effect the <cite>collect</cite> that is used to create the iterable to reduce, not the <cite>fold</cite> operation itself.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">some_expensive_fn</span><span class="p">)</span><span class="o">.</span><span class="n">fold</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">add</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">use_threads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.from_iterable">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">it</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Stream" title="danom.Stream"><span class="pre">Stream</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.from_iterable" title="Link to this definition">¶</a></dt>
+<dd><p>This is the recommended way of creating a <cite>Stream</cite> object.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.map">
+<span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MapFn</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">AsyncMapFn</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Stream" title="danom.Stream"><span class="pre">Stream</span></a><span class="p"><span class="pre">[</span></span><span class="pre">U</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.map" title="Link to this definition">¶</a></dt>
+<dd><p>Map a function to the elements in the <cite>Stream</cite>. Will return a new <cite>Stream</cite> with the modified sequence.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This can also be mixed with <cite>safe</cite> functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="nd">@safe</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">two_div_value</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">x</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">two_div_value</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="n">Err</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s1">&#39;division by zero&#39;</span><span class="p">)),</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mf">2.0</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mf">0.5</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Simple functions can be passed in sequence to compose more complex transformations</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mul_two</span><span class="p">,</span> <span class="n">add_one</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.par_collect">
+<span class="sig-name descname"><span class="pre">par_collect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">U</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.par_collect" title="Link to this definition">¶</a></dt>
+<dd><p>Materialise the sequence from the <cite>Stream</cite> in parallel.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">par_collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the <cite>workers</cite> arg to select the number of workers to use. Use <cite>-1</cite> to use all available processors (except 1).
+Defaults to <cite>4</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">par_collect</span><span class="p">(</span><span class="n">workers</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For smaller I/O bound tasks use the <cite>use_threads</cite> flag as True.
+If False the processing will use <cite>ProcessPoolExecutor</cite> else it will use <cite>ThreadPoolExecutor</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">par_collect</span><span class="p">(</span><span class="n">use_threads</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that all operations should be pickle-able, for that reason <cite>Stream</cite> does not support lambdas or closures.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.partition">
+<span class="sig-name descname"><span class="pre">partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FilterFn</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#danom.Stream" title="danom.Stream"><span class="pre">Stream</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#danom.Stream" title="danom.Stream"><span class="pre">Stream</span></a><span class="p"><span class="pre">[</span></span><span class="pre">U</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.partition" title="Link to this definition">¶</a></dt>
+<dd><p>Similar to <cite>filter</cite> except splits the True and False values. Will return a two new <cite>Stream</cite> with the partitioned sequences.</p>
+<p>Each partition is independently replayable.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">from danom import Stream</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">part1</span><span class="p">,</span> <span class="n">part2</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">part1</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">part2</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>As <cite>partition</cite> triggers an action, the parameters will be forwarded to the <cite>par_collect</cite> call if the <cite>workers</cite> are greater than 1.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">,</span> <span class="n">add_one</span><span class="p">)</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="n">divisible_by_3</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">part1</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add_one</span><span class="p">)</span><span class="o">.</span><span class="n">par_collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">part2</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="danom.Stream.tap">
+<span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TapFn</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">AsyncTapFn</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#danom.Stream" title="danom.Stream"><span class="pre">Stream</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.Stream.tap" title="Link to this definition">¶</a></dt>
+<dd><p>Tap the values to another process that returns None. Will return a new <cite>Stream</cite> with the modified sequence.</p>
+<p>The value passed to the tap function will be deep-copied to avoid any modification to the <cite>Stream</cite> item for downstream consumers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">tap</span><span class="p">(</span><span class="n">log_value</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Simple functions can be passed in sequence for multiple <cite>tap</cite> operations</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">tap</span><span class="p">(</span><span class="n">log_value</span><span class="p">,</span> <span class="n">print_value</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>tap</cite> is useful for logging and similar actions without effecting the individual items, in this example eligible and dormant users are logged using <cite>tap</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">active_users</span><span class="p">,</span> <span class="n">inactive_users</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Stream</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">users</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">parse_user_objects</span><span class="p">)</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="n">inactive_users</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">active_users</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">eligible_for_promotion</span><span class="p">)</span><span class="o">.</span><span class="n">tap</span><span class="p">(</span><span class="n">log_eligible_users</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">construct_promo_email</span><span class="p">,</span> <span class="n">send_with_confirmation</span>
+<span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+
+<span class="n">inactive_users</span><span class="o">.</span><span class="n">tap</span><span class="p">(</span><span class="n">log_inactive_users</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">create_dormant_user_entry</span><span class="p">,</span> <span class="n">add_to_dormant_table</span>
+<span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.all_of">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">all_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.all_of" title="Link to this definition">¶</a></dt>
+<dd><p>True if all of the given functions return True.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">all_of</span>
+
+<span class="n">is_valid_user</span> <span class="o">=</span> <span class="n">all_of</span><span class="p">(</span><span class="n">is_subscribed</span><span class="p">,</span> <span class="n">is_active</span><span class="p">,</span> <span class="n">has_2fa</span><span class="p">)</span>
+<span class="n">is_valid_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.any_of">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">any_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.any_of" title="Link to this definition">¶</a></dt>
+<dd><p>True if any of the given functions return True.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">any_of</span>
+
+<span class="n">is_eligible</span> <span class="o">=</span> <span class="n">any_of</span><span class="p">(</span><span class="n">has_coupon</span><span class="p">,</span> <span class="n">is_vip</span><span class="p">,</span> <span class="n">is_staff</span><span class="p">)</span>
+<span class="n">is_eligible</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.compose">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">compose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T_co</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">U_co</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T_co</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">U_co</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.compose" title="Link to this definition">¶</a></dt>
+<dd><p>Compose multiple functions into one.</p>
+<p>The functions will be called in sequence with the result of one being used as the input for the next.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">compose</span>
+
+<span class="n">add_two</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">add_one</span><span class="p">,</span> <span class="n">add_one</span><span class="p">)</span>
+<span class="n">add_two</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="n">add_two_is_even</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">add_one</span><span class="p">,</span> <span class="n">add_one</span><span class="p">,</span> <span class="n">is_even</span><span class="p">)</span>
+<span class="n">add_two_is_even</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.identity">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T_co</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T_co</span></span></span><a class="headerlink" href="#danom.identity" title="Link to this definition">¶</a></dt>
+<dd><p>Basic identity function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">identity</span>
+
+<span class="n">identity</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;abc&quot;</span>
+<span class="n">identity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="n">identity</span><span class="p">(</span><span class="n">ComplexDataType</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span> <span class="o">==</span> <span class="n">ComplexDataType</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.invert">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.invert" title="Link to this definition">¶</a></dt>
+<dd><p>Invert a boolean function so it returns False where it would’ve returned True.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">invert</span>
+
+<span class="n">invert</span><span class="p">(</span><span class="n">has_len</span><span class="p">)(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span>
+<span class="n">invert</span><span class="p">(</span><span class="n">has_len</span><span class="p">)(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.new_type">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">new_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">frozen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#danom.new_type" title="Link to this definition">¶</a></dt>
+<dd><p>Create a NewType based on another type.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">new_type</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">is_positive</span><span class="p">[</span><span class="n">T</span><span class="p">](</span><span class="n">value</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ValidBalance</span> <span class="o">=</span> <span class="n">new_type</span><span class="p">(</span><span class="s2">&quot;ValidBalance&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">is_positive</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ValidBalance</span><span class="p">(</span><span class="mf">20.0</span><span class="p">)</span> <span class="o">==</span> <span class="n">ValidBalance</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Unlike an inherited class, the type will not return <cite>True</cite> for an isinstance check.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">isinstance</span><span class="p">(</span><span class="n">ValidBalance</span><span class="p">(</span><span class="mf">20.0</span><span class="p">),</span> <span class="n">ValidBalance</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+<span class="nb">isinstance</span><span class="p">(</span><span class="n">ValidBalance</span><span class="p">(</span><span class="mf">20.0</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>The methods of the given <cite>base_type</cite> will be forwarded to the specialised type.
+Alternatively the map method can be used to return a new type instance with the transformation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">new_type</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">has_len</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">email</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+<span class="n">Email</span> <span class="o">=</span> <span class="n">new_type</span><span class="p">(</span><span class="s2">&quot;Email&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">has_len</span><span class="p">])</span>
+<span class="n">Email</span><span class="p">(</span><span class="s2">&quot;some_email@domain.com&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;SOME_EMAIL@DOMAIN.COM&quot;</span>
+<span class="n">Email</span><span class="p">(</span><span class="s2">&quot;some_email@domain.com&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">upper</span><span class="p">)</span> <span class="o">==</span> <span class="n">Email</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="s1">&#39;SOME_EMAIL@DOMAIN.COM&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.none_of">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">none_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T_co</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.none_of" title="Link to this definition">¶</a></dt>
+<dd><p>True if none of the given functions return True.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">none_of</span>
+
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">none_of</span><span class="p">(</span><span class="n">is_empty</span><span class="p">,</span> <span class="n">exceeds_size_limit</span><span class="p">,</span> <span class="n">contains_unsupported_format</span><span class="p">)</span>
+<span class="n">is_valid</span><span class="p">(</span><span class="n">submission</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.safe">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">safe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">U</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#danom.Result" title="danom._result.Result"><span class="pre">Result</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.safe" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator for functions that wraps the function in a try except returns <cite>Ok</cite> on success else <cite>Err</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">safe</span>
+
+<span class="nd">@safe</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_one</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">add_one</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danom.safe_method">
+<span class="sig-prename descclassname"><span class="pre">danom.</span></span><span class="sig-name descname"><span class="pre">safe_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">U</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#danom.Result" title="danom._result.Result"><span class="pre">Result</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#danom.safe_method" title="Link to this definition">¶</a></dt>
+<dd><p>The same as <cite>safe</cite> except it forwards on the <cite>self</cite> of the class instance to the wrapped function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">danom</span><span class="w"> </span><span class="kn">import</span> <span class="n">safe_method</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Adder</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+
+    <span class="nd">@safe_method</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">Adder</span><span class="o">.</span><span class="n">add_one</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">Ok</span><span class="p">(</span><span class="n">inner</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">danom documentation</a><ul>
+<li><a class="reference internal" href="#danom.Err"><code class="docutils literal notranslate"><span class="pre">Err</span></code></a><ul>
+<li><a class="reference internal" href="#danom.Err.and_then"><code class="docutils literal notranslate"><span class="pre">Err.and_then()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.details"><code class="docutils literal notranslate"><span class="pre">Err.details</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.error"><code class="docutils literal notranslate"><span class="pre">Err.error</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.input_args"><code class="docutils literal notranslate"><span class="pre">Err.input_args</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.is_ok"><code class="docutils literal notranslate"><span class="pre">Err.is_ok()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.map"><code class="docutils literal notranslate"><span class="pre">Err.map()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.map_err"><code class="docutils literal notranslate"><span class="pre">Err.map_err()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.or_else"><code class="docutils literal notranslate"><span class="pre">Err.or_else()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Err.unwrap"><code class="docutils literal notranslate"><span class="pre">Err.unwrap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#danom.Ok"><code class="docutils literal notranslate"><span class="pre">Ok</span></code></a><ul>
+<li><a class="reference internal" href="#danom.Ok.and_then"><code class="docutils literal notranslate"><span class="pre">Ok.and_then()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Ok.inner"><code class="docutils literal notranslate"><span class="pre">Ok.inner</span></code></a></li>
+<li><a class="reference internal" href="#danom.Ok.is_ok"><code class="docutils literal notranslate"><span class="pre">Ok.is_ok()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Ok.map"><code class="docutils literal notranslate"><span class="pre">Ok.map()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Ok.map_err"><code class="docutils literal notranslate"><span class="pre">Ok.map_err()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Ok.or_else"><code class="docutils literal notranslate"><span class="pre">Ok.or_else()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Ok.unwrap"><code class="docutils literal notranslate"><span class="pre">Ok.unwrap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#danom.Result"><code class="docutils literal notranslate"><span class="pre">Result</span></code></a><ul>
+<li><a class="reference internal" href="#danom.Result.and_then"><code class="docutils literal notranslate"><span class="pre">Result.and_then()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Result.is_ok"><code class="docutils literal notranslate"><span class="pre">Result.is_ok()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Result.map"><code class="docutils literal notranslate"><span class="pre">Result.map()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Result.map_err"><code class="docutils literal notranslate"><span class="pre">Result.map_err()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Result.or_else"><code class="docutils literal notranslate"><span class="pre">Result.or_else()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Result.unit"><code class="docutils literal notranslate"><span class="pre">Result.unit()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Result.unwrap"><code class="docutils literal notranslate"><span class="pre">Result.unwrap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#danom.Stream"><code class="docutils literal notranslate"><span class="pre">Stream</span></code></a><ul>
+<li><a class="reference internal" href="#danom.Stream.async_collect"><code class="docutils literal notranslate"><span class="pre">Stream.async_collect()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.collect"><code class="docutils literal notranslate"><span class="pre">Stream.collect()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.filter"><code class="docutils literal notranslate"><span class="pre">Stream.filter()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.fold"><code class="docutils literal notranslate"><span class="pre">Stream.fold()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.from_iterable"><code class="docutils literal notranslate"><span class="pre">Stream.from_iterable()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.map"><code class="docutils literal notranslate"><span class="pre">Stream.map()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.par_collect"><code class="docutils literal notranslate"><span class="pre">Stream.par_collect()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.partition"><code class="docutils literal notranslate"><span class="pre">Stream.partition()</span></code></a></li>
+<li><a class="reference internal" href="#danom.Stream.tap"><code class="docutils literal notranslate"><span class="pre">Stream.tap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#danom.all_of"><code class="docutils literal notranslate"><span class="pre">all_of()</span></code></a></li>
+<li><a class="reference internal" href="#danom.any_of"><code class="docutils literal notranslate"><span class="pre">any_of()</span></code></a></li>
+<li><a class="reference internal" href="#danom.compose"><code class="docutils literal notranslate"><span class="pre">compose()</span></code></a></li>
+<li><a class="reference internal" href="#danom.identity"><code class="docutils literal notranslate"><span class="pre">identity()</span></code></a></li>
+<li><a class="reference internal" href="#danom.invert"><code class="docutils literal notranslate"><span class="pre">invert()</span></code></a></li>
+<li><a class="reference internal" href="#danom.new_type"><code class="docutils literal notranslate"><span class="pre">new_type()</span></code></a></li>
+<li><a class="reference internal" href="#danom.none_of"><code class="docutils literal notranslate"><span class="pre">none_of()</span></code></a></li>
+<li><a class="reference internal" href="#danom.safe"><code class="docutils literal notranslate"><span class="pre">safe()</span></code></a></li>
+<li><a class="reference internal" href="#danom.safe_method"><code class="docutils literal notranslate"><span class="pre">safe_method()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">danom 2025 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">danom documentation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Ed Cuss.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    </div>
+  </body>
+</html>

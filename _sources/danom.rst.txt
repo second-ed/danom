@@ -1,0 +1,10 @@
+danom package
+=============
+
+Module contents
+---------------
+
+.. automodule:: danom
+   :members:
+   :show-inheritance:
+   :undoc-members:
