@@ -1,8 +1,12 @@
 from contextlib import nullcontext
+from types import SimpleNamespace
 
+import hypothesis.strategies as st
 import pytest
+from hypothesis import given
 
 from src.danom import new_type
+from src.danom._new_type import _validate_bool_func
 from tests.conftest import has_len
 
 
@@ -72,3 +76,29 @@ def test_new_type_map(initial_value, base_type, map_fn, get_attr, expected_inner
         TestType = new_type("TestType", base_type)  # noqa: N806
         assert TestType(initial_value).map(map_fn) == TestType(expected_inner)
         assert getattr(TestType(initial_value), get_attr)() == expected_inner
+
+
+@given(
+    st.one_of(
+        st.tuples(
+            st.functions(like=lambda x: True, returns=st.just(True)),
+            st.integers(),
+            st.just(nullcontext()),
+        ),
+        st.tuples(
+            st.functions(like=lambda x: False, returns=st.just(False)),
+            st.integers(),
+            st.just(pytest.raises(ValueError)),
+        ),
+        st.tuples(
+            st.integers(),
+            st.just(None),
+            st.just(pytest.raises(TypeError)),
+        ),
+    )
+)
+def test_validate_bool_func(args):
+    bool_fn, value, expected_context = args
+
+    with expected_context:
+        _validate_bool_func(bool_fn)(object(), SimpleNamespace(name="x"), value)

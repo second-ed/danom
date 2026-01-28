@@ -25,6 +25,7 @@ sys.path.insert(0, str(PROJECT_ROOT_DIR / "src"))
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.coverage",
+    "sphinx.ext.doctest",
     "sphinx.ext.napoleon",
     "sphinx.ext.githubpages",
 ]

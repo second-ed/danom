@@ -92,6 +92,17 @@ def test_map(monad, func, expected_result):
     assert monad.map(func) == expected_result
 
 
+@pytest.mark.parametrize(
+    ("monad", "func", "expected_result"),
+    [
+        pytest.param(Ok(0), add_one, Ok(0)),
+        pytest.param(Err(0), add_one, Err(1)),
+    ],
+)
+def test_map_err(monad, func, expected_result):
+    assert monad.map_err(func) == expected_result
+
+
 class OnlyIsOk(Result):
     def is_ok(self) -> bool:
         return False

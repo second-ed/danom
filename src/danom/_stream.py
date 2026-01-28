@@ -33,7 +33,7 @@ AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 @attrs.define(frozen=True)
 class _BaseStream(ABC):
-    seq: Iterable = attrs.field(validator=attrs.validators.instance_of(Iterable), repr=False)
+    seq: tuple = attrs.field(validator=attrs.validators.instance_of(tuple))
     ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
     @classmethod
@@ -161,12 +161,12 @@ class Stream(_BaseStream):
     def from_iterable(cls, it: Iterable) -> Stream[T]:
         """This is the recommended way of creating a `Stream` object.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Stream
+            >>> from danom import Stream
 
-            Stream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
-
+            >>> Stream.from_iterable([0, 1, 2, 3]).collect() == (0, 1, 2, 3)
+            True
         """
         if not isinstance(it, Iterable):
             it = [it]
@@ -206,17 +206,18 @@ class Stream(_BaseStream):
 
         """
         plan = (*self.ops, *tuple((_MAP, fn) for fn in fns))
-        return Stream(seq=self.seq, ops=plan)
+        object.__setattr__(self, "ops", plan)
+        return self
 
     def filter(self, *fns: FilterFn | AsyncFilterFn) -> Stream[T]:
         """Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Stream
+            >>> from danom import Stream
 
-            Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
-
+            >>> Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
+            True
 
         Simple functions can be passed in sequence to compose more complex filters
 
@@ -228,7 +229,8 @@ class Stream(_BaseStream):
 
         """
         plan = (*self.ops, *tuple((_FILTER, fn) for fn in fns))
-        return Stream(seq=self.seq, ops=plan)
+        object.__setattr__(self, "ops", plan)
+        return self
 
     def tap(self, *fns: TapFn | AsyncTapFn) -> Stream[T]:
         """Tap the values to another process that returns None. Will return a new `Stream` with the modified sequence.
@@ -271,7 +273,8 @@ class Stream(_BaseStream):
 
         """
         plan = (*self.ops, *tuple((_TAP, fn) for fn in fns))
-        return Stream(seq=self.seq, ops=plan)
+        object.__setattr__(self, "ops", plan)
+        return self
 
     def partition(
         self, fn: FilterFn, *, workers: int = 1, use_threads: bool = False
@@ -280,14 +283,15 @@ class Stream(_BaseStream):
 
         Each partition is independently replayable.
 
-        .. code-block:: python
+        .. doctest::
 
             from danom import Stream
 
-            part1, part2 = Stream.from_iterable([0, 1, 2, 3]).partition(lambda x: x % 2 == 0)
-            part1.collect() == (0, 2)
-            part2.collect() == (1, 3)
-
+            >>> part1, part2 = Stream.from_iterable([0, 1, 2, 3]).partition(lambda x: x % 2 == 0)
+            >>> part1.collect() == (0, 2)
+            True
+            >>> part2.collect() == (1, 3)
+            True
 
         As `partition` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
 
@@ -315,13 +319,16 @@ class Stream(_BaseStream):
     ) -> T:
         """Fold the results into a single value. `fold` triggers an action so will incur a `collect`.
 
-        .. code-block:: python
+        .. doctest::
 
-            from danom import Stream
+            >>> from danom import Stream
 
-            Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
-            Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
-            Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
+            >>> Stream.from_iterable([1, 2, 3, 4]).fold(0, lambda a, b: a + b) == 10
+            True
+            >>> Stream.from_iterable([[1], [2], [3], [4]]).fold([0], lambda a, b: a + b) == [0, 1, 2, 3, 4]
+            True
+            >>> Stream.from_iterable([1, 2, 3, 4]).fold(1, lambda a, b: a * b) == 24
+            True
 
 
         As `fold` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
@@ -440,13 +447,13 @@ AsyncPlannedOps = tuple[str, AsyncStreamFn]
 
 
 def _apply_fns_worker[T](
-    args: tuple[T, tuple[PlannedOps, ...]],
+    args: tuple[tuple[T], tuple[PlannedOps, ...]],
 ) -> tuple[T]:
     seq, ops = args
     return _par_apply_fns(seq, ops)
 
 
-def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[None, None, T]:
+def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[T, None, None]:
     for elem in elements:
         valid = True
         res = elem
@@ -462,7 +469,7 @@ def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[
             yield res
 
 
-def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> list[T]:
+def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> tuple[T]:
     results = []
     for elem in elements:
         valid = True
@@ -477,7 +484,7 @@ def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> list[T
                 op_fn(deepcopy(res))
         if valid:
             results.append(res)
-    return results
+    return tuple(results)
 
 
 async def _async_apply_fns[T](elem: T, ops: tuple[AsyncPlannedOps, ...]) -> T | _Nothing:

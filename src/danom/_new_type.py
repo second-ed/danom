@@ -19,15 +19,16 @@ def new_type(  # noqa: ANN202
 ):
     """Create a NewType based on another type.
 
-    .. code-block:: python
+    .. doctest::
 
-        from danom import new_type
+        >>> from danom import new_type
 
-        def is_positive(value):
-            return value >= 0
+        >>> def is_positive[T](value: T) -> bool:
+        ...     return value >= 0
 
-        ValidBalance = new_type("ValidBalance", float, validators=[is_positive])
-        ValidBalance("20") == ValidBalance(inner=20.0)
+        >>> ValidBalance = new_type("ValidBalance", float, validators=[is_positive])
+        >>> ValidBalance(20.0) == ValidBalance(inner=20.0)
+        True
 
     Unlike an inherited class, the type will not return `True` for an isinstance check.
 
@@ -99,7 +100,7 @@ def _callables_to_kwargs(
 def _validate_bool_func[T](
     bool_fn: Callable[..., bool],
 ) -> Callable[[attrs.AttrsInstance, attrs.Attribute, T], None]:
-    if not isinstance(bool_fn, Callable):
+    if not callable(bool_fn):
         raise TypeError("provided boolean function must be callable")
 
     @wraps(bool_fn)
@@ -118,6 +119,11 @@ C = TypeVar("C", bound=Callable[..., object])
 def _to_list(value: C | Sequence[C] | None) -> list[C]:
     if value is None:
         return []
-    if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-        return list(value)
-    return [value]
+
+    if callable(value):
+        return [value]
+
+    if isinstance(value, Sequence) and not all(callable(fn) for fn in value):
+        raise TypeError(f"Given items are not all callable: {value = }")
+
+    return list(value)
