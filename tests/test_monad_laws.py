@@ -14,7 +14,7 @@ results = st.one_of(
     st.integers().map(Result.unit),
     st.text().map(Result.unit),
     st.floats(allow_nan=False, allow_infinity=False).map(Result.unit),
-    st.just(Err()),
+    st.just(Err(1)),
 )
 
 
@@ -31,6 +31,8 @@ def test_monadic_right_identity(monad):
     assert monad.and_then(Result.unit) == monad
 
 
-@given(monad=results, f=safe_fns, g=safe_fns)
-def test_monadic_associativity(monad, f, g):
-    assert monad.and_then(f).and_then(g) == monad.and_then(lambda x: f(x).and_then(g))
+@given(monad=results, f=safe_fns, g=safe_fns, h=safe_fns)
+def test_monadic_associativity(monad, f, g, h):
+    assert monad.and_then(f).and_then(g).or_else(h) == monad.and_then(
+        lambda x: f(x).and_then(g)
+    ).or_else(h)
