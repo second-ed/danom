@@ -167,7 +167,7 @@ class Ok(Result):
     def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
         return func(self.inner, **kwargs)
 
-    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:  # noqa: ARG002
+    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> Ok[T_co]:  # noqa: ARG002
         return self
 
     def unwrap(self) -> T_co:
@@ -180,7 +180,7 @@ SafeMethodArgs = tuple[object, tuple[Any, ...], dict[str, Any]]
 
 @attrs.define(frozen=True)
 class Err(Result):
-    error: E_co | Exception = attrs.field(default=None)
+    error: Any = attrs.field(default=None)
     input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(default=(), repr=False)
     details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)
 
