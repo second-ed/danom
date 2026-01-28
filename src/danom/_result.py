@@ -16,6 +16,7 @@ import attrs
 T_co = TypeVar("T_co", covariant=True)
 U_co = TypeVar("U_co", covariant=True)
 E_co = TypeVar("E_co", bound=object, covariant=True)
+F_co = TypeVar("F_co", bound=object, covariant=True)
 P = ParamSpec("P")
 
 Mappable = Callable[P, U_co]
@@ -80,6 +81,20 @@ class Result(ABC):
         ...
 
     @abstractmethod
+    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> ResultReturnType:
+        """Pipe a pure function and wrap the return value with `Err`.
+        Given an `Ok` will return self.
+
+        .. code-block:: python
+
+            from danom import Err, Ok
+
+            Err(error=TypeError()).map_err(type_err_to_value_err) == Err(error=ValueError())
+            Ok(1).map(type_err_to_value_err) == Ok(1)
+        """
+        ...
+
+    @abstractmethod
     def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
         """Pipe another function that returns a monad. For `Err` will return original error.
 
@@ -91,6 +106,19 @@ class Result(ABC):
             Ok(1).and_then(raise_err) == Err(error=TypeError())
             Err(error=TypeError()).and_then(add_one) == Err(error=TypeError())
             Err(error=TypeError()).and_then(raise_value_err) == Err(error=TypeError())
+        """
+        ...
+
+    @abstractmethod
+    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
+        """Pipe a function that returns a monad to recover from an `Err`. For `Ok` will return original `Result`.
+
+        .. code-block:: python
+
+            from danom import Err, Ok
+
+            Ok(1).or_else(replace_err_with_zero) == Ok(1)
+            Err(error=TypeError()).or_else(replace_err_with_zero) == Ok(0)
         """
         ...
 
@@ -119,26 +147,12 @@ class Result(ABC):
         """
         ...
 
-    @abstractmethod
-    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ResultReturnType:
-        """Map `ok_func` to `Ok` and `err_func` to `Err`
-
-        .. code-block:: python
-
-            from danom import Err, Ok
-
-            Ok(1).match(add_one, mock_get_error_type) == Ok(inner=2)
-            Ok("ok").match(double, mock_get_error_type) == Ok(inner='okok')
-            Err(error=TypeError()).match(double, mock_get_error_type) == Ok(inner='TypeError')
-        """
-        ...
-
     def __class_getitem__(cls, _params: tuple) -> Self:
         return cls  # ty: ignore[invalid-return-type]
 
 
 @attrs.define(frozen=True, hash=True)
-class Ok[T_co](Result):
+class Ok(Result):
     inner: Any = attrs.field(default=None)
 
     def is_ok(self) -> Literal[True]:
@@ -147,14 +161,17 @@ class Ok[T_co](Result):
     def map(self, func: Mappable, **kwargs: P.kwargs) -> Ok[U_co]:
         return Ok(func(self.inner, **kwargs))
 
+    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> Ok[U_co]:  # noqa: ARG002
+        return self
+
     def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
         return func(self.inner, **kwargs)
 
+    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:  # noqa: ARG002
+        return self
+
     def unwrap(self) -> T_co:
         return self.inner
-
-    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ResultReturnType:  # noqa: ARG002
-        return if_ok_func(self.inner)
 
 
 SafeArgs = tuple[tuple[Any, ...], dict[str, Any]]
@@ -162,7 +179,7 @@ SafeMethodArgs = tuple[object, tuple[Any, ...], dict[str, Any]]
 
 
 @attrs.define(frozen=True)
-class Err[E_co](Result):
+class Err(Result):
     error: E_co | Exception = attrs.field(default=None)
     input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(default=(), repr=False)
     details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)
@@ -193,16 +210,19 @@ class Err[E_co](Result):
     def map(self, func: Mappable, **kwargs: P.kwargs) -> Err[E_co]:  # noqa: ARG002
         return self
 
+    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> Err[F_co]:
+        return Err(func(self.error, **kwargs))
+
     def and_then(self, func: Bindable, **kwargs: P.kwargs) -> Err[E_co]:  # noqa: ARG002
         return self
+
+    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
+        return func(self.error, **kwargs)
 
     def unwrap(self) -> None:
         if isinstance(self.error, Exception):
             raise self.error
         raise ValueError(f"Err does not have a caught error to raise: {self.error = }")
-
-    def match(self, if_ok_func: Mappable, if_err_func: Mappable) -> ResultReturnType:  # noqa: ARG002
-        return if_err_func(self.error)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Err):

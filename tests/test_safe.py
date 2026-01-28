@@ -10,7 +10,8 @@ def test_valid_safe_pipeline():
         safe_add(1, 2)
         .and_then(safe_add, b=1)
         .and_then(safe_add, b=1)
-        .match(partial(safe_add, b=1), safe_get_error_type)
+        .and_then(partial(safe_add, b=1))
+        .or_else(safe_get_error_type)
     )
     assert pipeline.is_ok()
     assert pipeline.unwrap() == 6
@@ -29,7 +30,8 @@ def test_invalid_safe_pipeline_with_match():
         safe_add(1, 2)
         .and_then(safe_raise_type_error)
         .and_then(safe_add, b=1)
-        .match(partial(safe_add, b=1), safe_get_error_type)
+        .and_then(partial(safe_add, b=1))
+        .or_else(safe_get_error_type)
     )
     assert pipeline.is_ok()
     assert pipeline.unwrap() == "TypeError"
