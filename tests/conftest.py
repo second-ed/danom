@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from multiprocessing.managers import ListProxy
 from pathlib import Path
-from typing import Any, Self
+from typing import Any, Never, Self
 
 from src.danom import safe, safe_method
 from src.danom._result import Err, Ok, Result
@@ -78,6 +78,11 @@ def safe_raise_type_error(_a: Any) -> None:  # noqa: ANN401
 @safe
 def safe_get_error_type(exception: Exception) -> str:
     return exception.__class__.__name__
+
+
+@safe
+def div_zero(x: int) -> Never:
+    return x / 0
 
 
 class Adder:
