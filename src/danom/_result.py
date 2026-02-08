@@ -12,6 +12,7 @@ from typing import (
 )
 
 import attrs
+from attrs.validators import instance_of
 
 T_co = TypeVar("T_co", covariant=True)
 U_co = TypeVar("U_co", covariant=True)
@@ -181,7 +182,10 @@ SafeMethodArgs = tuple[object, tuple[Any, ...], dict[str, Any]]
 @attrs.define(frozen=True)
 class Err(Result):
     error: Any = attrs.field(default=None)
-    input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(default=(), repr=False)
+    input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(
+        default=(), validator=instance_of(tuple), repr=False
+    )
+    traceback: str = attrs.field(default="", validator=instance_of(str))
     details: list[dict[str, Any]] = attrs.field(factory=list, init=False, repr=False)
 
     def __attrs_post_init__(self) -> None:

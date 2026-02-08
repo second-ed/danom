@@ -2,7 +2,14 @@ from functools import partial
 
 import pytest
 
-from tests.conftest import Adder, safe_add, safe_get_error_type, safe_raise_type_error
+from tests.conftest import (
+    REPO_ROOT,
+    Adder,
+    div_zero,
+    safe_add,
+    safe_get_error_type,
+    safe_raise_type_error,
+)
 
 
 def test_valid_safe_pipeline():
@@ -50,3 +57,14 @@ def test_invalid_safe_method_pipeline():
     assert not res.is_ok()
     with pytest.raises(ValueError):
         res.unwrap()
+
+
+def test_traceback():
+    err = div_zero()
+    assert err.traceback.replace(str(REPO_ROOT), ".").splitlines() == [
+        "Traceback (most recent call last):",
+        '  File "./src/danom/_safe.py", line 28, in wrapper',
+        "    return Ok(func(*args, **kwargs))",
+        "              ^^^^^^^^^^^^^^^^^^^^^",
+        "TypeError: div_zero() missing 1 required positional argument: 'x'",
+    ]

@@ -1,4 +1,5 @@
 import functools
+import traceback
 from collections.abc import Callable
 from typing import ParamSpec
 
@@ -26,7 +27,7 @@ def safe[U, E](func: Callable[..., U]) -> Callable[..., Result[U, E]]:
         try:
             return Ok(func(*args, **kwargs))
         except Exception as e:  # noqa: BLE001
-            return Err(input_args=(args, kwargs), error=e)
+            return Err(error=e, input_args=(args, kwargs), traceback=traceback.format_exc())
 
     return wrapper
 
@@ -54,6 +55,6 @@ def safe_method[U, E](func: Callable[..., U]) -> Callable[..., Result[U, E]]:
         try:
             return Ok(func(self, *args, **kwargs))
         except Exception as e:  # noqa: BLE001
-            return Err(input_args=(self, args, kwargs), error=e)
+            return Err(error=e, input_args=(self, args, kwargs), traceback=traceback.format_exc())
 
     return wrapper
