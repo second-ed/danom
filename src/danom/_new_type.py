@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import TypeVar
+from typing import ParamSpec, TypeVar
 
 import attrs
 
@@ -97,8 +97,10 @@ def _callables_to_kwargs(
     return {k: v for k, v in kwargs.items() if v}
 
 
+P = ParamSpec("P")
+
 def _validate_bool_func[T](
-    bool_fn: Callable[..., bool],
+    bool_fn: Callable[P, bool],
 ) -> Callable[[attrs.AttrsInstance, attrs.Attribute, T], None]:
     if not callable(bool_fn):
         raise TypeError("provided boolean function must be callable")
@@ -113,7 +115,7 @@ def _validate_bool_func[T](
     return wrapper
 
 
-C = TypeVar("C", bound=Callable[..., object])
+C = TypeVar("C", bound=Callable[P, object])
 
 
 def _to_list(value: C | Sequence[C] | None) -> list[C]:

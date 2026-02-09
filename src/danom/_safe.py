@@ -8,7 +8,7 @@ from danom._result import Err, Ok, Result
 P = ParamSpec("P")
 
 
-def safe[U, E](func: Callable[..., U]) -> Callable[..., Result[U, E]]:
+def safe[U, E](func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     .. code-block:: python
@@ -32,7 +32,7 @@ def safe[U, E](func: Callable[..., U]) -> Callable[..., Result[U, E]]:
     return wrapper
 
 
-def safe_method[U, E](func: Callable[..., U]) -> Callable[..., Result[U, E]]:
+def safe_method[U, E](func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
     .. code-block:: python
