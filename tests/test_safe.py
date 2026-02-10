@@ -64,17 +64,15 @@ def test_traceback():
 
     expected_lines = [
         "Traceback (most recent call last):",
-        '  File "./src/danom/_safe.py", line 28, in wrapper',
+        '  File "./src/danom/_safe.py", line 31, in wrapper',
         "    return Ok(func(*args, **kwargs))",
         '  File "./tests/conftest.py", line 85, in div_zero',
         "    return x / 0",
         "ZeroDivisionError: division by zero",
     ]
 
-    missing_lines = [
-        line
-        for line in expected_lines
-        if line not in err.traceback.replace(str(REPO_ROOT), ".").splitlines()
-    ]
+    tb_lines = err.traceback.replace(str(REPO_ROOT), ".").splitlines()
+
+    missing_lines = [line for line in expected_lines if line not in tb_lines]
 
     assert missing_lines == []

@@ -7,6 +7,8 @@ from typing import ParamSpec, TypeVar
 
 import attrs
 
+T = TypeVar("T")
+
 
 # skip return type because it makes Pylance think the returned type isn't a type
 def new_type(  # noqa: ANN202
@@ -54,7 +56,7 @@ def new_type(  # noqa: ANN202
     kwargs = _callables_to_kwargs(base_type, validators, converters)
 
     @attrs.define(frozen=frozen, eq=True, hash=frozen)
-    class _Wrapper[T]:
+    class _Wrapper:
         inner: T = attrs.field(**kwargs)
 
         def map(self, func: Callable[[T], T]) -> T:
@@ -74,7 +76,7 @@ def _create_forward_methods(base_type: type) -> dict[str, Callable]:
             continue
 
         def make_forwarder(name: str) -> Callable:
-            def method[T](self, *args: tuple, **kwargs: dict) -> T:  # noqa: ANN001
+            def method(self, *args: tuple, **kwargs: dict) -> T:  # noqa: ANN001
                 return getattr(self.inner, name)(*args, **kwargs)
 
             method.__name__ = name
@@ -100,7 +102,7 @@ def _callables_to_kwargs(
 P = ParamSpec("P")
 
 
-def _validate_bool_func[T](
+def _validate_bool_func(
     bool_fn: Callable[P, bool],
 ) -> Callable[[attrs.AttrsInstance, attrs.Attribute, T], None]:
     if not callable(bool_fn):

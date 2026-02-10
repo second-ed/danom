@@ -1,14 +1,17 @@
 import functools
 import traceback
 from collections.abc import Callable
-from typing import ParamSpec
+from typing import Concatenate, ParamSpec, TypeVar
 
 from danom._result import Err, Ok, Result
 
+T = TypeVar("T")
 P = ParamSpec("P")
+U = TypeVar("U")
+E = TypeVar("E")
 
 
-def safe[U, E](func: Callable[P, U]) -> Callable[P, Result[U, E]]:
+def safe(func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     .. code-block:: python
@@ -32,7 +35,7 @@ def safe[U, E](func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     return wrapper
 
 
-def safe_method[U, E](func: Callable[P, U]) -> Callable[P, Result[U, E]]:
+def safe_method(func: Callable[Concatenate[T, P], U]) -> Callable[P, Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
     .. code-block:: python
@@ -51,7 +54,7 @@ def safe_method[U, E](func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     """
 
     @functools.wraps(func)
-    def wrapper(self, *args: P.args, **kwargs: P.kwargs) -> Result[U, E]:  # noqa: ANN001
+    def wrapper(self: T, *args: P.args, **kwargs: P.kwargs) -> Result[U, E]:
         try:
             return Ok(func(self, *args, **kwargs))
         except Exception as e:  # noqa: BLE001
