@@ -35,7 +35,7 @@ def safe(func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     return wrapper
 
 
-def safe_method(func: Callable[Concatenate[T, P], U]) -> Callable[P, Result[U, E]]:
+def safe_method(func: Callable[Concatenate[T, P], U]) -> Callable[Concatenate[T, P], Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
     .. code-block:: python

@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import ParamSpec, TypeVar
+from typing import ParamSpec, Self, TypeVar
 
 import attrs
 
@@ -57,9 +57,9 @@ def new_type(  # noqa: ANN202
 
     @attrs.define(frozen=frozen, eq=True, hash=frozen)
     class _Wrapper:
-        inner: T = attrs.field(**kwargs)
+        inner: T = attrs.field(**kwargs)  # ty: ignore[no-matching-overload]
 
-        def map(self, func: Callable[[T], T]) -> T:
+        def map(self, func: Callable[[T], T]) -> Self:
             return type(self)(func(self.inner))
 
         locals().update(_create_forward_methods(base_type))
@@ -103,7 +103,7 @@ P = ParamSpec("P")
 
 
 def _validate_bool_func(
-    bool_fn: Callable[P, bool],
+    bool_fn: Callable[[T], bool],
 ) -> Callable[[attrs.AttrsInstance, attrs.Attribute, T], None]:
     if not callable(bool_fn):
         raise TypeError("provided boolean function must be callable")
