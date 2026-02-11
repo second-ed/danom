@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
+from functools import reduce
 from operator import not_
 from typing import ParamSpec, TypeVar
 
@@ -19,10 +20,11 @@ class _Compose:
     fns: Sequence[Composable]
 
     def __call__(self, initial: T_co) -> T_co | U_co:
-        value = initial
-        for fn in self.fns:
-            value = fn(value)
-        return value
+        return reduce(_apply, self.fns, initial)
+
+
+def _apply(value: T_co, fn: Composable) -> U_co:
+    return fn(value)
 
 
 def compose(*fns: Composable) -> Composable:
@@ -46,8 +48,8 @@ def compose(*fns: Composable) -> Composable:
 class _AllOf:
     fns: Sequence[Filterable]
 
-    def __call__(self, initial: T_co) -> bool:
-        return all(fn(initial) for fn in self.fns)
+    def __call__(self, item: T_co) -> bool:
+        return all(fn(item) for fn in self.fns)
 
 
 def all_of(*fns: Filterable) -> Filterable:
@@ -67,8 +69,8 @@ def all_of(*fns: Filterable) -> Filterable:
 class _AnyOf:
     fns: Sequence[Filterable]
 
-    def __call__(self, initial: T_co) -> bool:
-        return any(fn(initial) for fn in self.fns)
+    def __call__(self, item: T_co) -> bool:
+        return any(fn(item) for fn in self.fns)
 
 
 def any_of(*fns: Filterable) -> Filterable:
