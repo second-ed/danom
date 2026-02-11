@@ -11,7 +11,7 @@ U = TypeVar("U")
 E = TypeVar("E")
 
 
-def safe(func: Callable[P, U]) -> Callable[P, Result[U, E]]:
+def safe[**P, U](func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     .. code-block:: python
@@ -35,7 +35,9 @@ def safe(func: Callable[P, U]) -> Callable[P, Result[U, E]]:
     return wrapper
 
 
-def safe_method(func: Callable[Concatenate[T, P], U]) -> Callable[Concatenate[T, P], Result[U, E]]:
+def safe_method[T, **P, U](
+    func: Callable[Concatenate[T, P], U],
+) -> Callable[Concatenate[T, P], Result[U, E]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
 
     .. code-block:: python

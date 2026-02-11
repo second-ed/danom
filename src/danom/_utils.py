@@ -23,7 +23,7 @@ class _Compose:
         return reduce(_apply, self.fns, initial)
 
 
-def _apply(value: T_co, fn: Composable) -> U_co:
+def _apply[T_co](value: T_co, fn: Composable) -> T_co | U_co:
     return fn(value)
 
 

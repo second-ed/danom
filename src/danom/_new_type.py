@@ -102,7 +102,7 @@ def _callables_to_kwargs(
 P = ParamSpec("P")
 
 
-def _validate_bool_func(
+def _validate_bool_func[T](
     bool_fn: Callable[[T], bool],
 ) -> Callable[[attrs.AttrsInstance, attrs.Attribute, T], None]:
     if not callable(bool_fn):
