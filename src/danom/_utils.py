@@ -109,6 +109,21 @@ def identity[T_co](x: T_co) -> T_co:
         identity("abc") == "abc"
         identity(1) == 1
         identity(ComplexDataType(a=1, b=2, c=3)) == ComplexDataType(a=1, b=2, c=3)
+
+    Papertrail examples:
+
+        >>> identity(1) == 1
+        True
+
+        >>> identity("abc") == "abc"
+        True
+
+        >>> identity([0, 1, 2]) == [0, 1, 2]
+        True
+
+        >>> identity(Ok(inner=1)) == Ok(inner=1)
+        True
+    ::
     """
     return x
 

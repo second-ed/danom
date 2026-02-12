@@ -1,4 +1,5 @@
 import pytest
+from papertrail import example
 
 from src.danom import Ok, compose, identity, invert
 from src.danom._utils import all_of, any_of, none_of
@@ -65,7 +66,7 @@ def test_none_of(inp_args, fns, expected_result):
     ],
 )
 def test_identity(x):
-    assert identity(x) == x
+    assert example(identity, x) == x
 
 
 @pytest.mark.parametrize(
