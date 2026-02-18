@@ -3,9 +3,11 @@ from __future__ import annotations
 import inspect
 from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import TypeVar
+from typing import ParamSpec, Self, TypeVar
 
 import attrs
+
+T = TypeVar("T")
 
 
 # skip return type because it makes Pylance think the returned type isn't a type
@@ -54,11 +56,11 @@ def new_type(  # noqa: ANN202
     kwargs = _callables_to_kwargs(base_type, validators, converters)
 
     @attrs.define(frozen=frozen, eq=True, hash=frozen)
-    class _Wrapper[T]:
-        inner: T = attrs.field(**kwargs)
+    class _Wrapper:
+        inner: T = attrs.field(**kwargs)  # ty: ignore[no-matching-overload]
 
-        def map(self, func: Callable[[T], T]) -> T:
-            return type(self)(func(self.inner))
+        def map(self, func: Callable[[T], T]) -> Self:
+            return self.__class__(func(self.inner))  # ty: ignore[invalid-argument-type]
 
         locals().update(_create_forward_methods(base_type))
 
@@ -74,7 +76,7 @@ def _create_forward_methods(base_type: type) -> dict[str, Callable]:
             continue
 
         def make_forwarder(name: str) -> Callable:
-            def method[T](self, *args: tuple, **kwargs: dict) -> T:  # noqa: ANN001
+            def method(self, *args: tuple, **kwargs: dict) -> T:  # noqa: ANN001
                 return getattr(self.inner, name)(*args, **kwargs)
 
             method.__name__ = name
@@ -97,8 +99,11 @@ def _callables_to_kwargs(
     return {k: v for k, v in kwargs.items() if v}
 
 
+P = ParamSpec("P")
+
+
 def _validate_bool_func[T](
-    bool_fn: Callable[..., bool],
+    bool_fn: Callable[[T], bool],
 ) -> Callable[[attrs.AttrsInstance, attrs.Attribute, T], None]:
     if not callable(bool_fn):
         raise TypeError("provided boolean function must be callable")
@@ -107,13 +112,13 @@ def _validate_bool_func[T](
     def wrapper(_instance: attrs.AttrsInstance, attribute: attrs.Attribute, value: T) -> None:
         if not bool_fn(value):
             raise ValueError(
-                f"{attribute.name} does not return True for `{bool_fn.__name__}`, received `{value}`."
+                f"{attribute.name} does not return True for the given boolean function, received `{value}`."
             )
 
     return wrapper
 
 
-C = TypeVar("C", bound=Callable[..., object])
+C = TypeVar("C", bound=Callable[P, object])
 
 
 def _to_list(value: C | Sequence[C] | None) -> list[C]:
@@ -121,7 +126,7 @@ def _to_list(value: C | Sequence[C] | None) -> list[C]:
         return []
 
     if callable(value):
-        return [value]
+        return [value]  # ty: ignore[invalid-return-type]
 
     if isinstance(value, Sequence) and not all(callable(fn) for fn in value):
         raise TypeError(f"Given items are not all callable: {value = }")

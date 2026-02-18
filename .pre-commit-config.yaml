@@ -16,6 +16,12 @@ repos:
         entry: ruff format
         language: system
         types_or: [ python, pyi, jupyter ]
+      - id: ty
+        name: ty check
+        entry: uv run ty check
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: pytest
         name: pytest
         entry: uv run pytest -vv --cov=src --cov-report term-missing:skip-covered --cov-report=json:coverage.json

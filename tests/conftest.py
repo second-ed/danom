@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from multiprocessing.managers import ListProxy
 from pathlib import Path
-from typing import Any, Never, Self
+from typing import Any, Self
 
 from src.danom import safe, safe_method
 from src.danom._result import Err, Ok, Result
@@ -81,7 +81,7 @@ def safe_get_error_type(exception: Exception) -> str:
 
 
 @safe
-def div_zero(x: int) -> Never:
+def div_zero(x: int) -> float:
     return x / 0
 
 

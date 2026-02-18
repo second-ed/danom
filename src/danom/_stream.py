@@ -397,7 +397,7 @@ class Stream(_BaseStream):
 
         batches = [
             (list(chunk), self.ops)
-            for chunk in batched(self.seq, n=max(10, len(self.seq) // workers))
+            for chunk in batched(self.seq, n=max(4, len(self.seq) // workers))
         ]
 
         with executor_cls(max_workers=workers) as ex:

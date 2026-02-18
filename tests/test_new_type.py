@@ -1,6 +1,6 @@
 from contextlib import nullcontext
-from types import SimpleNamespace
 
+import attrs
 import hypothesis.strategies as st
 import pytest
 from hypothesis import given
@@ -100,5 +100,21 @@ def test_new_type_map(initial_value, base_type, map_fn, get_attr, expected_inner
 def test_validate_bool_func(args):
     bool_fn, value, expected_context = args
 
+    attr = attrs.Attribute(
+        name="x",  # ty: ignore[unknown-argument]
+        cmp=None,  # ty: ignore[unknown-argument]
+        inherited=False,  # ty: ignore[unknown-argument]
+        default=None,  # ty: ignore[unknown-argument]
+        validator=None,  # ty: ignore[unknown-argument]
+        repr=True,  # ty: ignore[unknown-argument]
+        eq=True,  # ty: ignore[unknown-argument]
+        order=True,  # ty: ignore[unknown-argument]
+        hash=None,  # ty: ignore[unknown-argument]
+        init=True,  # ty: ignore[unknown-argument]
+        metadata={},  # ty: ignore[unknown-argument]
+        type=object,  # ty: ignore[unknown-argument]
+        converter=None,  # ty: ignore[unknown-argument]
+    )
+
     with expected_context:
-        _validate_bool_func(bool_fn)(object(), SimpleNamespace(name="x"), value)
+        _validate_bool_func(bool_fn)(object(), attr, value)

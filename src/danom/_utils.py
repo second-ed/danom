@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
+from functools import reduce
 from operator import not_
 from typing import ParamSpec, TypeVar
 
@@ -19,10 +20,11 @@ class _Compose:
     fns: Sequence[Composable]
 
     def __call__(self, initial: T_co) -> T_co | U_co:
-        value = initial
-        for fn in self.fns:
-            value = fn(value)
-        return value
+        return reduce(_apply, self.fns, initial)  # ty: ignore[invalid-return-type]
+
+
+def _apply[T_co](value: T_co, fn: Composable) -> T_co | U_co:
+    return fn(value)
 
 
 def compose(*fns: Composable) -> Composable:
@@ -46,8 +48,8 @@ def compose(*fns: Composable) -> Composable:
 class _AllOf:
     fns: Sequence[Filterable]
 
-    def __call__(self, initial: T_co) -> bool:
-        return all(fn(initial) for fn in self.fns)
+    def __call__(self, item: T_co) -> bool:
+        return all(fn(item) for fn in self.fns)
 
 
 def all_of(*fns: Filterable) -> Filterable:
@@ -67,8 +69,8 @@ def all_of(*fns: Filterable) -> Filterable:
 class _AnyOf:
     fns: Sequence[Filterable]
 
-    def __call__(self, initial: T_co) -> bool:
-        return any(fn(initial) for fn in self.fns)
+    def __call__(self, item: T_co) -> bool:
+        return any(fn(item) for fn in self.fns)
 
 
 def any_of(*fns: Filterable) -> Filterable:
@@ -107,6 +109,21 @@ def identity[T_co](x: T_co) -> T_co:
         identity("abc") == "abc"
         identity(1) == 1
         identity(ComplexDataType(a=1, b=2, c=3)) == ComplexDataType(a=1, b=2, c=3)
+
+    Papertrail examples:
+
+        >>> identity(1) == 1
+        True
+
+        >>> identity("abc") == "abc"
+        True
+
+        >>> identity([0, 1, 2]) == [0, 1, 2]
+        True
+
+        >>> identity(Ok(inner=1)) == Ok(inner=1)
+        True
+    ::
     """
     return x
 
