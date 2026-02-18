@@ -60,7 +60,7 @@ def new_type(  # noqa: ANN202
         inner: T = attrs.field(**kwargs)  # ty: ignore[no-matching-overload]
 
         def map(self, func: Callable[[T], T]) -> Self:
-            return type(self)(func(self.inner))
+            return self.__class__(func(self.inner))  # ty: ignore[invalid-argument-type]
 
         locals().update(_create_forward_methods(base_type))
 
@@ -112,7 +112,7 @@ def _validate_bool_func[T](
     def wrapper(_instance: attrs.AttrsInstance, attribute: attrs.Attribute, value: T) -> None:
         if not bool_fn(value):
             raise ValueError(
-                f"{attribute.name} does not return True for `{bool_fn.__name__}`, received `{value}`."
+                f"{attribute.name} does not return True for the given boolean function, received `{value}`."
             )
 
     return wrapper
@@ -126,7 +126,7 @@ def _to_list(value: C | Sequence[C] | None) -> list[C]:
         return []
 
     if callable(value):
-        return [value]
+        return [value]  # ty: ignore[invalid-return-type]
 
     if isinstance(value, Sequence) and not all(callable(fn) for fn in value):
         raise TypeError(f"Given items are not all callable: {value = }")

@@ -20,7 +20,7 @@ class _Compose:
     fns: Sequence[Composable]
 
     def __call__(self, initial: T_co) -> T_co | U_co:
-        return reduce(_apply, self.fns, initial)
+        return reduce(_apply, self.fns, initial)  # ty: ignore[invalid-return-type]
 
 
 def _apply[T_co](value: T_co, fn: Composable) -> T_co | U_co:
