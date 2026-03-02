@@ -21,8 +21,7 @@ F_co = TypeVar("F_co", bound=object, covariant=True)
 P = ParamSpec("P")
 
 Mappable = Callable[P, U_co]
-ResultReturnType = TypeVar("ResultReturnType", bound="Result[U_co, E_co]")
-Bindable = Callable[P, ResultReturnType]
+Bindable = Callable[P, "Result[U_co, E_co]"]
 
 
 @attrs.define(frozen=True)
@@ -68,7 +67,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def map(self, func: Mappable, **kwargs: P.kwargs) -> ResultReturnType:
+    def map(self, func: Mappable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe a pure function and wrap the return value with `Ok`.
         Given an `Err` will return self.
 
@@ -82,7 +81,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> ResultReturnType:
+    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe a pure function and wrap the return value with `Err`.
         Given an `Ok` will return self.
 
@@ -96,7 +95,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
+    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe another function that returns a monad. For `Err` will return original error.
 
         .. code-block:: python
@@ -111,7 +110,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
+    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe a function that returns a monad to recover from an `Err`. For `Ok` will return original `Result`.
 
         .. code-block:: python
@@ -165,7 +164,7 @@ class Ok(Result):
     def map_err(self, func: Mappable, **kwargs: P.kwargs) -> Ok[U_co]:  # noqa: ARG002
         return self
 
-    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
+    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         return func(self.inner, **kwargs)
 
     def or_else(self, func: Bindable, **kwargs: P.kwargs) -> Ok[T_co]:  # noqa: ARG002
@@ -220,7 +219,7 @@ class Err(Result):
     def and_then(self, func: Bindable, **kwargs: P.kwargs) -> Err[E_co]:  # noqa: ARG002
         return self
 
-    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> ResultReturnType:
+    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         return func(self.error, **kwargs)
 
     def unwrap(self) -> None:

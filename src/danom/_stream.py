@@ -66,9 +66,12 @@ class _BaseStream(ABC):
     @abstractmethod
     async def async_collect(self) -> Awaitable[tuple[U, ...]]: ...
 
+    def __bool__(self) -> bool:
+        return bool(self.seq)
+
 
 @attrs.define(frozen=True)
-class Stream(_BaseStream):
+class Stream[Type](_BaseStream):
     """An immutable lazy iterator with functional operations.
 
     Why bother?
