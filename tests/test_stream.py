@@ -2,6 +2,8 @@ from multiprocessing import Manager
 from pathlib import Path
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 from src.danom import Stream
 from tests.conftest import (
@@ -173,3 +175,16 @@ async def test_async_tap():
     )
     assert sorted(val_logger.values) == [0, 1, 2, 3]
     assert sorted(val_logger_2.values) == [0, 1, 2, 3]
+
+
+@given(
+    st.one_of(
+        st.tuples(st.lists(st.integers(), min_size=1), st.just(True)),
+        st.tuples(st.lists(st.integers(), max_size=0), st.just(False)),
+        st.tuples(st.dictionaries(st.characters(), st.integers(), min_size=1), st.just(True)),
+        st.tuples(st.dictionaries(st.characters(), st.integers(), max_size=0), st.just(False)),
+    )
+)
+def test_stream_bool(args):
+    seq, expected_result = args
+    assert bool(Stream.from_iterable(seq)) == expected_result
