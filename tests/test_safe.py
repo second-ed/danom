@@ -2,6 +2,7 @@ from functools import partial
 
 import pytest
 
+from danom._result import Err
 from tests.conftest import (
     REPO_ROOT,
     Adder,
@@ -70,6 +71,9 @@ def test_traceback():
         "    return x / 0",
         "ZeroDivisionError: division by zero",
     ]
+
+    if not isinstance(err, Err):
+        raise TypeError("This should be an Err by now")
 
     tb_lines = err.traceback.replace(str(REPO_ROOT), ".").splitlines()
 

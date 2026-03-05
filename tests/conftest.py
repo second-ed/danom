@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 from multiprocessing.managers import ListProxy
 from pathlib import Path
-from typing import Any, Self
+from typing import Any, NoReturn, Self
 
 from src.danom import safe, safe_method
 from src.danom._result import Err, Ok, Result
@@ -53,7 +53,7 @@ async def async_read_text(path: str) -> str:
 
 
 @safe
-def safe_add(a: int, b: int) -> Result[int, Exception]:
+def safe_add(a: int, b: int) -> int:
     return a + b
 
 
@@ -71,7 +71,7 @@ def safe_double[T: (str, float, int)](x: T) -> T:
 
 
 @safe
-def safe_raise_type_error(_a: Any) -> None:  # noqa: ANN401
+def safe_raise_type_error(_a: Any) -> NoReturn:  # noqa: ANN401
     raise TypeError
 
 

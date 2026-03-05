@@ -26,7 +26,7 @@ def safe(func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
     """
 
     @functools.wraps(func)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[U, E]:
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[U, Exception]:
         try:
             return Ok(func(*args, **kwargs))
         except Exception as e:  # noqa: BLE001

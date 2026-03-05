@@ -5,7 +5,10 @@ from collections.abc import Callable
 from types import TracebackType
 from typing import (
     Any,
+    Concatenate,
+    Generic,
     Literal,
+    Never,
     ParamSpec,
     Self,
     TypeVar,
@@ -20,12 +23,12 @@ E_co = TypeVar("E_co", bound=object, covariant=True)
 F_co = TypeVar("F_co", bound=object, covariant=True)
 P = ParamSpec("P")
 
-Mappable = Callable[P, U_co]
-Bindable = Callable[P, "Result[U_co, E_co]"]
+Mappable = Callable[Concatenate[T_co, P], U_co]
+Bindable = Callable[Concatenate[T_co, P], "Result[U_co, E_co]"]
 
 
 @attrs.define(frozen=True)
-class Result(ABC):
+class Result(ABC, Generic[T_co, E_co]):
     """`Result` monad. Consists of `Ok` and `Err` for successful and failed operations respectively.
     Each monad is a frozen instance to prevent further mutation.
     """
@@ -67,7 +70,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def map(self, func: Mappable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe a pure function and wrap the return value with `Ok`.
         Given an `Err` will return self.
 
@@ -81,7 +84,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe a pure function and wrap the return value with `Err`.
         Given an `Ok` will return self.
 
@@ -95,7 +98,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe another function that returns a monad. For `Err` will return original error.
 
         .. code-block:: python
@@ -110,7 +113,7 @@ class Result(ABC):
         ...
 
     @abstractmethod
-    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
         """Pipe a function that returns a monad to recover from an `Err`. For `Ok` will return original `Result`.
 
         .. code-block:: python
@@ -147,27 +150,24 @@ class Result(ABC):
         """
         ...
 
-    def __class_getitem__(cls, _params: tuple) -> Self:
-        return cls  # ty: ignore[invalid-return-type]
-
 
 @attrs.define(frozen=True, hash=True)
-class Ok(Result):
+class Ok(Result[T_co, Never]):
     inner: Any = attrs.field(default=None)
 
     def is_ok(self) -> Literal[True]:
         return True
 
-    def map(self, func: Mappable, **kwargs: P.kwargs) -> Ok[U_co]:
-        return Ok(func(self.inner, **kwargs))
+    def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Ok[U_co]:
+        return Ok(func(self.inner, *args, **kwargs))
 
-    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> Ok[U_co]:  # noqa: ARG002
+    def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
-    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        return func(self.inner, **kwargs)
+    def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+        return func(self.inner, *args, **kwargs)
 
-    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> Ok[T_co]:  # noqa: ARG002
+    def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
     def unwrap(self) -> T_co:
@@ -179,7 +179,7 @@ SafeMethodArgs = tuple[object, tuple[Any, ...], dict[str, Any]]
 
 
 @attrs.define(frozen=True)
-class Err(Result):
+class Err(Result[Never, E_co]):
     error: Any = attrs.field(default=None)
     input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(
         default=(), validator=instance_of(tuple), repr=False
@@ -210,19 +210,19 @@ class Err(Result):
     def is_ok(self) -> Literal[False]:
         return False
 
-    def map(self, func: Mappable, **kwargs: P.kwargs) -> Err[E_co]:  # noqa: ARG002
+    def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
-    def map_err(self, func: Mappable, **kwargs: P.kwargs) -> Err[F_co]:
-        return Err(func(self.error, **kwargs))
+    def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Err[F_co]:
+        return Err(func(self.error, *args, **kwargs))
 
-    def and_then(self, func: Bindable, **kwargs: P.kwargs) -> Err[E_co]:  # noqa: ARG002
+    def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
-    def or_else(self, func: Bindable, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        return func(self.error, **kwargs)
+    def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+        return func(self.error, *args, **kwargs)
 
-    def unwrap(self) -> None:
+    def unwrap(self) -> T_co:
         if isinstance(self.error, Exception):
             raise self.error
         raise ValueError(f"Err does not have a caught error to raise: {self.error = }")
