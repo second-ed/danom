@@ -6,7 +6,6 @@ from types import TracebackType
 from typing import (
     Any,
     Concatenate,
-    Generic,
     Literal,
     Never,
     ParamSpec,
@@ -28,7 +27,7 @@ Bindable = Callable[Concatenate[T_co, P], "Result[U_co, E_co]"]
 
 
 @attrs.define(frozen=True)
-class Result(ABC, Generic[T_co, E_co]):
+class Result[T_co, E_co: object](ABC):
     """`Result` monad. Consists of `Ok` and `Err` for successful and failed operations respectively.
     Each monad is a frozen instance to prevent further mutation.
     """
@@ -149,6 +148,34 @@ class Result(ABC, Generic[T_co, E_co]):
             TypeError:
         """
         ...
+
+    @staticmethod
+    def result_is_ok(result: Result[T_co, E_co]) -> bool:
+        """Check whether the monad is ok. Allows for ``filter`` or ``partition`` in a ``Stream`` without needing a lambda or custom function.
+
+        .. code-block:: python
+
+            from danom import Stream, Result
+
+            Stream.from_iterable([Ok(), Ok(), Err()]).filter(Result.result_is_ok).collect() == (Ok(), Ok())
+
+        """
+        return result.is_ok()
+
+    @staticmethod
+    def result_unwrap(result: Result[T_co, E_co]) -> T_co:
+        """Unwrap the `Ok` monad and get the inner value.
+        Unwrap the `Err` monad will raise the inner error.
+
+        .. code-block:: python
+
+            from danom import Stream, Result
+
+            oks, errs = Stream.from_iterable([Ok(1), Ok(2), Err()]).partition(Result.result_is_ok)
+            oks.map(Result.result_unwrap).collect == (1, 2)
+
+        """
+        return result.unwrap()
 
 
 @attrs.define(frozen=True, hash=True)

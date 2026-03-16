@@ -135,3 +135,42 @@ def test_raises_not_implemented(cls):
 def test_err_details(err, expected_details):
     monad = Err(error=err)
     assert monad.details == expected_details
+
+
+@pytest.mark.parametrize(
+    ("monad", "expected_result"),
+    [
+        pytest.param(Ok(None), True),
+        pytest.param(Err(), False),
+    ],
+)
+def test_staticmethod_result_is_ok(monad, expected_result):
+    assert Result.result_is_ok(monad) == expected_result
+
+
+@pytest.mark.parametrize(
+    ("monad", "expected_result", "expected_context"),
+    [
+        pytest.param(Ok(None), None, nullcontext()),
+        pytest.param(Ok(0), 0, nullcontext()),
+        pytest.param(Ok("ok"), "ok", nullcontext()),
+        pytest.param(
+            Err(error=TypeError("should raise this")),
+            None,
+            pytest.raises(TypeError),
+        ),
+        pytest.param(
+            Err(error=ValueError("should raise this")),
+            None,
+            pytest.raises(ValueError),
+        ),
+        pytest.param(
+            Err("some other err representation"),
+            None,
+            pytest.raises(ValueError),
+        ),
+    ],
+)
+def test_staticmethod_result_unwrap(monad, expected_result, expected_context):
+    with expected_context:
+        assert Result.result_unwrap(monad) == expected_result
