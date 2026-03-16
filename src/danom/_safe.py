@@ -11,7 +11,7 @@ U = TypeVar("U")
 E = TypeVar("E")
 
 
-def safe(func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
+def safe[**P, U](func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     .. code-block:: python
@@ -30,12 +30,14 @@ def safe(func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
         try:
             return Ok(func(*args, **kwargs))
         except Exception as e:  # noqa: BLE001
-            return Err(error=e, input_args=(args, kwargs), traceback=traceback.format_exc())
+            return Err(
+                error=e, input_args=(args, kwargs), traceback=traceback.format_exc()
+            )  # ty: ignore[invalid-return-type]
 
     return wrapper
 
 
-def safe_method(
+def safe_method[T, **P, U](
     func: Callable[Concatenate[T, P], U],
 ) -> Callable[Concatenate[T, P], Result[U, Exception]]:
     """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
@@ -60,6 +62,8 @@ def safe_method(
         try:
             return Ok(func(self, *args, **kwargs))
         except Exception as e:  # noqa: BLE001
-            return Err(error=e, input_args=(self, args, kwargs), traceback=traceback.format_exc())
+            return Err(
+                error=e, input_args=(self, args, kwargs), traceback=traceback.format_exc()
+            )  # ty: ignore[invalid-return-type]
 
     return wrapper

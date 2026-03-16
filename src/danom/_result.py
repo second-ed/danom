@@ -6,7 +6,6 @@ from types import TracebackType
 from typing import (
     Any,
     Concatenate,
-    Generic,
     Literal,
     Never,
     ParamSpec,
@@ -28,7 +27,7 @@ Bindable = Callable[Concatenate[T_co, P], "Result[U_co, E_co]"]
 
 
 @attrs.define(frozen=True)
-class Result(ABC, Generic[T_co, E_co]):
+class Result[T_co, E_co: object](ABC):
     """`Result` monad. Consists of `Ok` and `Err` for successful and failed operations respectively.
     Each monad is a frozen instance to prevent further mutation.
     """
