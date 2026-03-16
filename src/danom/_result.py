@@ -150,6 +150,34 @@ class Result(ABC, Generic[T_co, E_co]):
         """
         ...
 
+    @staticmethod
+    def result_is_ok(result: Result[T_co, E_co]) -> bool:
+        """Check whether the monad is ok. Allows for ``filter`` or ``partition`` in a ``Stream`` without needing a lambda or custom function.
+
+        .. code-block:: python
+
+            from danom import Stream, Result
+
+            Stream.from_iterable([Ok(), Ok(), Err()]).filter(Result.result_is_ok).collect() == (Ok(), Ok())
+
+        """
+        return result.is_ok()
+
+    @staticmethod
+    def result_unwrap(result: Result[T_co, E_co]) -> T_co:
+        """Unwrap the `Ok` monad and get the inner value.
+        Unwrap the `Err` monad will raise the inner error.
+
+        .. code-block:: python
+
+            from danom import Stream, Result
+
+            oks, errs = Stream.from_iterable([Ok(1), Ok(2), Err()]).partition(Result.result_is_ok)
+            oks.map(Result.result_unwrap).collect == (1, 2)
+
+        """
+        return result.unwrap()
+
 
 @attrs.define(frozen=True, hash=True)
 class Ok(Result[T_co, Never]):
