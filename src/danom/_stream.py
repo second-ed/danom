@@ -4,7 +4,7 @@ import asyncio
 import itertools
 import os
 from abc import ABC, abstractmethod
-from collections.abc import Awaitable, Callable, Generator, Iterable
+from collections.abc import Awaitable, Callable, Iterable, Sequence
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import deepcopy
 from enum import Enum, auto
@@ -456,20 +456,31 @@ def _apply_fns_worker[T](
     return _par_apply_fns(seq, ops)
 
 
-def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> Generator[T, None, None]:
-    for elem in elements:
-        valid = True
-        res = elem
-        for op, op_fn in ops:
-            if op == _MAP:
-                res = op_fn(res)
-            elif op == _FILTER and not op_fn(res):
-                valid = False
-                break
-            elif op == _TAP:
-                op_fn(deepcopy(res))
-        if valid:
-            yield res
+@attrs.define(frozen=True, hash=True, eq=True)
+class _Tap:
+    fns: Sequence[Callable]
+
+    def __call__(self, initial: T) -> T:
+        return reduce(self._apply, self.fns, initial)  # ty: ignore[invalid-return-type]
+
+    def _apply[T](self, value: T, fn: Callable[[T], None]) -> T:
+        deepcopy(fn(value))
+        return value
+
+
+def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> tuple[T, ...]:
+    pipeline = elements
+    for op, fn in ops:
+        if op == _MAP:
+            pipeline = map(fn, pipeline)
+        elif op == _FILTER:
+            pipeline = filter(fn, pipeline)
+        elif op == _TAP:
+            pipeline = map(_Tap((fn,)), pipeline)
+        else:
+            raise RuntimeError("Invalid operation selected. Valid options [map, filter, tap]")
+
+    return tuple(pipeline)  # ty: ignore[invalid-return-type]
 
 
 def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> tuple[T]:
