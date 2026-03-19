@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from multiprocessing import Manager
 from pathlib import Path
 
@@ -6,6 +7,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from src.danom import Stream
+from src.danom._stream import _FILTER, _MAP, _TAP, _apply_fns
 from tests.conftest import (
     REPO_ROOT,
     AsyncValueLogger,
@@ -124,14 +126,11 @@ def test_tap(collect_fn, kwargs):
         val_logger = ValueLogger(values)
 
         assert _get_attr_collect(
-            Stream.from_iterable(range(4)).tap(val_logger), collect_fn, kwargs
-        ) == (
-            0,
-            1,
-            2,
-            3,
-        )
-        assert sorted(values) == [0, 1, 2, 3]
+            Stream.from_iterable(range(4)).map(add_one).tap(val_logger, val_logger).map(add_one),
+            collect_fn,
+            kwargs,
+        ) == (2, 3, 4, 5)
+        assert sorted(values) == [1, 1, 2, 2, 3, 3, 4, 4]
 
 
 # async tests
@@ -188,3 +187,27 @@ async def test_async_tap():
 def test_stream_bool(args):
     seq, expected_result = args
     assert bool(Stream.from_iterable(seq)) == expected_result
+
+
+@pytest.mark.parametrize(
+    ("elements", "ops", "expected_result", "expected_context"),
+    [
+        pytest.param(
+            range(4),
+            ((_MAP, add_one), (_FILTER, divisible_by_3), (_TAP, add_one)),
+            [3],
+            nullcontext(),
+            id="valid operations don't raise any errors",
+        ),
+        pytest.param(
+            range(4),
+            (("INVALID", add_one),),
+            None,
+            pytest.raises(RuntimeError),
+            id="raises if given invalid operation",
+        ),
+    ],
+)
+def test_apply_fns(elements, ops, expected_result, expected_context):
+    with expected_context:
+        assert list(_apply_fns(elements, ops)) == expected_result
