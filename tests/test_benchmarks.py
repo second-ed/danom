@@ -17,25 +17,13 @@ from tests.conftest import (
 )
 
 
-def test_stream_map_small(benchmark) -> None:
-    @benchmark
-    def _() -> None:
-        Stream.from_iterable(range(100)).map(add_one).collect()
-
-
-def test_stream_map_medium(benchmark) -> None:
+def test_stream_map(benchmark) -> None:
     @benchmark
     def _() -> None:
         Stream.from_iterable(range(10_000)).map(add_one).collect()
 
 
-def test_stream_filter_small(benchmark) -> None:
-    @benchmark
-    def _() -> None:
-        Stream.from_iterable(range(100)).filter(is_even).collect()
-
-
-def test_stream_filter_medium(benchmark) -> None:
+def test_stream_filter(benchmark) -> None:
     @benchmark
     def _() -> None:
         Stream.from_iterable(range(10_000)).filter(is_even).collect()
@@ -45,7 +33,7 @@ def test_stream_map_filter_chain(benchmark) -> None:
     @benchmark
     def _() -> None:
         (
-            Stream.from_iterable(range(100_000))
+            Stream.from_iterable(range(10_000))
             .map(triple)
             .filter(is_gt_ten)  # ty: ignore[invalid-argument-type]
             .map(min_two)
@@ -160,27 +148,27 @@ def test_invert(benchmark) -> None:
         fn(3)
 
 
-positive_float_type = new_type("PositiveFloat", float, validators=[is_positive])
+PositiveFloat = new_type("PositiveFloat", float, validators=[is_positive])
 
 
 def test_new_type_creation(benchmark) -> None:
     @benchmark
     def _() -> None:
-        positive_float_type(42.0)
+        PositiveFloat(42.0)
 
 
 def test_new_type_map(benchmark) -> None:
-    val = positive_float_type(10.0)
+    val = PositiveFloat(10.0)
 
     @benchmark
     def _() -> None:
         val.map(double)
 
 
-str_type = new_type("StrType", str, validators=[has_len], converters=[str])
+StrType = new_type("StrType", str, validators=[has_len], converters=[str])
 
 
 def test_new_type_with_converter(benchmark) -> None:
     @benchmark
     def _() -> None:
-        str_type(12345)
+        StrType(12345)
