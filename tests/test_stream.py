@@ -23,10 +23,7 @@ from tests.conftest import (
 
 
 def _get_attr_collect(stream: Stream, collect_fn: str, kwargs: dict) -> tuple:
-    return getattr(
-        stream,
-        collect_fn,
-    )(**kwargs)
+    return getattr(stream, collect_fn)(**kwargs)
 
 
 @pytest.mark.parametrize(
@@ -40,10 +37,7 @@ def _get_attr_collect(stream: Stream, collect_fn: str, kwargs: dict) -> tuple:
 )
 @pytest.mark.parametrize(
     ("it", "expected_part1", "expected_part2"),
-    [
-        pytest.param(range(10), (6, 12), (1, 3, 5, 7, 9)),
-        pytest.param(0, (), (1,)),
-    ],
+    [pytest.param(range(10), (6, 12), (1, 3, 5, 7, 9)), pytest.param(0, (), (1,))],
 )
 def test_stream_pipeline(collect_fn, kwargs, it, expected_part1, expected_part2):
     part1, part2 = Stream.from_iterable(it).map(add_one).partition(is_even)

@@ -3,15 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from types import TracebackType
-from typing import (
-    Any,
-    Concatenate,
-    Literal,
-    Never,
-    ParamSpec,
-    Self,
-    TypeVar,
-)
+from typing import Any, Concatenate, Literal, Never, ParamSpec, Self, TypeVar
 
 import attrs
 from attrs.validators import instance_of
@@ -229,7 +221,7 @@ class Err(Result[Never, E_co]):
                     "func": frame.f_code.co_name,
                     "line_no": tb.tb_lineno,
                     "locals": frame.f_locals,
-                },
+                }
             )
             tb = tb.tb_next
         return trace_info
