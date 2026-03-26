@@ -11,7 +11,7 @@ U = TypeVar("U")
 E = TypeVar("E")
 
 
-def safe[**P, U](func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
+class safe[**P, U]:  # noqa: N801
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     .. code-block:: python
@@ -25,16 +25,17 @@ def safe[**P, U](func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
         add_one(1) == Ok(inner=2)
     """
 
-    @functools.wraps(func)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[U, Exception]:
+    def __init__(self, func: Callable[P, U]) -> None:
+        self.func = func
+        functools.update_wrapper(self, func)
+
+    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> Result[U, Exception]:
         try:
-            return Ok(func(*args, **kwargs))
+            return Ok(self.func(*args, **kwargs))
         except Exception as e:  # noqa: BLE001
             return Err(
                 error=e, input_args=(args, kwargs), traceback=traceback.format_exc()
             )  # ty: ignore[invalid-return-type]
-
-    return wrapper
 
 
 def safe_method[T, **P, U](
