@@ -8,12 +8,7 @@ from tests.conftest import add_one
 
 @pytest.mark.parametrize(
     ("monad", "inner"),
-    [
-        pytest.param(Ok, 0),
-        pytest.param(Ok, "ok"),
-        pytest.param(Err, 0),
-        pytest.param(Result, 0),
-    ],
+    [pytest.param(Ok, 0), pytest.param(Ok, "ok"), pytest.param(Err, 0), pytest.param(Result, 0)],
 )
 def test_unit(monad, inner):
     assert monad.unit(inner) == Ok(inner)
@@ -33,9 +28,7 @@ def test_result_equality(left, right, expected_result):
 
 @pytest.mark.parametrize(
     ("monad", "expected_result", "expected_context"),
-    [
-        pytest.param(Result, None, pytest.raises(TypeError)),
-    ],
+    [pytest.param(Result, None, pytest.raises(TypeError))],
 )
 def test_result_unwrap(monad, expected_result, expected_context):
     with expected_context:
@@ -48,21 +41,9 @@ def test_result_unwrap(monad, expected_result, expected_context):
         pytest.param(Ok(None), None, nullcontext()),
         pytest.param(Ok(0), 0, nullcontext()),
         pytest.param(Ok("ok"), "ok", nullcontext()),
-        pytest.param(
-            Err(error=TypeError("should raise this")),
-            None,
-            pytest.raises(TypeError),
-        ),
-        pytest.param(
-            Err(error=ValueError("should raise this")),
-            None,
-            pytest.raises(ValueError),
-        ),
-        pytest.param(
-            Err("some other err representation"),
-            None,
-            pytest.raises(ValueError),
-        ),
+        pytest.param(Err(error=TypeError("should raise this")), None, pytest.raises(TypeError)),
+        pytest.param(Err(error=ValueError("should raise this")), None, pytest.raises(ValueError)),
+        pytest.param(Err("some other err representation"), None, pytest.raises(ValueError)),
     ],
 )
 def test_unwrap(monad, expected_result, expected_context):
@@ -71,11 +52,7 @@ def test_unwrap(monad, expected_result, expected_context):
 
 
 @pytest.mark.parametrize(
-    ("monad", "expected_result"),
-    [
-        pytest.param(Ok(None), True),
-        pytest.param(Err(), False),
-    ],
+    ("monad", "expected_result"), [pytest.param(Ok(None), True), pytest.param(Err(), False)]
 )
 def test_is_ok(monad, expected_result):
     assert monad.is_ok() == expected_result
@@ -83,10 +60,7 @@ def test_is_ok(monad, expected_result):
 
 @pytest.mark.parametrize(
     ("monad", "func", "expected_result"),
-    [
-        pytest.param(Ok(0), add_one, Ok(1)),
-        pytest.param(Err(), add_one, Err()),
-    ],
+    [pytest.param(Ok(0), add_one, Ok(1)), pytest.param(Err(), add_one, Err())],
 )
 def test_map(monad, func, expected_result):
     assert monad.map(func) == expected_result
@@ -94,10 +68,7 @@ def test_map(monad, func, expected_result):
 
 @pytest.mark.parametrize(
     ("monad", "func", "expected_result"),
-    [
-        pytest.param(Ok(0), add_one, Ok(0)),
-        pytest.param(Err(0), add_one, Err(1)),
-    ],
+    [pytest.param(Ok(0), add_one, Ok(0)), pytest.param(Err(0), add_one, Err(1))],
 )
 def test_map_err(monad, func, expected_result):
     assert monad.map_err(func) == expected_result
@@ -113,13 +84,7 @@ class OnlyUnwrap(Result):
         return None
 
 
-@pytest.mark.parametrize(
-    "cls",
-    [
-        pytest.param(OnlyIsOk),
-        pytest.param(OnlyUnwrap),
-    ],
-)
+@pytest.mark.parametrize("cls", [pytest.param(OnlyIsOk), pytest.param(OnlyUnwrap)])
 def test_raises_not_implemented(cls):
     with pytest.raises(TypeError):
         cls()
@@ -127,10 +92,7 @@ def test_raises_not_implemented(cls):
 
 @pytest.mark.parametrize(
     ("err", "expected_details"),
-    [
-        pytest.param(TypeError("an invalid type"), []),
-        pytest.param("A primative err", []),
-    ],
+    [pytest.param(TypeError("an invalid type"), []), pytest.param("A primative err", [])],
 )
 def test_err_details(err, expected_details):
     monad = Err(error=err)
@@ -138,11 +100,7 @@ def test_err_details(err, expected_details):
 
 
 @pytest.mark.parametrize(
-    ("monad", "expected_result"),
-    [
-        pytest.param(Ok(None), True),
-        pytest.param(Err(), False),
-    ],
+    ("monad", "expected_result"), [pytest.param(Ok(None), True), pytest.param(Err(), False)]
 )
 def test_staticmethod_result_is_ok(monad, expected_result):
     assert Result.result_is_ok(monad) == expected_result
@@ -154,21 +112,9 @@ def test_staticmethod_result_is_ok(monad, expected_result):
         pytest.param(Ok(None), None, nullcontext()),
         pytest.param(Ok(0), 0, nullcontext()),
         pytest.param(Ok("ok"), "ok", nullcontext()),
-        pytest.param(
-            Err(error=TypeError("should raise this")),
-            None,
-            pytest.raises(TypeError),
-        ),
-        pytest.param(
-            Err(error=ValueError("should raise this")),
-            None,
-            pytest.raises(ValueError),
-        ),
-        pytest.param(
-            Err("some other err representation"),
-            None,
-            pytest.raises(ValueError),
-        ),
+        pytest.param(Err(error=TypeError("should raise this")), None, pytest.raises(TypeError)),
+        pytest.param(Err(error=ValueError("should raise this")), None, pytest.raises(ValueError)),
+        pytest.param(Err("some other err representation"), None, pytest.raises(ValueError)),
     ],
 )
 def test_staticmethod_result_unwrap(monad, expected_result, expected_context):

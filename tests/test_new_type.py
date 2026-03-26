@@ -68,7 +68,7 @@ def test_new_type(  # noqa: PLR0913
             "SOME_EMAIL@DOMAIN.COM",
             nullcontext(),
             id="Create specified str type with converters",
-        ),
+        )
     ],
 )
 def test_new_type_map(initial_value, base_type, map_fn, get_attr, expected_inner, expected_context):  # noqa: PLR0913
@@ -90,11 +90,7 @@ def test_new_type_map(initial_value, base_type, map_fn, get_attr, expected_inner
             st.integers(),
             st.just(pytest.raises(ValueError)),
         ),
-        st.tuples(
-            st.integers(),
-            st.just(None),
-            st.just(pytest.raises(TypeError)),
-        ),
+        st.tuples(st.integers(), st.just(None), st.just(pytest.raises(TypeError))),
     )
 )
 def test_validate_bool_func(args):

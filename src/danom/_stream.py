@@ -449,9 +449,7 @@ PlannedOps = tuple[str, StreamFn]
 AsyncPlannedOps = tuple[str, AsyncStreamFn]
 
 
-def _apply_fns_worker[T](
-    args: tuple[tuple[T], tuple[PlannedOps, ...]],
-) -> tuple[T]:
+def _apply_fns_worker[T](args: tuple[tuple[T], tuple[PlannedOps, ...]]) -> tuple[T]:
     seq, ops = args
     return _par_apply_fns(seq, ops)
 
