@@ -11,8 +11,40 @@ from src.danom._result import Err, Ok, Result
 REPO_ROOT = Path(__file__).parents[1]
 
 
+def is_positive(x: float) -> bool:
+    return x > 0
+
+
+def lt_100(x: float) -> bool:
+    return x < 100  # noqa: PLR2004
+
+
 def add[T: (str, float, int)](a: T, b: T) -> T:
     return a + b  # ty: ignore[unsupported-operator]
+
+
+def triple(x: float) -> float:
+    return x * 3
+
+
+def is_gt_ten(x: float) -> float:
+    return x > 10  # noqa: PLR2004
+
+
+def min_two(x: float) -> float:
+    return x - 2
+
+
+def is_even_num(x: float) -> bool:
+    return x % 2 == 0
+
+
+def square(x: float) -> float:
+    return x * x
+
+
+def is_lt_400(x: float) -> float:
+    return x < 400  # noqa: PLR2004
 
 
 def has_len(value: str) -> bool:
