@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Awaitable, Callable, Iterable, Sequence
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import deepcopy
-from enum import Enum, auto
+from enum import Enum
 from functools import reduce
 from itertools import batched
 from typing import ParamSpec, TypeVar, cast
@@ -312,10 +312,15 @@ class Stream[Type](_BaseStream):
             seq_tuple = self.par_collect(workers=workers, use_threads=use_threads)
         else:
             seq_tuple = self.collect()
-        return (
-            Stream(seq=tuple(x for x in seq_tuple if fn(x))),
-            Stream(seq=tuple(x for x in seq_tuple if not fn(x))),
-        )
+
+        pos, neg = [], []
+
+        for x in seq_tuple:
+            if fn(x):
+                pos.append(x)
+            else:
+                neg.append(x)
+        return (Stream.from_iterable(pos), Stream.from_iterable(neg))
 
     def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
@@ -442,7 +447,7 @@ _TAP = 2
 
 
 class _Nothing(Enum):
-    NOTHING = auto()
+    NOTHING = 0
 
 
 PlannedOps = tuple[str, StreamFn]
