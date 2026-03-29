@@ -1,6 +1,6 @@
 # danom
 
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom) ![coverage](./coverage.svg)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom) ![coverage](./coverage.svg) [![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/second-ed/danom?utm_source=badge)
 
 # API Reference
 
@@ -275,6 +275,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── __init__.py
 │   ├── conftest.py
 │   ├── test_api.py
+│   ├── test_benchmarks.py
 │   ├── test_monad_laws.py
 │   ├── test_new_type.py
 │   ├── test_result.py

@@ -67,7 +67,7 @@ def test_traceback():
         "Traceback (most recent call last):",
         '  File "./src/danom/_safe.py", line 34, in __call__',
         "    return Ok(self.func(*args, **kwargs))",
-        '  File "./tests/conftest.py", line 85, in div_zero',
+        '  File "./tests/conftest.py", line 117, in div_zero',
         "    return x / 0",
         "ZeroDivisionError: division by zero",
     ]
@@ -79,4 +79,4 @@ def test_traceback():
 
     missing_lines = [line for line in expected_lines if line not in tb_lines]
 
-    assert missing_lines == []
+    assert missing_lines == [], f"lines don't match {tb_lines = }"
