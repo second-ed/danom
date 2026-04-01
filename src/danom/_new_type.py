@@ -56,11 +56,11 @@ def new_type(  # noqa: ANN202
     kwargs = _callables_to_kwargs(base_type, validators, converters)
 
     @attrs.define(frozen=frozen, eq=True, hash=frozen)
-    class _Wrapper:
+    class _Wrapper[T]:
         inner: T = attrs.field(**kwargs)  # ty: ignore[no-matching-overload]
 
         def map(self, func: Callable[[T], T]) -> Self:
-            return self.__class__(func(self.inner))  # ty: ignore[invalid-argument-type]
+            return self.__class__(func(self.inner))
 
         locals().update(_create_forward_methods(base_type))
 
@@ -118,7 +118,7 @@ def _validate_bool_func[T](
     return wrapper
 
 
-C = TypeVar("C", bound=Callable[P, object])
+C = TypeVar("C", bound=Callable[P, object])  # type: ignore[invalid-type-form]
 
 
 def _to_list(value: C | Sequence[C] | None) -> list[C]:

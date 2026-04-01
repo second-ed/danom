@@ -57,4 +57,4 @@ papertrail = "papertrail.__main__"
 include = ["src", "tests"]
 
 [tool.uv]
-exclude-newer = "P30D"
+exclude-newer = "2 weeks"
