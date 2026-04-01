@@ -464,7 +464,7 @@ class _Tap:
     fns: Sequence[Callable]
 
     def __call__(self, initial: T) -> T:
-        return reduce(self._apply, self.fns, initial)  # ty: ignore[invalid-return-type]
+        return reduce(self._apply, self.fns, initial)
 
     def _apply[T](self, value: T, fn: Callable[[T], None]) -> T:
         deepcopy(fn(value))
@@ -513,4 +513,4 @@ async def _async_apply_fns[T](elem: T, ops: tuple[AsyncPlannedOps, ...]) -> T | 
             return _Nothing.NOTHING
         elif op == _TAP:
             await op_fn(deepcopy(res))
-    return res
+    return res  # ty: ignore[invalid-return-type]

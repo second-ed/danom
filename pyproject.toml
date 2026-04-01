@@ -55,3 +55,6 @@ papertrail = "papertrail.__main__"
 
 [tool.ty.src]
 include = ["src", "tests"]
+
+[tool.uv]
+exclude-newer = "P30D"
