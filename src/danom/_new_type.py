@@ -118,10 +118,7 @@ def _validate_bool_func[T](
     return wrapper
 
 
-C = TypeVar("C", bound=Callable[P, object])  # type: ignore[invalid-type-form]
-
-
-def _to_list(value: C | Sequence[C] | None) -> list[C]:
+def _to_list[C: Callable[..., object]](value: C | Sequence[C] | None) -> list[C]:
     if value is None:
         return []
 

@@ -55,6 +55,3 @@ papertrail = "papertrail.__main__"
 
 [tool.ty.src]
 include = ["src", "tests"]
-
-[tool.uv]
-exclude-newer = "2 weeks"

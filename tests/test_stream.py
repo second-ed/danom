@@ -6,8 +6,9 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from src.danom import Stream
-from src.danom._stream import _FILTER, _MAP, _TAP, _apply_fns
+from danom import Stream
+from danom._result import Err, Ok
+from danom._stream import _FILTER, _MAP, _TAP, _apply_fns
 from tests.conftest import (
     REPO_ROOT,
     AsyncValueLogger,
@@ -125,6 +126,40 @@ def test_tap(collect_fn, kwargs):
             kwargs,
         ) == (2, 3, 4, 5)
         assert sorted(values) == [1, 1, 2, 2, 3, 3, 4, 4]
+
+
+@pytest.mark.parametrize(
+    ("kwargs"),
+    [
+        pytest.param({}, id="simple `collect`"),
+        pytest.param({"workers": 4}, id="`par_collect` with workers passed in"),
+        pytest.param({"workers": -1}, id="`par_collect` with n-1 workers"),
+        pytest.param({"use_threads": True}, id="`par_collect` with threads True"),
+    ],
+)
+@pytest.mark.parametrize(
+    ("seq", "expected_result", "expected_context"),
+    [
+        pytest.param(
+            (Ok(0), Ok(1), Ok(2)),
+            Ok((0, 1, 2)),
+            nullcontext(),
+            id="sequence of Oks returns Ok[tuple[T]]",
+        ),
+        pytest.param(
+            (Ok(0), Err(1), Ok(2)), Err(1), nullcontext(), id="returns first Err in the seq"
+        ),
+        pytest.param(
+            (Ok(0), 1, Ok(2)),
+            Ok((0, 1, 2)),
+            pytest.raises(TypeError),
+            id="raises error if not all elements are Result",
+        ),
+    ],
+)
+def test_sequence(kwargs, seq, expected_result, expected_context):
+    with expected_context:
+        assert Stream.from_iterable(seq).sequence(**kwargs) == expected_result
 
 
 # async tests

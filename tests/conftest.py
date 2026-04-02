@@ -5,8 +5,8 @@ from multiprocessing.managers import ListProxy
 from pathlib import Path
 from typing import Any, NoReturn, Self
 
-from src.danom import safe, safe_method
-from src.danom._result import Err, Ok, Result
+from danom import safe, safe_method
+from danom._result import Err, Ok, Result
 
 REPO_ROOT = Path(__file__).parents[1]
 

@@ -14,6 +14,8 @@ from typing import ParamSpec, TypeVar, cast
 
 import attrs
 
+from danom._result import Ok, Result
+
 T = TypeVar("T")
 U = TypeVar("U")
 E = TypeVar("E")
@@ -321,6 +323,24 @@ class Stream[Type](_BaseStream):
             else:
                 neg.append(x)
         return (Stream.from_iterable(pos), Stream.from_iterable(neg))
+
+    def sequence(self, *, workers: int = 1, use_threads: bool = False) -> Result[T, E]:
+        if workers > 1:
+            seq_tuple = self.par_collect(workers=workers, use_threads=use_threads)
+        else:
+            seq_tuple = self.collect()
+
+        if not all(isinstance(res, Result) for res in seq_tuple):
+            raise TypeError("All elements in the `Stream` must be of `Result` type")
+
+        results = []
+
+        for res in seq_tuple:
+            if not res.is_ok():
+                return res
+            results.append(res.unwrap())
+
+        return Ok(tuple(results))
 
     def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
