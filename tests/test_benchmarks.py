@@ -110,6 +110,12 @@ def test_stream_of_results(benchmark) -> None:
         )
 
 
+def test_stream_of_results_sequence(benchmark) -> None:
+    @benchmark
+    def _() -> None:
+        (Stream.from_iterable([Ok(i) for i in range(100)]).sequence())
+
+
 def test_compose(benchmark) -> None:
     fn = compose(add_one, double, add_one)
 
