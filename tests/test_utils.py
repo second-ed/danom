@@ -1,8 +1,8 @@
 import pytest
 from papertrail import example
 
-from src.danom import Ok, compose, identity, invert
-from src.danom._utils import all_of, any_of, none_of
+from danom import Ok, compose, identity, invert
+from danom._utils import all_of, any_of, none_of
 from tests.conftest import add_one, divisible_by_3, divisible_by_5, has_len
 
 

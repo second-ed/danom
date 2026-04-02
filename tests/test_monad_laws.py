@@ -1,7 +1,7 @@
 from hypothesis import given
 from hypothesis import strategies as st
 
-from src.danom import Err, Result
+from danom import Err, Result
 from tests.conftest import safe_add_one, safe_double
 
 inners = st.one_of(
