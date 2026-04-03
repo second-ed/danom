@@ -1,38 +1,39 @@
+from __future__ import annotations
+
 from hypothesis import given
 from hypothesis import strategies as st
 
-from danom import Err, Result
-from tests.conftest import safe_add_one, safe_double
+from danom import Either, Err, Left, Result
 
-inners = st.one_of(
-    st.integers().map(Result.unit),
-    st.text().map(Result.unit),
-    st.floats(allow_nan=False, allow_infinity=False).map(Result.unit),
+
+def monad_tests(parent: type[Result | Either], err_monad: type[Err | Left]):
+    inners = st.one_of(st.integers(), st.text(), st.floats(allow_nan=False, allow_infinity=False))
+
+    results = st.one_of(inners.map(parent.unit), st.just(err_monad(1)))
+    safe_fns = st.sampled_from([lambda x: parent.unit(x * 2), lambda x: err_monad(x)])
+
+    @given(inner=inners, f=safe_fns)
+    def test_monadic_left_identity(inner, f):
+        assert parent.unit(inner).and_then(f) == f(inner)
+
+    @given(results)
+    def test_monadic_right_identity(monad):
+        assert monad.and_then(parent.unit) == monad
+
+    @given(monad=results, f=safe_fns, g=safe_fns, h=safe_fns)
+    def test_monadic_associativity(monad, f, g, h):
+        assert monad.and_then(f).and_then(g).or_else(h) == monad.and_then(
+            lambda x: f(x).and_then(g)
+        ).or_else(h)
+
+    return test_monadic_left_identity, test_monadic_right_identity, test_monadic_associativity
+
+
+test_result_left_identity, test_result_right_identity, test_result_associativity = monad_tests(
+    Result, Err
 )
 
-results = st.one_of(
-    st.integers().map(Result.unit),
-    st.text().map(Result.unit),
-    st.floats(allow_nan=False, allow_infinity=False).map(Result.unit),
-    st.just(Err(1)),
+
+test_either_left_identity, test_either_right_identity, test_either_associativity = monad_tests(
+    Either, Left
 )
-
-
-safe_fns = st.sampled_from([safe_double, safe_add_one])
-
-
-@given(inner=inners, f=safe_fns)
-def test_monadic_left_identity(inner, f):
-    assert Result.unit(inner).and_then(f) == f(inner)
-
-
-@given(results)
-def test_monadic_right_identity(monad):
-    assert monad.and_then(Result.unit) == monad
-
-
-@given(monad=results, f=safe_fns, g=safe_fns, h=safe_fns)
-def test_monadic_associativity(monad, f, g, h):
-    assert monad.and_then(f).and_then(g).or_else(h) == monad.and_then(
-        lambda x: f(x).and_then(g)
-    ).or_else(h)

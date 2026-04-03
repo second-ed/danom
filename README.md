@@ -266,6 +266,7 @@ Alternatively the map method can be used to return a new type instance with the 
 ├── src
 │   └── danom
 │       ├── __init__.py
+│       ├── _either.py
 │       ├── _new_type.py
 │       ├── _result.py
 │       ├── _safe.py
@@ -276,6 +277,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── conftest.py
 │   ├── test_api.py
 │   ├── test_benchmarks.py
+│   ├── test_either.py
 │   ├── test_monad_laws.py
 │   ├── test_new_type.py
 │   ├── test_result.py
