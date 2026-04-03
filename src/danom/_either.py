@@ -132,10 +132,9 @@ class Either[T_co, E_co: object](ABC):
             >>> Right("ok").unwrap() == 'ok'
             True
 
-            >>> Left(inner=TypeError()).unwrap()
-            Traceback (most recent call last):
-            ...
-            TypeError:
+            >>> Left(-1).unwrap() == -1
+            True
+
         """
         ...
 
