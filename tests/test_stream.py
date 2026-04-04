@@ -7,6 +7,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from danom import Stream
+from danom._either import Right
 from danom._result import Err, Ok
 from danom._stream import _FILTER, _MAP, _TAP, _apply_fns
 from tests.conftest import (
@@ -142,16 +143,22 @@ def test_tap(collect_fn, kwargs):
     [
         pytest.param(
             (Ok(0), Ok(1), Ok(2)),
-            Ok((0, 1, 2)),
+            Ok(Stream.from_iterable((0, 1, 2))),
             nullcontext(),
             id="sequence of Oks returns Ok[tuple[T]]",
+        ),
+        pytest.param(
+            (Right(0), Right(1), Right(2)),
+            Right(Stream.from_iterable((0, 1, 2))),
+            nullcontext(),
+            id="sequence of Rights returns Right[tuple[T]]",
         ),
         pytest.param(
             (Ok(0), Err(1), Ok(2)), Err(1), nullcontext(), id="returns first Err in the seq"
         ),
         pytest.param(
             (Ok(0), 1, Ok(2)),
-            Ok((0, 1, 2)),
+            Ok(Stream.from_iterable((0, 1, 2))),
             pytest.raises(TypeError),
             id="raises error if not all elements are Result",
         ),

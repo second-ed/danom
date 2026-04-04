@@ -14,7 +14,8 @@ from typing import ParamSpec, TypeVar, cast
 
 import attrs
 
-from danom._result import Ok, Result
+from danom._either import Either
+from danom._result import Result
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -324,14 +325,45 @@ class Stream[Type](_BaseStream):
                 neg.append(x)
         return (Stream.from_iterable(pos), Stream.from_iterable(neg))
 
-    def sequence(self, *, workers: int = 1, use_threads: bool = False) -> Result[T, E]:
+    def sequence(
+        self, *, workers: int = 1, use_threads: bool = False
+    ) -> Result[T, E] | Either[T, E]:
+        """Convert a ``Stream`` of ``Result`` or ``Either`` monads to a monad of Stream
+
+        .. doctest::
+
+            >>> from danom import Ok, Stream
+
+            >>> Stream.from_iterable((Ok(0), Ok(1), Ok(2))).sequence() == Ok(Stream.from_iterable((0, 1, 2)))
+            True
+
+            >>> Stream.from_iterable((Right(0), Right(1), Right(2))).sequence() == Right(Stream.from_iterable((0, 1, 2)))
+            True
+
+            >>> Stream.from_iterable((Ok(0), Err(1), Ok(2))).sequence() == Err(1)
+            True
+
+            >>> Stream.from_iterable((Right(0), Left(1), Right(2))).sequence() == Left(1)
+            True
+
+        If the ``Stream`` is of mixed monads, the final wrapped result will be ok the last seen monad type
+
+        .. doctest::
+
+            >>> from danom import Ok, Stream
+
+            >>> Stream.from_iterable((Right(0), Right(1), Ok(2))).sequence() == Ok(Stream.from_iterable((0, 1, 2)))
+            True
+
+        """
+
         if workers > 1:
             seq_tuple = self.par_collect(workers=workers, use_threads=use_threads)
         else:
             seq_tuple = self.collect()
 
-        if not all(isinstance(res, Result) for res in seq_tuple):
-            raise TypeError("All elements in the `Stream` must be of `Result` type")
+        if not all(isinstance(res, (Result, Either)) for res in seq_tuple):
+            raise TypeError("All elements in the `Stream` must be of `Result` or `Either` type")
 
         results = []
 
@@ -340,7 +372,7 @@ class Stream[Type](_BaseStream):
                 return res
             results.append(res.unwrap())
 
-        return Ok(tuple(results))
+        return type(res)(Stream.from_iterable(results))
 
     def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
