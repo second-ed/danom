@@ -1,6 +1,6 @@
 [project]
 name = "danom"
-version = "0.11.3"
+version = "0.12.0"
 description = "Functional streams and monads"
 readme = "README.md"
 license = "MIT"
