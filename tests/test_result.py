@@ -2,7 +2,7 @@ from contextlib import nullcontext
 
 import pytest
 
-from src.danom import Err, Ok, Result
+from danom import Err, Ok, Result
 from tests.conftest import add_one
 
 

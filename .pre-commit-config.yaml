@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.5.26
+    rev: 0.11.2
     hooks:
       - id: uv-lock
   - repo: local
@@ -8,18 +8,18 @@ repos:
       - id: ruff
         name: ruff
         entry: ruff check
-        language: system
+        language: python
         types_or: [ python, pyi, jupyter ]
         args: [ --fix ]
       - id: ruff
         name: ruff
         entry: ruff format
-        language: system
+        language: python
         types_or: [ python, pyi, jupyter ]
       - id: ty
         name: ty check
         entry: uv run ty check
-        language: system
+        language: python
         pass_filenames: false
         always_run: true
       - id: pytest
@@ -31,7 +31,7 @@ repos:
       - id: repo-map
         name: repo_map
         entry: uv run -m repo_mapper
-        language: system
+        language: python
         pass_filenames: false
         args:
           - --repo-root

@@ -5,8 +5,8 @@ from multiprocessing.managers import ListProxy
 from pathlib import Path
 from typing import Any, NoReturn, Self
 
-from src.danom import safe, safe_method
-from src.danom._result import Err, Ok, Result
+from danom import safe, safe_method
+from danom._result import Err, Ok, Result
 
 REPO_ROOT = Path(__file__).parents[1]
 
@@ -20,7 +20,7 @@ def lt_100(x: float) -> bool:
 
 
 def add[T: (str, float, int)](a: T, b: T) -> T:
-    return a + b  # ty: ignore[unsupported-operator]
+    return a + b
 
 
 def triple(x: float) -> float:
@@ -56,7 +56,7 @@ def add_one(x: float) -> float:
 
 
 def double[T: (str, float, int)](x: T) -> T:
-    return x * 2  # ty: ignore[unsupported-operator]
+    return x * 2
 
 
 def is_even(x: float) -> bool:
@@ -99,7 +99,7 @@ def safe_add_one(x: float | str) -> Result[float | str, TypeError]:
 
 @safe
 def safe_double[T: (str, float, int)](x: T) -> T:
-    return x * 2  # ty: ignore[unsupported-operator]
+    return x * 2
 
 
 @safe

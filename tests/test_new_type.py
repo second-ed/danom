@@ -5,8 +5,8 @@ import hypothesis.strategies as st
 import pytest
 from hypothesis import given
 
-from src.danom import new_type
-from src.danom._new_type import _validate_bool_func
+from danom import new_type
+from danom._new_type import _validate_bool_func
 from tests.conftest import has_len
 
 

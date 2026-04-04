@@ -32,14 +32,14 @@ def new_type(  # noqa: ANN202
         >>> ValidBalance(20.0) == ValidBalance(inner=20.0)
         True
 
-    Unlike an inherited class, the type will not return `True` for an isinstance check.
+    Unlike an inherited class, the type will not return ``True`` for an isinstance check.
 
     .. code-block:: python
 
         isinstance(ValidBalance(20.0), ValidBalance) == True
         isinstance(ValidBalance(20.0), float) == False
 
-    The methods of the given `base_type` will be forwarded to the specialised type.
+    The methods of the given ``base_type`` will be forwarded to the specialised type.
     Alternatively the map method can be used to return a new type instance with the transformation.
 
     .. code-block:: python
@@ -56,11 +56,11 @@ def new_type(  # noqa: ANN202
     kwargs = _callables_to_kwargs(base_type, validators, converters)
 
     @attrs.define(frozen=frozen, eq=True, hash=frozen)
-    class _Wrapper:
+    class _Wrapper[T]:
         inner: T = attrs.field(**kwargs)  # ty: ignore[no-matching-overload]
 
         def map(self, func: Callable[[T], T]) -> Self:
-            return self.__class__(func(self.inner))  # ty: ignore[invalid-argument-type]
+            return self.__class__(func(self.inner))
 
         locals().update(_create_forward_methods(base_type))
 
@@ -118,10 +118,7 @@ def _validate_bool_func[T](
     return wrapper
 
 
-C = TypeVar("C", bound=Callable[P, object])
-
-
-def _to_list(value: C | Sequence[C] | None) -> list[C]:
+def _to_list[C: Callable[..., object]](value: C | Sequence[C] | None) -> list[C]:
     if value is None:
         return []
 
