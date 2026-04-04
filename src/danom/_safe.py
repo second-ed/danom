@@ -12,7 +12,7 @@ E = TypeVar("E")
 
 
 class safe[**P, U]:  # noqa: N801
-    """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
+    """Decorator for functions that wraps the function in a try except returns ``Ok`` on success else ``Err``.
 
     .. code-block:: python
 
@@ -41,7 +41,7 @@ class safe[**P, U]:  # noqa: N801
 def safe_method[T, **P, U](
     func: Callable[Concatenate[T, P], U],
 ) -> Callable[Concatenate[T, P], Result[U, Exception]]:
-    """The same as `safe` except it forwards on the `self` of the class instance to the wrapped function.
+    """The same as ``safe`` except it forwards on the ``self`` of the class instance to the wrapped function.
 
     .. code-block:: python
 

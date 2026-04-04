@@ -32,14 +32,14 @@ def new_type(  # noqa: ANN202
         >>> ValidBalance(20.0) == ValidBalance(inner=20.0)
         True
 
-    Unlike an inherited class, the type will not return `True` for an isinstance check.
+    Unlike an inherited class, the type will not return ``True`` for an isinstance check.
 
     .. code-block:: python
 
         isinstance(ValidBalance(20.0), ValidBalance) == True
         isinstance(ValidBalance(20.0), float) == False
 
-    The methods of the given `base_type` will be forwarded to the specialised type.
+    The methods of the given ``base_type`` will be forwarded to the specialised type.
     Alternatively the map method can be used to return a new type instance with the transformation.
 
     .. code-block:: python

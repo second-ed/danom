@@ -20,33 +20,33 @@ Bindable = Callable[Concatenate[T_co, P], "Result[U_co, E_co]"]
 
 @attrs.define(frozen=True)
 class Result[T_co, E_co: object](ABC):
-    """`Result` monad. Consists of `Ok` and `Err` for successful and failed operations respectively.
+    """``Result`` monad. Consists of ``Ok`` and ``Err`` for successful and failed operations respectively.
     Each monad is a frozen instance to prevent further mutation.
     """
 
     @classmethod
     def unit(cls, inner: T_co) -> Ok[T_co]:
-        """Unit method. Given an item of type `T_co` return `Ok(T_co)`
+        """Unit method. Given an item of type ``T`` return ``Ok(T)``
 
         .. doctest::
 
             >>> from danom import Err, Ok, Result
 
-            >>> Result.unit(0) == Ok(inner=0)
+            >>> Result.unit(0) == Ok(0)
             True
 
-            >>> Ok.unit(0) == Ok(inner=0)
+            >>> Ok.unit(0) == Ok(0)
             True
 
-            >>> Err.unit(0) == Ok(inner=0)
+            >>> Err.unit(0) == Ok(0)
             True
         """
         return Ok(inner)
 
     @abstractmethod
     def is_ok(self) -> bool:
-        """Returns `True` if the result type is `Ok`.
-        Returns `False` if the result type is `Err`.
+        """Returns ``True`` if the result type is ``Ok``.
+        Returns ``False`` if the result type is ``Err``.
 
         .. doctest::
 
@@ -62,8 +62,8 @@ class Result[T_co, E_co: object](ABC):
 
     @abstractmethod
     def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        """Pipe a pure function and wrap the return value with `Ok`.
-        Given an `Err` will return self.
+        """Pipe a pure function and wrap the return value with ``Ok``.
+        Given an ``Err`` will return self.
 
         .. code-block:: python
 
@@ -76,8 +76,8 @@ class Result[T_co, E_co: object](ABC):
 
     @abstractmethod
     def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        """Pipe a pure function and wrap the return value with `Err`.
-        Given an `Ok` will return self.
+        """Pipe a pure function and wrap the return value with ``Err``.
+        Given an ``Ok`` will return self.
 
         .. code-block:: python
 
@@ -90,7 +90,7 @@ class Result[T_co, E_co: object](ABC):
 
     @abstractmethod
     def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        """Pipe another function that returns a monad. For `Err` will return original error.
+        """Pipe another function that returns a monad. For ``Err`` will return original error.
 
         .. code-block:: python
 
@@ -105,7 +105,7 @@ class Result[T_co, E_co: object](ABC):
 
     @abstractmethod
     def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        """Pipe a function that returns a monad to recover from an `Err`. For `Ok` will return original `Result`.
+        """Pipe a function that returns a monad to recover from an ``Err``. For ``Ok`` will return original ``Result``.
 
         .. code-block:: python
 
@@ -118,8 +118,8 @@ class Result[T_co, E_co: object](ABC):
 
     @abstractmethod
     def unwrap(self) -> T_co:
-        """Unwrap the `Ok` monad and get the inner value.
-        Unwrap the `Err` monad will raise the inner error.
+        """Unwrap the ``Ok`` monad and get the inner value.
+        Unwrap the ``Err`` monad will raise the inner error.
 
         .. doctest::
 
@@ -156,8 +156,8 @@ class Result[T_co, E_co: object](ABC):
 
     @staticmethod
     def result_unwrap(result: Result[T_co, E_co]) -> T_co:
-        """Unwrap the `Ok` monad and get the inner value.
-        Unwrap the `Err` monad will raise the inner error.
+        """Unwrap the ``Ok`` monad and get the inner value.
+        Unwrap the ``Err`` monad will raise the inner error.
 
         .. code-block:: python
 

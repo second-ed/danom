@@ -18,13 +18,13 @@ Bindable = Callable[Concatenate[T_co, P], "Either[U_co, E_co]"]
 
 @attrs.define(frozen=True)
 class Either[T_co, E_co: object](ABC):
-    """`Either` monad. Consists of `Right` and `Left` for successful and failed operations respectively.
+    """``Either`` monad. Consists of ``Right`` and ``Left`` for successful and failed operations respectively.
     Each monad is a frozen instance to prevent further mutation.
     """
 
     @classmethod
     def unit(cls, inner: T_co) -> Right[T_co]:
-        """Unit method. Given an item of type `T_co` return `Right(T_co)`
+        """Unit method. Given an item of type ``T`` return ``Right(T)``
 
         .. doctest::
 
@@ -43,8 +43,8 @@ class Either[T_co, E_co: object](ABC):
 
     @abstractmethod
     def is_ok(self) -> bool:
-        """Returns `True` if the result type is `Right`.
-        Returns `False` if the result type is `Left`.
+        """Returns ``True`` if the result type is ``Right``.
+        Returns ``False`` if the result type is ``Left``.
 
         .. doctest::
 
@@ -60,64 +60,63 @@ class Either[T_co, E_co: object](ABC):
 
     @abstractmethod
     def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        """Pipe a pure function and wrap the return value with `Right`.
-        Given an `Left` will return self.
+        """Pipe a pure function and wrap the return value with ``Right``.
+        Given an ``Left`` will return ``self``.
 
         .. code-block:: python
 
             from danom import Left, Right
 
             Right(1).map(add_one) == Right(2)
-            Left(inner=TypeError()).map(add_one) == Left(inner=TypeError())
+            Left(1).map(add_one) == Left(1)
         """
         ...
 
     @abstractmethod
     def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        """Pipe a pure function and wrap the return value with `Left`.
-        Given an `Right` will return self.
+        """Pipe a pure function and wrap the return value with ``Left``.
+        Given an ``Right`` will return ``self``.
 
         .. code-block:: python
 
             from danom import Left, Right
 
-            Left(inner=TypeError()).map_err(type_err_to_value_err) == Left(inner=ValueError())
+            Left(TypeError()).map_err(type_err_to_value_err) == Left(ValueError())
             Right(1).map(type_err_to_value_err) == Right(1)
         """
         ...
 
     @abstractmethod
     def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        """Pipe another function that returns a monad. For `Left` will return original error.
+        """Pipe another function that returns a monad. For ``Left`` will return original inner.
 
         .. code-block:: python
 
             from danom import Left, Right
 
             Right(1).and_then(add_one) == Right(2)
-            Right(1).and_then(raise_err) == Left(inner=TypeError())
-            Left(inner=TypeError()).and_then(add_one) == Left(inner=TypeError())
-            Left(inner=TypeError()).and_then(raise_value_err) == Left(inner=TypeError())
+            Right(1).and_then(raise_err) == Left(TypeError())
+            Left(TypeError()).and_then(add_one) == Left(TypeError())
+            Left(TypeError()).and_then(raise_value_err) == Left(TypeError())
         """
         ...
 
     @abstractmethod
     def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        """Pipe a function that returns a monad to recover from an `Left`. For `Right` will return original `Either`.
+        """Pipe a function that returns a monad to recover from an ``Left``. For ``Right`` will return original ``Either``.
 
         .. code-block:: python
 
             from danom import Left, Right
 
             Right(1).or_else(replace_err_with_zero) == Right(1)
-            Left(inner=TypeError()).or_else(replace_err_with_zero) == Right(0)
+            Left(TypeError()).or_else(replace_err_with_zero) == Right(0)
         """
         ...
 
     @abstractmethod
     def unwrap(self) -> T_co:
-        """Unwrap the `Right` monad and get the inner value.
-        Unwrap the `Left` monad will raise the inner error.
+        """Unwrap the `Right` or ``Left`` monad to get the inner value.
 
         .. doctest::
 
@@ -153,8 +152,7 @@ class Either[T_co, E_co: object](ABC):
 
     @staticmethod
     def either_unwrap(result: Either[T_co, E_co]) -> T_co:
-        """Unwrap the `Right` monad and get the inner value.
-        Unwrap the `Left` monad will raise the inner error.
+        """Unwrap the `Right` or ``Left`` monad to get the inner value.
 
         .. code-block:: python
 

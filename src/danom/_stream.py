@@ -135,7 +135,7 @@ class Stream[Type](_BaseStream):
 
     This still has a lot of tokens that the developer has to read to understand the code. The extra keywords add noise that cloud the actual transformations.
 
-    Using a `Stream` results in this:
+    Using a ``Stream`` results in this:
 
     .. code-block:: python
 
@@ -178,7 +178,7 @@ class Stream[Type](_BaseStream):
         return cls(seq=tuple(it))
 
     def map(self, *fns: MapFn | AsyncMapFn) -> Stream[U]:
-        """Map a function to the elements in the `Stream`. Will return a new `Stream` with the modified sequence.
+        """Map a function to the elements in the ``Stream``. Will return a new ``Stream`` with the modified sequence.
 
         .. code-block:: python
 
@@ -186,19 +186,19 @@ class Stream[Type](_BaseStream):
 
             Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (1, 2, 3, 4)
 
-        This can also be mixed with `safe` functions:
+        This can also be mixed with ``safe`` functions:
 
         .. code-block:: python
 
             from danom import Stream
 
-            Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (Ok(inner=1), Ok(inner=2), Ok(inner=3), Ok(inner=4))
+            Stream.from_iterable([0, 1, 2, 3]).map(add_one).collect() == (Ok(1), Ok(2), Ok(3), Ok(4))
 
             @safe
             def two_div_value(x: float) -> float:
                 return 2 / x
 
-            Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(inner=2.0), Ok(inner=1.0), Ok(inner=0.5))
+            Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(2.0), Ok(1.0), Ok(0.5))
 
 
         Simple functions can be passed in sequence to compose more complex transformations
@@ -215,7 +215,7 @@ class Stream[Type](_BaseStream):
         return self
 
     def filter(self, *fns: FilterFn | AsyncFilterFn) -> Stream[T]:
-        """Filter the stream based on a predicate. Will return a new `Stream` with the modified sequence.
+        """Filter the stream based on a predicate. Will return a new ``Stream`` with the modified sequence.
 
         .. doctest::
 
@@ -238,9 +238,9 @@ class Stream[Type](_BaseStream):
         return self
 
     def tap(self, *fns: TapFn | AsyncTapFn) -> Stream[T]:
-        """Tap the values to another process that returns None. Will return a new `Stream` with the modified sequence.
+        """Tap the values to another process that returns None. Will return a new ``Stream`` with the modified sequence.
 
-        The value passed to the tap function will be deep-copied to avoid any modification to the `Stream` item for downstream consumers.
+        The value passed to the tap function will be deep-copied to avoid any modification to the ``Stream`` item for downstream consumers.
 
         .. code-block:: python
 
@@ -249,7 +249,7 @@ class Stream[Type](_BaseStream):
             Stream.from_iterable([0, 1, 2, 3]).tap(log_value).collect() == (0, 1, 2, 3)
 
 
-        Simple functions can be passed in sequence for multiple `tap` operations
+        Simple functions can be passed in sequence for multiple ``tap`` operations
 
         .. code-block:: python
 
@@ -258,7 +258,7 @@ class Stream[Type](_BaseStream):
             Stream.from_iterable([0, 1, 2, 3]).tap(log_value, print_value).collect() == (0, 1, 2, 3)
 
 
-        `tap` is useful for logging and similar actions without effecting the individual items, in this example eligible and dormant users are logged using `tap`:
+        ``tap`` is useful for logging and similar actions without effecting the individual items, in this example eligible and dormant users are logged using ``tap``:
 
         .. code-block:: python
 
@@ -284,7 +284,7 @@ class Stream[Type](_BaseStream):
     def partition(
         self, fn: FilterFn, *, workers: int = 1, use_threads: bool = False
     ) -> tuple[Stream[T], Stream[U]]:
-        """Similar to `filter` except splits the True and False values. Will return a two new `Stream` with the partitioned sequences.
+        """Similar to ``filter`` except splits the ``True`` and ``False`` values. Will return a two new ``Stream`` with the partitioned sequences.
 
         Each partition is independently replayable.
 
@@ -298,7 +298,7 @@ class Stream[Type](_BaseStream):
             >>> part2.collect() == (1, 3)
             True
 
-        As `partition` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
+        As ``partition`` triggers an action, the parameters will be forwarded to the ``par_collect`` call if the ``workers`` are greater than 1.
 
         .. code-block:: python
 
@@ -345,7 +345,7 @@ class Stream[Type](_BaseStream):
     def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
     ) -> T:
-        """Fold the results into a single value. `fold` triggers an action so will incur a `collect`.
+        """Fold the results into a single value. ``fold`` triggers an action so will incur a ``collect``.
 
         .. doctest::
 
@@ -359,8 +359,8 @@ class Stream[Type](_BaseStream):
             True
 
 
-        As `fold` triggers an action, the parameters will be forwarded to the `par_collect` call if the `workers` are greater than 1.
-        This will only effect the `collect` that is used to create the iterable to reduce, not the `fold` operation itself.
+        As ``fold`` triggers an action, the parameters will be forwarded to the ``par_collect`` call if the ``workers`` are greater than 1.
+        This will only effect the ``collect`` that is used to create the iterable to reduce, not the ``fold`` operation itself.
 
         .. code-block:: python
 
@@ -374,7 +374,7 @@ class Stream[Type](_BaseStream):
         return reduce(fn, self.collect(), initial)
 
     def collect(self) -> tuple[U, ...]:
-        """Materialise the sequence from the `Stream`.
+        """Materialise the sequence from the ``Stream``.
 
         .. code-block:: python
 
@@ -387,7 +387,7 @@ class Stream[Type](_BaseStream):
         return tuple(_apply_fns(self.seq, self.ops))
 
     def par_collect(self, workers: int = 4, *, use_threads: bool = False) -> tuple[U, ...]:
-        """Materialise the sequence from the `Stream` in parallel.
+        """Materialise the sequence from the ``Stream`` in parallel.
 
         .. code-block:: python
 
@@ -396,8 +396,8 @@ class Stream[Type](_BaseStream):
             stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
             stream.par_collect() == (1, 2, 3, 4)
 
-        Use the `workers` arg to select the number of workers to use. Use `-1` to use all available processors (except 1).
-        Defaults to `4`.
+        Use the ``workers`` arg to select the number of workers to use. Use ``-1`` to use all available processors (except 1).
+        Defaults to ``4``.
 
         .. code-block:: python
 
@@ -406,8 +406,8 @@ class Stream[Type](_BaseStream):
             stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
             stream.par_collect(workers=-1) == (1, 2, 3, 4)
 
-        For smaller I/O bound tasks use the `use_threads` flag as True.
-        If False the processing will use `ProcessPoolExecutor` else it will use `ThreadPoolExecutor`.
+        For smaller I/O bound tasks use the ``use_threads`` flag as ``True``.
+        If False the processing will use ``ProcessPoolExecutor`` else it will use ``ThreadPoolExecutor``.
 
         .. code-block:: python
 
@@ -416,7 +416,7 @@ class Stream[Type](_BaseStream):
             stream = Stream.from_iterable([0, 1, 2, 3]).map(add_one)
             stream.par_collect(use_threads=True) == (1, 2, 3, 4)
 
-        Note that all operations should be pickle-able, for that reason `Stream` does not support lambdas or closures.
+        Note that all operations should be pickle-able, for that reason ``Stream`` does not support lambdas or closures.
         """
         if workers == -1:
             workers = (os.cpu_count() or 5) - 1
@@ -435,7 +435,7 @@ class Stream[Type](_BaseStream):
             )
 
     async def async_collect(self) -> Awaitable[tuple[U, ...]]:
-        """Async version of collect. Note that all functions in the stream should be `Awaitable`.
+        """Async version of collect. Note that all functions in the stream should be ``Awaitable``.
 
         .. code-block:: python
 
@@ -443,7 +443,7 @@ class Stream[Type](_BaseStream):
 
             Stream.from_iterable(file_paths).map(async_read_files).async_collect()
 
-        If there are no operations in the `Stream` then this will act as a normal collect.
+        If there are no operations in the ``Stream`` then this will act as a normal collect.
 
         .. code-block:: python
 

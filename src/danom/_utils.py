@@ -53,7 +53,7 @@ class _AllOf:
 
 
 def all_of(*fns: Filterable) -> Filterable:
-    """True if all of the given functions return True.
+    """``True`` if all of the given functions return ``True``.
 
     .. code-block:: python
 
@@ -74,7 +74,7 @@ class _AnyOf:
 
 
 def any_of(*fns: Filterable) -> Filterable:
-    """True if any of the given functions return True.
+    """``True`` if any of the given functions return ``True``.
 
     .. code-block:: python
 
@@ -87,7 +87,7 @@ def any_of(*fns: Filterable) -> Filterable:
 
 
 def none_of(*fns: Filterable) -> Filterable:
-    """True if none of the given functions return True.
+    """``True`` if none of the given functions return ``True``.
 
     .. code-block:: python
 
@@ -129,7 +129,7 @@ def identity[T_co](x: T_co) -> T_co:
 
 
 def invert(func: Filterable) -> Filterable:
-    """Invert a boolean function so it returns False where it would've returned True.
+    """Invert a boolean function so it returns ``False`` where it would've returned ``True``.
 
     .. code-block:: python
 
