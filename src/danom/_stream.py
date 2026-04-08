@@ -506,7 +506,7 @@ PlannedOps = tuple[str, StreamFn]
 AsyncPlannedOps = tuple[str, AsyncStreamFn]
 
 
-def _apply_fns_worker[T](args: tuple[tuple[T], tuple[PlannedOps, ...]]) -> tuple[T]:
+def _apply_fns_worker[T](args: tuple[tuple[T], tuple[PlannedOps, ...]]) -> tuple[T, ...]:
     seq, ops = args
     return _par_apply_fns(seq, ops)
 
@@ -535,7 +535,7 @@ def _apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> tuple[T, .
     return tuple(pipeline)  # ty: ignore[invalid-return-type]
 
 
-def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> tuple[T]:
+def _par_apply_fns[T](elements: tuple[T], ops: tuple[PlannedOps, ...]) -> tuple[T, ...]:
     results = []
     for elem in elements:
         valid = True

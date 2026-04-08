@@ -76,7 +76,7 @@ def lt_10(x: float) -> bool:
 
 
 async def async_is_file(path: Path) -> bool:
-    return path.is_file()
+    return path.is_file()  # noqa: ASYNC240
 
 
 async def async_read_text(path: str) -> str:
@@ -129,6 +129,10 @@ class Adder:
     @safe_method
     def cls_raises(self, *_args: tuple, **_kwargs: dict) -> None:
         raise ValueError
+
+    @safe
+    def safe_add(self, a: int, b: int) -> int:
+        return a + b
 
 
 class ValueLogger:

@@ -2,7 +2,7 @@ from functools import partial
 
 import pytest
 
-from danom._result import Err
+from danom._result import Err, Ok
 from tests.conftest import (
     REPO_ROOT,
     Adder,
@@ -65,8 +65,8 @@ def test_traceback():
 
     expected_lines = [
         "Traceback (most recent call last):",
-        '  File "./src/danom/_safe.py", line 34, in __call__',
-        "    return Ok(self.func(*args, **kwargs))",
+        '  File "./src/danom/_safe.py", line 31, in wrapper',
+        "    return Ok(func(*args, **kwargs))",
         '  File "./tests/conftest.py", line 117, in div_zero',
         "    return x / 0",
         "ZeroDivisionError: division by zero",
@@ -80,3 +80,8 @@ def test_traceback():
     missing_lines = [line for line in expected_lines if line not in tb_lines]
 
     assert missing_lines == [], f"lines don't match {tb_lines = }"
+
+
+def test_safe_on_method():
+    cls = Adder()
+    assert cls.safe_add(2, 2) == Ok(4)
