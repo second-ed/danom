@@ -45,7 +45,7 @@ def test_stream_pipeline(collect_fn, kwargs, it, expected_part1, expected_part2)
     part1, part2 = Stream.from_iterable(it).map(add_one).partition(is_even)
 
     assert (
-        _get_attr_collect(part1.map(add_one, add_one).filter(divisible_by_3), collect_fn, kwargs)
+        _get_attr_collect(part1.map(add, 1).map(add_one).filter(divisible_by_3), collect_fn, kwargs)
         == expected_part1
     )
     assert _get_attr_collect(part2, collect_fn, kwargs) == expected_part2
@@ -70,7 +70,11 @@ def test_stream_pipeline(collect_fn, kwargs, it, expected_part1, expected_part2)
 def test_collect_methods(collect_fn, kwargs, it, expected_result):
     assert (
         _get_attr_collect(
-            Stream.from_iterable(it).map(add_one, add_one).filter(divisible_by_3, divisible_by_5),
+            Stream.from_iterable(it)
+            .map(add_one)
+            .map(add_one)
+            .filter(divisible_by_3)
+            .filter(divisible_by_5),
             collect_fn,
             kwargs,
         )
@@ -89,7 +93,7 @@ def test_collect_methods(collect_fn, kwargs, it, expected_result):
 )
 def test_stream_to_par_stream(collect_fn, kwargs):
     part1, part2 = (
-        Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
+        Stream.from_iterable(range(10)).map(add, b=2).partition(divisible_by_3, workers=4)
     )
     assert _get_attr_collect(part1.map(add_one), collect_fn, kwargs) == (4, 7, 10)
     assert _get_attr_collect(part2, collect_fn, kwargs) == (2, 4, 5, 7, 8, 10, 11)
@@ -122,7 +126,11 @@ def test_tap(collect_fn, kwargs):
         val_logger = ValueLogger(values)
 
         assert _get_attr_collect(
-            Stream.from_iterable(range(4)).map(add_one).tap(val_logger, val_logger).map(add_one),
+            Stream.from_iterable(range(4))
+            .map(add, b=1)
+            .tap(val_logger)
+            .tap(val_logger)
+            .map(add_one),
             collect_fn,
             kwargs,
         ) == (2, 3, 4, 5)
@@ -175,7 +183,7 @@ def test_sequence(kwargs, seq, expected_result, expected_context):
 @pytest.mark.asyncio
 async def test_async_collect():
     assert await Stream.from_iterable(
-        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))  # noqa: ASYNC240
     ).filter(async_is_file).map(async_read_text).async_collect() == (
         "",
         "x = 1\n",
@@ -187,7 +195,7 @@ async def test_async_collect():
 @pytest.mark.asyncio
 async def test_async_collect_no_fns():
     assert await Stream.from_iterable(
-        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))  # noqa: ASYNC240
     ).async_collect() == (
         Path(f"{REPO_ROOT}/tests/mock_data/__init__.py"),
         Path(f"{REPO_ROOT}/tests/mock_data/dir_should_skip"),
@@ -202,12 +210,9 @@ async def test_async_tap():
     val_logger = AsyncValueLogger()
     val_logger_2 = AsyncValueLogger()
 
-    assert await Stream.from_iterable(range(4)).tap(val_logger, val_logger_2).async_collect() == (
-        0,
-        1,
-        2,
-        3,
-    )
+    assert await Stream.from_iterable(range(4)).tap(val_logger).tap(
+        val_logger_2
+    ).async_collect() == (0, 1, 2, 3)
     assert sorted(val_logger.values) == [0, 1, 2, 3]
     assert sorted(val_logger_2.values) == [0, 1, 2, 3]
 

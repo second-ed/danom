@@ -8,7 +8,7 @@ from collections.abc import Awaitable, Callable, Iterable
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import deepcopy
 from enum import Enum
-from functools import reduce
+from functools import partial, reduce
 from itertools import batched
 from typing import ParamSpec, TypeVar, cast
 
@@ -22,20 +22,20 @@ U = TypeVar("U")
 E = TypeVar("E")
 P = ParamSpec("P")
 
-MapFn = Callable[[T], U]
-FilterFn = Callable[[T], bool]
-TapFn = Callable[[T], None]
+MapFn = Callable[P, U]
+FilterFn = Callable[P, bool]
+TapFn = Callable[P, None]
 
-AsyncMapFn = Callable[[T], Awaitable[U]]
-AsyncFilterFn = Callable[[T], Awaitable[bool]]
-AsyncTapFn = Callable[[T], Awaitable[None]]
+AsyncMapFn = Callable[P, Awaitable[U]]
+AsyncFilterFn = Callable[P, Awaitable[bool]]
+AsyncTapFn = Callable[P, Awaitable[None]]
 
 StreamFn = MapFn | FilterFn | TapFn
 AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 
 @attrs.define(frozen=True)
-class _BaseStream(ABC):
+class _BaseStream[T](ABC):
     seq: tuple = attrs.field(validator=attrs.validators.instance_of(tuple))
     ops: tuple = attrs.field(default=(), validator=attrs.validators.instance_of(tuple), repr=False)
 
@@ -44,16 +44,24 @@ class _BaseStream(ABC):
     def from_iterable(cls, it: Iterable) -> _BaseStream[T]: ...
 
     @abstractmethod
-    def map(self, *fns: MapFn | AsyncMapFn) -> _BaseStream[T]: ...
+    def map[**P](
+        self, fn: MapFn | AsyncMapFn, *args: P.args, **kwargs: P.kwargs
+    ) -> _BaseStream[T]: ...
 
     @abstractmethod
-    def filter(self, *fns: FilterFn | AsyncFilterFn) -> _BaseStream[T]: ...
+    def filter[**P](
+        self, fn: FilterFn | AsyncFilterFn, *args: P.args, **kwargs: P.kwargs
+    ) -> _BaseStream[T]: ...
 
     @abstractmethod
-    def tap(self, *fns: TapFn | AsyncTapFn) -> _BaseStream[T]: ...
+    def tap[**P](
+        self, fn: TapFn | AsyncTapFn, *args: P.args, **kwargs: P.kwargs
+    ) -> _BaseStream[T]: ...
 
     @abstractmethod
-    def partition(self, fn: FilterFn) -> tuple[_BaseStream[T], _BaseStream[U]]: ...
+    def partition[U](
+        self, fn: FilterFn, *, workers: int = 1, use_threads: bool = False
+    ) -> tuple[_BaseStream[T], _BaseStream[U]]: ...
 
     @abstractmethod
     def fold(
@@ -74,7 +82,7 @@ class _BaseStream(ABC):
 
 
 @attrs.define(frozen=True)
-class Stream[Type](_BaseStream):
+class Stream[T](_BaseStream):
     """An immutable lazy iterator with functional operations.
 
     Why bother?
@@ -161,6 +169,11 @@ class Stream[Type](_BaseStream):
     keyword breakdown: `{}`
 
     The business logic is arguably much clearer like this.
+
+    Version changes
+    ----------
+    ``0.13.0``: ``Stream.map``, ``Stream.filter`` and ``Stream.tap`` now take kwargs and ``partial`` them into the passed in function.
+
     """
 
     @classmethod
@@ -178,7 +191,7 @@ class Stream[Type](_BaseStream):
             it = [it]
         return cls(seq=tuple(it))
 
-    def map(self, *fns: MapFn | AsyncMapFn) -> Stream[U]:
+    def map[**P](self, fn: MapFn | AsyncMapFn, *args: P.args, **kwargs: P.kwargs) -> Stream[T]:
         """Map a function to the elements in the ``Stream``. Will return a new ``Stream`` with the modified sequence.
 
         .. code-block:: python
@@ -202,20 +215,22 @@ class Stream[Type](_BaseStream):
             Stream.from_iterable([0, 1, 2, 4]).map(two_div_value).collect() == (Err(error=ZeroDivisionError('division by zero')), Ok(2.0), Ok(1.0), Ok(0.5))
 
 
-        Simple functions can be passed in sequence to compose more complex transformations
+        Keyword arguments can be passed into the functions:
 
         .. code-block:: python
 
             from danom import Stream
 
-            Stream.from_iterable(range(5)).map(mul_two, add_one).collect() == (1, 3, 5, 7, 9)
+            Stream.from_iterable(range(5)).map(mul, b=2).map(add, b=1).collect() == (1, 3, 5, 7, 9)
 
         """
-        plan = (*self.ops, *tuple((_MAP, fn) for fn in fns))
+        plan = (*self.ops, (_MAP, partial(fn, *args, **kwargs)))
         object.__setattr__(self, "ops", plan)
         return self
 
-    def filter(self, *fns: FilterFn | AsyncFilterFn) -> Stream[T]:
+    def filter[**P](
+        self, fn: FilterFn | AsyncFilterFn, *args: P.args, **kwargs: P.kwargs
+    ) -> Stream[T]:
         """Filter the stream based on a predicate. Will return a new ``Stream`` with the modified sequence.
 
         .. doctest::
@@ -225,20 +240,20 @@ class Stream[Type](_BaseStream):
             >>> Stream.from_iterable([0, 1, 2, 3]).filter(lambda x: x % 2 == 0).collect() == (0, 2)
             True
 
-        Simple functions can be passed in sequence to compose more complex filters
+        Keyword arguments can be passed into the functions:
 
         .. code-block:: python
 
             from danom import Stream
 
-            Stream.from_iterable(range(20)).filter(divisible_by_3, divisible_by_5).collect() == (0, 15)
+            Stream.from_iterable(range(20)).filter(divisible_by, x=3).filter(divisible_by, x=5).collect() == (0, 15)
 
         """
-        plan = (*self.ops, *tuple((_FILTER, fn) for fn in fns))
+        plan = (*self.ops, (_FILTER, partial(fn, *args, **kwargs)))
         object.__setattr__(self, "ops", plan)
         return self
 
-    def tap(self, *fns: TapFn | AsyncTapFn) -> Stream[T]:
+    def tap[**P](self, fn: TapFn | AsyncTapFn, *args: P.args, **kwargs: P.kwargs) -> Stream[T]:
         """Tap the values to another process that returns None. Will return a new ``Stream`` with the modified sequence.
 
         The value passed to the tap function will be deep-copied to avoid any modification to the ``Stream`` item for downstream consumers.
@@ -256,7 +271,7 @@ class Stream[Type](_BaseStream):
 
             from danom import Stream
 
-            Stream.from_iterable([0, 1, 2, 3]).tap(log_value, print_value).collect() == (0, 1, 2, 3)
+            Stream.from_iterable([0, 1, 2, 3]).tap(log_value).tap(print_value).collect() == (0, 1, 2, 3)
 
 
         ``tap`` is useful for logging and similar actions without effecting the individual items, in this example eligible and dormant users are logged using ``tap``:
@@ -269,16 +284,12 @@ class Stream[Type](_BaseStream):
                 Stream.from_iterable(users).map(parse_user_objects).partition(inactive_users)
             )
 
-            active_users.filter(eligible_for_promotion).tap(log_eligible_users).map(
-                construct_promo_email, send_with_confirmation
-            ).collect()
+            active_users.filter(eligible_for_promotion).tap(log_eligible_users).map(construct_promo_email).map(send_with_confirmation).collect()
 
-            inactive_users.tap(log_inactive_users).map(
-                create_dormant_user_entry, add_to_dormant_table
-            ).collect()
+            inactive_users.tap(log_inactive_users).map(create_dormant_user_entry).map(add_to_dormant_table).collect()
 
         """
-        plan = (*self.ops, *tuple((_TAP, fn) for fn in fns))
+        plan = (*self.ops, (_TAP, partial(fn, *args, **kwargs)))
         object.__setattr__(self, "ops", plan)
         return self
 
@@ -305,7 +316,7 @@ class Stream[Type](_BaseStream):
 
             from danom import Stream
 
-            Stream.from_iterable(range(10)).map(add_one, add_one).partition(divisible_by_3, workers=4)
+            Stream.from_iterable(range(10)).map(add_one).map(add_one).partition(divisible_by_3, workers=4)
             part1.map(add_one).par_collect() == (4, 7, 10)
             part2.collect() == (2, 4, 5, 7, 8, 10, 11)
 
