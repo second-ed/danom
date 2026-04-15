@@ -10,7 +10,7 @@ def monad_tests(parent: type[Result | Either], err_monad: type[Err | Left]):
     inners = st.one_of(st.integers(), st.text(), st.floats(allow_nan=False, allow_infinity=False))
 
     results = st.one_of(inners.map(parent.unit), st.just(err_monad(1)))
-    safe_fns = st.sampled_from([lambda x: parent.unit(x * 2), lambda x: err_monad(x)])
+    safe_fns = st.sampled_from([lambda x: parent.unit(x * 2), err_monad])
 
     @given(inner=inners, f=safe_fns)
     def test_monadic_left_identity(inner, f):
