@@ -161,7 +161,7 @@ class Result[T_co, E_co: object](ABC):
 
         .. code-block:: python
 
-            from danom import Stream, Result
+            from danom import Err, Ok, Stream, Result
 
             oks, errs = Stream.from_iterable([Ok(1), Ok(2), Err()]).partition(Result.result_is_ok)
             oks.map(Result.result_unwrap).collect == (1, 2)
