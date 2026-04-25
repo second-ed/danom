@@ -47,9 +47,6 @@ show_missing = true
 skip_covered = true
 fail_under = 95
 
-[project.entry-points.pytest11]
-papertrail = "papertrail.__main__"
-
 [tool.pytest]
 # addopts = ["--codspeed"]
 
