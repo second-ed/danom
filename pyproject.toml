@@ -1,6 +1,6 @@
 [project]
 name = "danom"
-version = "0.13.0"
+version = "0.13.1"
 description = "Functional streams and monads"
 readme = "README.md"
 license = "MIT"
@@ -46,9 +46,6 @@ source = ["src"]
 show_missing = true
 skip_covered = true
 fail_under = 95
-
-[project.entry-points.pytest11]
-papertrail = "papertrail.__main__"
 
 [tool.pytest]
 # addopts = ["--codspeed"]

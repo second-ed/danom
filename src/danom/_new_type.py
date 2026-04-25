@@ -47,7 +47,7 @@ def new_type(  # noqa: ANN202
         from danom import new_type
 
         def has_len(email: str) -> bool:
-        return len(email) > 0
+            return len(email) > 0
 
         Email = new_type("Email", str, validators=[has_len])
         Email("some_email@domain.com").upper() == "SOME_EMAIL@DOMAIN.COM"
