@@ -15,7 +15,8 @@ F_co = TypeVar("F_co", bound=object, covariant=True)
 P = ParamSpec("P")
 
 Mappable = Callable[Concatenate[T_co, P], U_co]
-Bindable = Callable[Concatenate[T_co, P], "Result[U_co, E_co]"]
+Bindable = Callable[Concatenate[T_co, P], "Result[T_co, E_co]"]
+Recoverable = Callable[Concatenate[E_co, P], "Result[T_co, E_co]"]
 
 
 @attrs.define(frozen=True)
@@ -61,7 +62,7 @@ class Result[T_co, E_co: object](ABC):
         ...
 
     @abstractmethod
-    def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def map[**P](self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[T_co, E_co]:
         """Pipe a pure function and wrap the return value with ``Ok``.
         Given an ``Err`` will return self.
 
@@ -75,7 +76,7 @@ class Result[T_co, E_co: object](ABC):
         ...
 
     @abstractmethod
-    def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def map_err[**P](self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Result[T_co, E_co]:
         """Pipe a pure function and wrap the return value with ``Err``.
         Given an ``Ok`` will return self.
 
@@ -89,7 +90,9 @@ class Result[T_co, E_co: object](ABC):
         ...
 
     @abstractmethod
-    def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def and_then[**P](
+        self, func: Bindable, *args: P.args, **kwargs: P.kwargs
+    ) -> Result[T_co, E_co]:
         """Pipe another function that returns a monad. For ``Err`` will return original error.
 
         .. code-block:: python
@@ -104,7 +107,9 @@ class Result[T_co, E_co: object](ABC):
         ...
 
     @abstractmethod
-    def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
+    def or_else[**P](
+        self, func: Recoverable, *args: P.args, **kwargs: P.kwargs
+    ) -> Result[T_co, E_co]:
         """Pipe a function that returns a monad to recover from an ``Err``. For ``Ok`` will return original ``Result``.
 
         .. code-block:: python
@@ -169,6 +174,27 @@ class Result[T_co, E_co: object](ABC):
         """
         return result.unwrap()
 
+    def flatten(self) -> Result[T_co, E_co]:
+        """Flatten the monad. Will return the first ``Err`` or the lowest ``Ok`` instance.
+
+        .. doctest::
+
+            >>> from danom import Err, Ok, Stream, Result
+
+            >>> Ok(Ok(Ok(1))).flatten() == Ok(1)
+            True
+
+            >>> Ok(Ok(Err())).flatten() == Err()
+            True
+
+        """
+        current = self
+
+        while isinstance(current, Ok) and isinstance(current.inner, Result):
+            current = current.inner
+
+        return current
+
 
 @attrs.define(frozen=True, hash=True)
 class Ok(Result[T_co, Never]):
@@ -177,16 +203,18 @@ class Ok(Result[T_co, Never]):
     def is_ok(self) -> Literal[True]:
         return True
 
-    def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Ok[U_co]:
+    def map[**P](self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Ok[T_co]:
         return Ok(func(self.inner, *args, **kwargs))
 
-    def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
+    def map_err[**P](self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
-    def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        return func(self.inner, *args, **kwargs)
+    def and_then[**P](
+        self, func: Bindable, *args: P.args, **kwargs: P.kwargs
+    ) -> Result[T_co, E_co]:
+        return Ok(func(self.inner, *args, **kwargs)).flatten()
 
-    def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
+    def or_else[**P](self, func: Recoverable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
     def unwrap(self) -> T_co:
@@ -229,17 +257,19 @@ class Err(Result[Never, E_co]):
     def is_ok(self) -> Literal[False]:
         return False
 
-    def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
+    def map[**P](self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
-    def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Err[F_co]:
+    def map_err[**P](self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Err[E_co]:
         return Err(func(self.error, *args, **kwargs))
 
-    def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
+    def and_then[**P](self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
 
-    def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Result[U_co, E_co]:
-        return func(self.error, *args, **kwargs)
+    def or_else[**P](
+        self, func: Recoverable, *args: P.args, **kwargs: P.kwargs
+    ) -> Result[T_co, E_co]:  # ty: ignore[invalid-method-override]
+        return Ok(func(self.error, *args, **kwargs)).flatten()
 
     def unwrap(self) -> T_co:
         if isinstance(self.error, Exception):
