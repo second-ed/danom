@@ -1,8 +1,11 @@
 from contextlib import nullcontext
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 from danom import Err, Ok, Result
+from danom._utils import identity
 from tests.conftest import add_one
 
 
@@ -120,3 +123,32 @@ def test_staticmethod_result_is_ok(monad, expected_result):
 def test_staticmethod_result_unwrap(monad, expected_result, expected_context):
     with expected_context:
         assert Result.result_unwrap(monad) == expected_result
+
+
+@pytest.mark.parametrize(
+    ("monad", "expected_result"),
+    [pytest.param(Ok(Ok(Ok(1))), Ok(1)), pytest.param(Ok(Ok(Err())), Err())],
+)
+def test_flatten(monad, expected_result) -> None:
+    assert monad.flatten() == expected_result
+
+
+st_results = st.integers().map(Ok) | st.text().map(Err)
+st_nested_results = st.recursive(
+    st_results, lambda children: st.one_of(children.map(Ok)), max_leaves=10
+)
+
+
+@given(monad=st_nested_results)
+def test_flatten_idempotent(monad) -> None:
+    assert monad.flatten().flatten() == monad.flatten()
+
+
+@given(monad=st_results)
+def test_flatten_noop_for_flat_monad(monad) -> None:
+    assert monad.flatten() == monad
+
+
+@given(monad=st_nested_results)
+def test_and_then_flattens(monad):
+    assert monad.flatten() == monad.and_then(identity)
