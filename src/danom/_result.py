@@ -174,6 +174,27 @@ class Result[T_co, E_co: object](ABC):
         """
         return result.unwrap()
 
+    def flatten(self) -> Result[T_co, E_co]:
+        """Flatten the monad. Will return the first ``Err`` or the lowest ``Ok`` instance.
+
+        .. doctest::
+
+            >>> from danom import Err, Ok, Stream, Result
+
+            >>> Ok(Ok(Ok(1))).flatten() == Ok(1)
+            True
+
+            >>> Ok(Ok(Err())).flatten() == Err()
+            True
+
+        """
+        current = self
+
+        while isinstance(current, Ok) and isinstance(current.inner, Result):
+            current = current.inner
+
+        return current
+
 
 @attrs.define(frozen=True, hash=True)
 class Ok(Result[T_co, Never]):
@@ -191,7 +212,7 @@ class Ok(Result[T_co, Never]):
     def and_then[**P](
         self, func: Bindable, *args: P.args, **kwargs: P.kwargs
     ) -> Result[T_co, E_co]:
-        return func(self.inner, *args, **kwargs)
+        return Ok(func(self.inner, *args, **kwargs)).flatten()
 
     def or_else[**P](self, func: Recoverable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
@@ -248,7 +269,7 @@ class Err(Result[Never, E_co]):
     def or_else[**P](
         self, func: Recoverable, *args: P.args, **kwargs: P.kwargs
     ) -> Result[T_co, E_co]:  # ty: ignore[invalid-method-override]
-        return func(self.error, *args, **kwargs)
+        return Ok(func(self.error, *args, **kwargs)).flatten()
 
     def unwrap(self) -> T_co:
         if isinstance(self.error, Exception):
