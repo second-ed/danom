@@ -82,3 +82,16 @@ def test_staticmethod_result_is_ok(monad, expected_result):
 @pytest.mark.parametrize("inner", [pytest.param(0), pytest.param("something"), pytest.param([])])
 def test_staticmethod_result_unwrap(monad, inner):
     assert Either.either_unwrap(monad(inner)) == inner
+
+
+@pytest.mark.parametrize(
+    ("monad", "expected_result"),
+    [
+        pytest.param(Right(Right()), Right()),
+        pytest.param(Right(Left()), Left()),
+        pytest.param(Left(Right()), Right()),
+        pytest.param(Left(Left()), Left()),
+    ],
+)
+def test_flatten(monad, expected_result) -> None:
+    assert monad.flatten() == expected_result
