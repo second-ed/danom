@@ -190,10 +190,13 @@ class Result[T_co, E_co: object](ABC):
         """
         current = self
 
-        while isinstance(current, Ok) and isinstance(current.inner, Result):
-            current = current.inner
-
-        return current
+        while True:
+            if isinstance(current, Ok) and isinstance(current.inner, Result):
+                current = current.inner
+            elif isinstance(current, Err) and isinstance(current.error, Result):
+                current = current.error
+            else:
+                return current
 
 
 @attrs.define(frozen=True, hash=True)
