@@ -22,6 +22,8 @@ class Either[T_co, E_co: object](ABC):
     Each monad is a frozen instance to prevent further mutation.
     """
 
+    inner: Any = attrs.field(default=None)
+
     @classmethod
     def unit(cls, inner: T_co) -> Right[T_co]:
         """Unit method. Given an item of type ``T`` return ``Right(T)``
@@ -164,11 +166,30 @@ class Either[T_co, E_co: object](ABC):
         """
         return result.unwrap()
 
+    def flatten(self) -> Either[T_co, E_co]:
+        """Flatten the monad. Will return the first ``Left`` or the lowest ``Right`` instance.
+
+        .. doctest::
+
+            >>> from danom import Left, Right, Stream, Either
+
+            >>> Right(Right(Right(1))).flatten() == Right(1)
+            True
+
+            >>> Right(Right(Left())).flatten() == Left()
+            True
+
+        """
+        current = self
+
+        while isinstance(current, Either) and isinstance(current.inner, Either):
+            current = current.inner
+
+        return current
+
 
 @attrs.define(frozen=True, hash=True)
 class Right(Either[T_co, Never]):
-    inner: Any = attrs.field(default=None)
-
     def is_ok(self) -> Literal[True]:
         return True
 
@@ -179,7 +200,7 @@ class Right(Either[T_co, Never]):
         return self
 
     def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        return func(self.inner, *args, **kwargs)
+        return Right(func(self.inner, *args, **kwargs)).flatten()
 
     def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self
@@ -190,8 +211,6 @@ class Right(Either[T_co, Never]):
 
 @attrs.define(frozen=True, hash=True)
 class Left(Either[Never, E_co]):
-    inner: Any = attrs.field(default=None)
-
     def is_ok(self) -> Literal[False]:
         return False
 
@@ -205,7 +224,7 @@ class Left(Either[Never, E_co]):
         return self
 
     def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        return func(self.inner, *args, **kwargs)
+        return Left(func(self.inner, *args, **kwargs)).flatten()  # ty: ignore[invalid-return-type]
 
     def unwrap(self) -> T_co:
         return self.inner
