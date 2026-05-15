@@ -21,6 +21,7 @@ T = TypeVar("T")
 U = TypeVar("U")
 E = TypeVar("E")
 P = ParamSpec("P")
+S = TypeVar("S", bound="_BaseStream")
 
 MapFn = Callable[P, U]
 FilterFn = Callable[P, bool]
@@ -67,6 +68,11 @@ class _BaseStream[T](ABC):
     def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
     ) -> T: ...
+
+    @abstractmethod
+    def sequence(
+        self, *, workers: int = 1, use_threads: bool = False
+    ) -> Result[S, E] | Either[S, E]: ...
 
     @abstractmethod
     def collect(self) -> tuple[U, ...]: ...
@@ -337,8 +343,8 @@ class Stream[T](_BaseStream):
         return (Stream.from_iterable(pos), Stream.from_iterable(neg))
 
     def sequence(
-        self, *, workers: int = 1, use_threads: bool = False
-    ) -> Result[T, E] | Either[T, E]:
+        self: Stream[T], *, workers: int = 1, use_threads: bool = False
+    ) -> Result[Stream[T], E] | Either[Stream[T], E]:
         """Convert a ``Stream`` of ``Result`` or ``Either`` monads to a monad of Stream
 
         .. doctest::
