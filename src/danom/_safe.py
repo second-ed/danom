@@ -1,7 +1,7 @@
 import functools
 import traceback
 from collections.abc import Callable
-from typing import Concatenate, ParamSpec, TypeVar
+from typing import Concatenate, ParamSpec, TypeVar, overload
 
 from danom._result import Err, Ok, Result
 
@@ -10,8 +10,22 @@ P = ParamSpec("P")
 U = TypeVar("U")
 E = TypeVar("E")
 
+type ExceptionType = type[Exception] | tuple[type[Exception], ...]
 
-def safe[**P, U](func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
+
+@overload
+def safe[**P, U](func: Callable[P, U]) -> Callable[P, Result[U, Exception]]: ...
+
+
+@overload
+def safe(
+    func: None = None, *, errors: ExceptionType = Exception
+) -> Callable[[Callable[P, U]], Callable[P, Result[U, Exception]]]: ...
+
+
+def safe[**P, U](
+    func: Callable[P, U] | None = None, *, errors: ExceptionType = Exception
+) -> Callable[P, Result[U, Exception]] | Callable[..., Callable[P, Result[U, Exception]]]:
     """Decorator for functions that wraps the function in a try except returns `Ok` on success else `Err`.
 
     .. code-block:: python
@@ -23,16 +37,36 @@ def safe[**P, U](func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
             return a + 1
 
         add_one(1) == Ok(inner=2)
+
+
+    Only catch a single error type or subset of error types by passing in an error type to catch.
+
+    .. code-block:: python
+
+        from danom import safe
+
+        @safe(errors=ZeroDivisionError)
+        def div(a: int, b: int) -> float:
+            return a / b
+
+
+        div(2, 0) == Err(error=ZeroDivisionError('division by zero'))
+        div(2, "")
+        ---------------------------------------------------------------------------
+        TypeError                                 Traceback (most recent call last)
     """
 
-    @functools.wraps(func)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[U, Exception]:
-        try:
-            return Ok(func(*args, **kwargs))
-        except Exception as e:  # noqa: BLE001
-            return Err(error=e, input_args=(args, kwargs), traceback=traceback.format_exc())  # ty: ignore[invalid-return-type]
+    def decorator(func: Callable[P, U]) -> Callable[P, Result[U, Exception]]:
+        @functools.wraps(func)
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[U, Exception]:
+            try:
+                return Ok(func(*args, **kwargs))
+            except errors as e:
+                return Err(error=e, input_args=(args, kwargs), traceback=traceback.format_exc())  # ty: ignore[invalid-return-type]
 
-    return wrapper
+        return wrapper
+
+    return decorator(func) if func is not None else decorator
 
 
 def safe_method[T, **P, U](

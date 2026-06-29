@@ -1,8 +1,10 @@
+from contextlib import nullcontext
 from functools import partial
 
 import pytest
 
 from danom._result import Err, Ok
+from danom._safe import safe
 from tests.conftest import (
     REPO_ROOT,
     Adder,
@@ -65,7 +67,7 @@ def test_traceback():
 
     expected_lines = [
         "Traceback (most recent call last):",
-        '  File "./src/danom/_safe.py", line 31, in wrapper',
+        '  File "./src/danom/_safe.py", line 63, in wrapper',
         "    return Ok(func(*args, **kwargs))",
         '  File "./tests/conftest.py", line 117, in div_zero',
         "    return x / 0",
@@ -85,3 +87,32 @@ def test_traceback():
 def test_safe_on_method():
     cls = Adder()
     assert cls.safe_add(2, 2) == Ok(4)
+
+
+@pytest.mark.parametrize(
+    ("a", "b", "errors", "expected_result", "expected_context"),
+    [
+        pytest.param(
+            1, 1, Exception, True, nullcontext(), id="Does nothing if the function returns ok"
+        ),
+        pytest.param(
+            1,
+            0,
+            ZeroDivisionError,
+            False,
+            nullcontext(),
+            id="Returns Err if the err type is in the passed in list of errors",
+        ),
+        pytest.param(
+            1,
+            "",
+            ZeroDivisionError,
+            True,
+            pytest.raises(TypeError),
+            id="Raises exception if the exception type isn't in the list of errors",
+        ),
+    ],
+)
+def test_safe_subset_of_errors(a, b, errors, expected_result, expected_context) -> None:
+    with expected_context:
+        assert safe(errors=errors)(lambda a, b: a / b)(a, b).is_ok() is expected_result
