@@ -58,3 +58,6 @@ fail_under = 95
 
 [tool.ty.src]
 include = ["src", "tests"]
+
+[tool.uv]
+exclude-newer = "1 week"
