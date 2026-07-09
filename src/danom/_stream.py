@@ -336,10 +336,10 @@ class Stream[T](_BaseStream):
         pos, neg = [], []
 
         for x in seq_tuple:
-            if fn(x):
-                pos.append(x)
-            else:
+            if not fn(x):
                 neg.append(x)
+                continue
+            pos.append(x)
         return (Stream.from_iterable(pos), Stream.from_iterable(neg))
 
     def sequence(
@@ -533,7 +533,7 @@ class _Tap:
     fn: Callable
 
     def __call__(self, value: T) -> T:
-        deepcopy(self.fn(value))
+        self.fn(deepcopy(value))
         return value
 
 
