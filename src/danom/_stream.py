@@ -533,7 +533,7 @@ class _Tap:
     fn: Callable
 
     def __call__(self, value: T) -> T:
-        deepcopy(self.fn(value))
+        self.fn(deepcopy(value))
         return value
 
 
