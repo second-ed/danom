@@ -89,7 +89,7 @@ class _BaseStream[T](ABC):
 
 @attrs.define(frozen=True)
 class Stream[T](_BaseStream):
-    """An immutable lazy iterator with functional operations.
+    """A lazy iterator with functional operations.
 
     Why bother?
     -----------
