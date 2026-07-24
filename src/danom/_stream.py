@@ -373,6 +373,8 @@ class Stream[T](_BaseStream):
             True
 
         """
+        if not self:
+            return Result.unit(self)
 
         if workers > 1:
             seq_tuple = self.par_collect(workers=workers, use_threads=use_threads)

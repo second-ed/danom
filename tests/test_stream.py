@@ -170,6 +170,12 @@ def test_tap(collect_fn, kwargs):
             pytest.raises(TypeError),
             id="raises error if not all elements are Result",
         ),
+        pytest.param(
+            [],
+            Ok(Stream.from_iterable(())),
+            nullcontext(),
+            id="empty sequence of either Rights or Ok returns Ok[tuple[T]]",
+        ),
     ],
 )
 def test_sequence(kwargs, seq, expected_result, expected_context):
