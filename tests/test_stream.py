@@ -34,6 +34,9 @@ def _get_attr_collect(stream: Stream, collect_fn: str, kwargs: dict) -> tuple:
         pytest.param("collect", {}, id="simple `collect`"),
         pytest.param("par_collect", {"workers": 4}, id="`par_collect` with workers passed in"),
         pytest.param("par_collect", {"workers": -1}, id="`par_collect` with n-1 workers"),
+        pytest.param(
+            "par_collect", {"workers": 0}, id="`par_collect` with 0 workers falls back to 1 worker"
+        ),
         pytest.param("par_collect", {"use_threads": True}, id="`par_collect` with threads True"),
     ],
 )

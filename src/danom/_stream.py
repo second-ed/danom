@@ -89,7 +89,7 @@ class _BaseStream[T](ABC):
 
 @attrs.define(frozen=True)
 class Stream[T](_BaseStream):
-    """An immutable lazy iterator with functional operations.
+    """A lazy iterator with functional operations.
 
     Why bother?
     -----------
@@ -471,6 +471,8 @@ class Stream[T](_BaseStream):
         """
         if workers == -1:
             workers = (os.cpu_count() or 5) - 1
+
+        workers = max(workers, 1)
 
         executor_cls = ThreadPoolExecutor if use_threads else ProcessPoolExecutor
 
