@@ -22,12 +22,6 @@ repos:
         language: python
         pass_filenames: false
         always_run: true
-      - id: pytest
-        name: pytest
-        entry: uv run pytest -vv --cov=src --cov-report term-missing:skip-covered --cov-report=json:coverage.json
-        language: python
-        pass_filenames: false
-        always_run: true
       - id: repo-map
         name: repo_map
         entry: uv run -m repo_mapper
@@ -49,6 +43,12 @@ repos:
       - id: update-cov
         name: update_cov
         entry: uv run -m dev_tools.update_cov
+        language: python
+        pass_filenames: false
+        always_run: true
+      - id: pytest
+        name: pytest
+        entry: uv run pytest -vv --cov=src --cov-report term-missing:skip-covered --cov-report=json:coverage.json
         language: python
         pass_filenames: false
         always_run: true

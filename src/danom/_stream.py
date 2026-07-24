@@ -1,3 +1,8 @@
+"""Stream
+
+repo-map-desc: a lazy Stream with a fluent api
+"""
+
 from __future__ import annotations
 
 import asyncio

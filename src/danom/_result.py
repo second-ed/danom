@@ -1,3 +1,8 @@
+"""Result monad
+
+repo-map-desc: A simple Result monad, includes the base Result, Ok and Err.
+"""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

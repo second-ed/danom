@@ -1,3 +1,8 @@
+"""Either monad probably the better implementation out of this and Result
+
+repo-map-desc: A simple Either monad, includes the base Either, Right and Left.
+"""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
