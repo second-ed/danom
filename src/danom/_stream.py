@@ -472,6 +472,8 @@ class Stream[T](_BaseStream):
         if workers == -1:
             workers = (os.cpu_count() or 5) - 1
 
+        workers = max(workers, 1)
+
         executor_cls = ThreadPoolExecutor if use_threads else ProcessPoolExecutor
 
         batches = [
