@@ -236,8 +236,7 @@ class Stream[T](_BaseStream):
 
         """
         plan = (*self.ops, (_MAP, partial(fn, *args, **kwargs)))
-        object.__setattr__(self, "ops", plan)
-        return self
+        return Stream(seq=self.seq, ops=plan)
 
     def filter[**P](
         self, fn: FilterFn | AsyncFilterFn, *args: P.args, **kwargs: P.kwargs
@@ -261,8 +260,7 @@ class Stream[T](_BaseStream):
 
         """
         plan = (*self.ops, (_FILTER, partial(fn, *args, **kwargs)))
-        object.__setattr__(self, "ops", plan)
-        return self
+        return Stream(seq=self.seq, ops=plan)
 
     def tap[**P](self, fn: TapFn | AsyncTapFn, *args: P.args, **kwargs: P.kwargs) -> Stream[T]:
         """Tap the values to another process that returns None. Will return a new ``Stream`` with the modified sequence.
@@ -301,8 +299,7 @@ class Stream[T](_BaseStream):
 
         """
         plan = (*self.ops, (_TAP, partial(fn, *args, **kwargs)))
-        object.__setattr__(self, "ops", plan)
-        return self
+        return Stream(seq=self.seq, ops=plan)
 
     def partition(
         self, fn: FilterFn, *, workers: int = 1, use_threads: bool = False
@@ -440,7 +437,7 @@ class Stream[T](_BaseStream):
             stream.collect() == (1, 2, 3, 4)
 
         """
-        return tuple(_apply_fns(self.seq, self.ops))
+        return _apply_fns(self.seq, self.ops)
 
     def par_collect(self, workers: int = 4, *, use_threads: bool = False) -> tuple[U, ...]:
         """Materialise the sequence from the ``Stream`` in parallel.
