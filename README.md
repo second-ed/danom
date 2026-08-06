@@ -263,6 +263,9 @@ Alternatively the map method can be used to return a new type instance with the 
 ├── docs
 │   └── source
 │       └── conf.py
+├── rust
+│   ├── Cargo.lock
+│   └── Cargo.toml
 ├── src
 │   └── danom
 │       ├── __init__.py
@@ -288,6 +291,7 @@ Alternatively the map method can be used to return a new type instance with the 
 ├── README.md
 ├── pyproject.toml
 ├── ruff.toml
+├── scratch.py
 └── uv.lock
 
 (generated with repo-mapper-rs)

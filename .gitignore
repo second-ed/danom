@@ -15,3 +15,6 @@ scrap/
 .benchmarks/
 .codspeed/
 .hypothesis/
+
+rust/target/
+src/danom/_rust.cpython-312-darwin.so
