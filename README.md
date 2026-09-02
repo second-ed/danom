@@ -280,6 +280,8 @@ Alternatively the map method can be used to return a new type instance with the 
 ├── tests
 │   ├── stream
 │   │   ├── __init__.py
+│   │   ├── test_async.py
+│   │   ├── test_par.py
 │   │   └── test_sync.py
 │   ├── __init__.py
 │   ├── conftest.py

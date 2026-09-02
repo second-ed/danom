@@ -7,7 +7,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Awaitable, Callable, Iterable
-from typing import ParamSpec, TypeVar
+from copy import deepcopy
+from typing import ParamSpec, Self, TypeVar
 
 import attrs
 
@@ -31,6 +32,13 @@ AsyncTapFn = Callable[P, Awaitable[None]]
 StreamFn = MapFn | FilterFn | TapFn
 AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
+_MAP = 0
+_FILTER = 1
+_TAP = 2
+
+
+PlannedOps = tuple[str, StreamFn]
+
 
 @attrs.define(frozen=True)
 class _BaseStream[T](ABC):
@@ -39,21 +47,21 @@ class _BaseStream[T](ABC):
 
     @classmethod
     @abstractmethod
-    def from_iterable(cls, it: Iterable) -> _BaseStream[T]: ...
+    def from_iterable(cls, it: Iterable) -> Self: ...
 
     @abstractmethod
-    def map[**P](self, fn: Callable, *args: P.args, **kwargs: P.kwargs) -> _BaseStream[T]: ...
+    def map[**P](self, fn: Callable, *args: P.args, **kwargs: P.kwargs) -> object: ...
 
     @abstractmethod
-    def filter[**P](self, fn: Callable, *args: P.args, **kwargs: P.kwargs) -> _BaseStream[T]: ...
+    def filter[**P](self, fn: Callable, *args: P.args, **kwargs: P.kwargs) -> object: ...
 
     @abstractmethod
-    def tap[**P](self, fn: Callable, *args: P.args, **kwargs: P.kwargs) -> _BaseStream[T]: ...
+    def tap[**P](self, fn: Callable, *args: P.args, **kwargs: P.kwargs) -> object: ...
 
     @abstractmethod
     def partition[U](
         self, fn: Callable, *, workers: int = 1, use_threads: bool = False
-    ) -> tuple[_BaseStream[T], _BaseStream[U]]: ...
+    ) -> object: ...
 
     @abstractmethod
     def fold(
@@ -66,9 +74,16 @@ class _BaseStream[T](ABC):
     ) -> Result[S, E] | Either[S, E]: ...
 
     @abstractmethod
-    def collect(
-        self, *, workers: int = 4, use_threads: bool = False
-    ) -> tuple[U, ...] | Awaitable[tuple[U, ...]]: ...
+    def collect(self, *, workers: int = 4, use_threads: bool = False) -> object: ...
 
     def __bool__(self) -> bool:
         return bool(self.seq)
+
+
+@attrs.define(frozen=True, hash=True, eq=True)
+class _Tap:
+    fn: Callable
+
+    def __call__(self, value: T) -> T:
+        self.fn(deepcopy(value))
+        return value

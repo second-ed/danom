@@ -5,26 +5,35 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from danom import Stream
+from danom import ParStream
 from danom._either import Right
 from danom._result import Err, Ok
 from danom._stream._sync import _FILTER, _MAP, _TAP
 from tests.conftest import ValueLogger, add, add_one, divisible_by_3, divisible_by_5, is_even
 
 
-def _get_attr_collect(stream: Stream, collect_fn: str, kwargs: dict) -> tuple:
+def _get_attr_collect(stream: ParStream, collect_fn: str, kwargs: dict) -> tuple:
     return getattr(stream, collect_fn)(**kwargs)
 
 
 @pytest.mark.parametrize(
-    ("collect_fn", "kwargs"), [pytest.param("collect", {}, id="simple `collect`")]
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("collect", {"workers": 4}, id="`collect` with workers passed in"),
+        pytest.param("collect", {"workers": -1}, id="`collect` with n-1 workers"),
+        pytest.param(
+            "collect", {"workers": 0}, id="`collect` with 0 workers falls back to 1 worker"
+        ),
+        pytest.param("collect", {"use_threads": True}, id="`collect` with threads True"),
+    ],
 )
 @pytest.mark.parametrize(
     ("it", "expected_part1", "expected_part2"),
     [pytest.param(range(10), (6, 12), (1, 3, 5, 7, 9)), pytest.param(0, (), (1,))],
 )
 def test_stream_pipeline(collect_fn, kwargs, it, expected_part1, expected_part2):
-    part1, part2 = Stream.from_iterable(it).map(add_one).partition(is_even)
+    part1, part2 = ParStream.from_iterable(it).map(add_one).partition(is_even)
 
     assert (
         _get_attr_collect(part1.map(add, 1).map(add_one).filter(divisible_by_3), collect_fn, kwargs)
@@ -41,12 +50,18 @@ def test_stream_pipeline(collect_fn, kwargs, it, expected_part1, expected_part2)
     ],
 )
 @pytest.mark.parametrize(
-    ("collect_fn", "kwargs"), [pytest.param("collect", {}, id="simple `collect`")]
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("collect", {"workers": 4}, id="`collect` with workers passed in"),
+        pytest.param("collect", {"workers": -1}, id="`collect` with n-1 workers"),
+        pytest.param("collect", {"use_threads": True}, id="`collect` with threads True"),
+    ],
 )
 def test_collect_methods(collect_fn, kwargs, it, expected_result):
     assert (
         _get_attr_collect(
-            Stream.from_iterable(it)
+            ParStream.from_iterable(it)
             .map(add_one)
             .map(add_one)
             .filter(divisible_by_3)
@@ -59,11 +74,17 @@ def test_collect_methods(collect_fn, kwargs, it, expected_result):
 
 
 @pytest.mark.parametrize(
-    ("collect_fn", "kwargs"), [pytest.param("collect", {}, id="simple `collect`")]
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("collect", {"workers": 4}, id="`collect` with workers passed in"),
+        pytest.param("collect", {"workers": -1}, id="`collect` with n-1 workers"),
+        pytest.param("collect", {"use_threads": True}, id="`collect` with threads True"),
+    ],
 )
 def test_stream_to_par_stream(collect_fn, kwargs):
     part1, part2 = (
-        Stream.from_iterable(range(10)).map(add, b=2).partition(divisible_by_3, workers=4)
+        ParStream.from_iterable(range(10)).map(add, b=2).partition(divisible_by_3, workers=4)
     )
     assert _get_attr_collect(part1.map(add_one), collect_fn, kwargs) == (4, 7, 10)
     assert _get_attr_collect(part2, collect_fn, kwargs) == (2, 4, 5, 7, 8, 10, 11)
@@ -78,11 +99,17 @@ def test_stream_to_par_stream(collect_fn, kwargs):
     ],
 )
 def test_fold(starting, initial, fn, workers, expected_result):
-    assert Stream.from_iterable(starting).fold(initial, fn, workers=workers) == expected_result
+    assert ParStream.from_iterable(starting).fold(initial, fn, workers=workers) == expected_result
 
 
 @pytest.mark.parametrize(
-    ("collect_fn", "kwargs"), [pytest.param("collect", {}, id="simple `collect`")]
+    ("collect_fn", "kwargs"),
+    [
+        pytest.param("collect", {}, id="simple `collect`"),
+        pytest.param("collect", {"workers": 4}, id="`collect` with workers passed in"),
+        pytest.param("collect", {"workers": -1}, id="`collect` with n-1 workers"),
+        pytest.param("collect", {"use_threads": True}, id="`collect` with threads True"),
+    ],
 )
 def test_tap(collect_fn, kwargs):
     with Manager() as manager:
@@ -90,7 +117,7 @@ def test_tap(collect_fn, kwargs):
         val_logger = ValueLogger(values)
 
         assert _get_attr_collect(
-            Stream.from_iterable(range(4))
+            ParStream.from_iterable(range(4))
             .map(add, b=1)
             .tap(val_logger)
             .tap(val_logger)
@@ -101,19 +128,27 @@ def test_tap(collect_fn, kwargs):
         assert sorted(values) == [1, 1, 2, 2, 3, 3, 4, 4]
 
 
-@pytest.mark.parametrize(("kwargs"), [pytest.param({}, id="simple `collect`")])
+@pytest.mark.parametrize(
+    ("kwargs"),
+    [
+        pytest.param({}, id="simple `collect`"),
+        pytest.param({"workers": 4}, id="`collect` with workers passed in"),
+        pytest.param({"workers": -1}, id="`collect` with n-1 workers"),
+        pytest.param({"use_threads": True}, id="`collect` with threads True"),
+    ],
+)
 @pytest.mark.parametrize(
     ("seq", "expected_result", "expected_context"),
     [
         pytest.param(
             (Ok(0), Ok(1), Ok(2)),
-            Ok(Stream.from_iterable((0, 1, 2))),
+            Ok(ParStream.from_iterable((0, 1, 2))),
             nullcontext(),
             id="sequence of Oks returns Ok[tuple[T]]",
         ),
         pytest.param(
             (Right(0), Right(1), Right(2)),
-            Right(Stream.from_iterable((0, 1, 2))),
+            Right(ParStream.from_iterable((0, 1, 2))),
             nullcontext(),
             id="sequence of Rights returns Right[tuple[T]]",
         ),
@@ -122,13 +157,13 @@ def test_tap(collect_fn, kwargs):
         ),
         pytest.param(
             (Ok(0), 1, Ok(2)),
-            Ok(Stream.from_iterable((0, 1, 2))),
+            Ok(ParStream.from_iterable((0, 1, 2))),
             pytest.raises(TypeError),
             id="raises error if not all elements are Result",
         ),
         pytest.param(
             [],
-            Ok(Stream.from_iterable(())),
+            Ok(ParStream.from_iterable(())),
             nullcontext(),
             id="empty sequence of either Rights or Ok returns Ok[tuple[T]]",
         ),
@@ -136,7 +171,7 @@ def test_tap(collect_fn, kwargs):
 )
 def test_sequence(kwargs, seq, expected_result, expected_context):
     with expected_context:
-        assert Stream.from_iterable(seq).sequence(**kwargs) == expected_result
+        assert ParStream.from_iterable(seq).sequence(**kwargs) == expected_result
 
 
 @given(
@@ -149,7 +184,7 @@ def test_sequence(kwargs, seq, expected_result, expected_context):
 )
 def test_stream_bool(args):
     seq, expected_result = args
-    assert bool(Stream.from_iterable(seq)) == expected_result
+    assert bool(ParStream.from_iterable(seq)) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -173,4 +208,4 @@ def test_stream_bool(args):
 )
 def test_apply_fns(elements, ops, expected_result, expected_context):
     with expected_context:
-        assert list(Stream(tuple(elements), ops).collect()) == expected_result
+        assert list(ParStream(tuple(elements), ops).collect()) == expected_result
