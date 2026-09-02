@@ -9,7 +9,7 @@ from hypothesis import strategies as st
 from danom import Stream
 from danom._either import Right
 from danom._result import Err, Ok
-from danom._stream import _FILTER, _MAP, _TAP, _apply_fns
+from danom._stream._sync import _FILTER, _MAP, _TAP, _apply_fns
 from tests.conftest import (
     REPO_ROOT,
     AsyncValueLogger,
@@ -192,7 +192,7 @@ def test_sequence(kwargs, seq, expected_result, expected_context):
 @pytest.mark.asyncio
 async def test_async_collect():
     assert await Stream.from_iterable(
-        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))  # noqa: ASYNC240
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
     ).filter(async_is_file).map(async_read_text).async_collect() == (
         "",
         "x = 1\n",
@@ -204,7 +204,7 @@ async def test_async_collect():
 @pytest.mark.asyncio
 async def test_async_collect_no_fns():
     assert await Stream.from_iterable(
-        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))  # noqa: ASYNC240
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
     ).async_collect() == (
         Path(f"{REPO_ROOT}/tests/mock_data/__init__.py"),
         Path(f"{REPO_ROOT}/tests/mock_data/dir_should_skip"),
