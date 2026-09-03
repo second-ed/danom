@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import asyncio
+from abc import abstractmethod
 from collections.abc import Awaitable, Callable, Iterable
 from copy import deepcopy
 from functools import partial, reduce
-from typing import cast
+from typing import Self, cast
 
 import attrs
 
 from danom import Either, Result
 
-from ._base import _FILTER, _MAP, _TAP, E, FilterFn, MapFn, P, S, T, TapFn, U, _BaseStream
+from ._base import _FILTER, _MAP, _TAP, E, P, T, U, _BaseStream
 
 AsyncMapFn = Callable[P, Awaitable[U]]
 AsyncFilterFn = Callable[P, Awaitable[bool]]
@@ -19,29 +20,59 @@ AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 
 @attrs.define(frozen=True)
-class AsyncStream[T](_BaseStream):
+class _BaseAsyncStream[T](_BaseStream):
     @classmethod
-    def from_iterable(cls, it: Iterable) -> AsyncStream[T]:
+    def from_iterable(cls, it: Iterable) -> Self:
         if not isinstance(it, Iterable):
             it = [it]
         return cls(seq=tuple(it))
 
-    def map[**P](self, fn: MapFn | AsyncMapFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
+    @abstractmethod
+    def map[**P](self, fn: AsyncMapFn, *args: P.args, **kwargs: P.kwargs) -> Self: ...
+
+    @abstractmethod
+    def filter[**P](self, fn: AsyncFilterFn, *args: P.args, **kwargs: P.kwargs) -> Self: ...
+
+    @abstractmethod
+    def tap[**P](self, fn: AsyncTapFn, *args: P.args, **kwargs: P.kwargs) -> Self: ...
+
+    @abstractmethod
+    async def partition[U](  # ty: ignore[invalid-method-override]
+        self, fn: AsyncFilterFn, *, workers: int = 1, use_threads: bool = False
+    ) -> tuple[Self, Self]: ...
+
+    @abstractmethod
+    async def fold(
+        self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
+    ) -> T: ...
+
+    @abstractmethod
+    async def sequence(  # ty: ignore[invalid-method-override]
+        self, *, workers: int = 1, use_threads: bool = False
+    ) -> Result[Self, E] | Either[Self, E]: ...
+
+    @abstractmethod
+    async def collect(
+        self, *, workers: int = 4, use_threads: bool = False
+    ) -> tuple[U, ...]: ...  # ty: ignore[invalid-method-override]
+
+
+@attrs.define(frozen=True)
+class AsyncStream[T](_BaseAsyncStream):
+    def map[**P](self, fn: AsyncMapFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
         plan = (*self.ops, (_MAP, partial(fn, *args, **kwargs)))
         return AsyncStream(seq=self.seq, ops=plan)
 
-    def filter[**P](
-        self, fn: FilterFn | AsyncFilterFn, *args: P.args, **kwargs: P.kwargs
-    ) -> AsyncStream[T]:
+    def filter[**P](self, fn: AsyncFilterFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
         plan = (*self.ops, (_FILTER, partial(fn, *args, **kwargs)))
         return AsyncStream(seq=self.seq, ops=plan)
 
-    def tap[**P](self, fn: TapFn | AsyncTapFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
+    def tap[**P](self, fn: AsyncTapFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
         plan = (*self.ops, (_TAP, partial(fn, *args, **kwargs)))
         return AsyncStream(seq=self.seq, ops=plan)
 
     async def partition(
-        self, fn: FilterFn, *, workers: int = 1, use_threads: bool = False
+        self, fn: AsyncFilterFn, *, workers: int = 1, use_threads: bool = False
     ) -> tuple[AsyncStream[T], AsyncStream[U]]:
         # have to materialise to be able to replay each side independently
         seq_tuple = await self.collect(workers=workers, use_threads=use_threads)
@@ -49,15 +80,15 @@ class AsyncStream[T](_BaseStream):
         pos, neg = [], []
 
         for x in seq_tuple:
-            if not fn(x):
+            if not await fn(x):
                 neg.append(x)
                 continue
             pos.append(x)
         return (AsyncStream.from_iterable(pos), AsyncStream.from_iterable(neg))
 
     async def sequence(  # ty: ignore[invalid-method-override]
-        self: AsyncStream[T], *, workers: int = 1, use_threads: bool = False
-    ) -> Result[S, E] | Either[S, E]:
+        self, *, workers: int = 1, use_threads: bool = False
+    ) -> Result[Self, E] | Either[Self, E]:
         if not self:
             return Result.unit(self)
 

@@ -1,14 +1,22 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Awaitable
 from multiprocessing.managers import ListProxy
 from pathlib import Path
-from typing import Any, NoReturn, Self
+from typing import Any, Callable, NoReturn, Self
 
 from danom import safe, safe_method
 from danom._result import Err, Ok, Result
 
 REPO_ROOT = Path(__file__).parents[1]
+
+
+def make_async(fn: Callable[..., Any]) -> Callable[..., Awaitable[Any]]:
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:  # noqa: ANN401
+        return fn(*args, **kwargs)
+
+    return wrapper
 
 
 def is_positive(x: float) -> bool:
@@ -76,7 +84,7 @@ def lt_10(x: float) -> bool:
 
 
 async def async_is_file(path: Path) -> bool:
-    return path.is_file()  # noqa: ASYNC240
+    return path.is_file()
 
 
 async def async_read_text(path: str) -> str:
