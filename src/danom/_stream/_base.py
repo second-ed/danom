@@ -6,7 +6,7 @@ repo-map-desc: the base class for Stream
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import Awaitable, Callable, Iterable
+from collections.abc import Callable, Iterable
 from copy import deepcopy
 from typing import ParamSpec, Self, TypeVar
 
@@ -26,10 +26,6 @@ FilterFn = Callable[P, bool]
 TapFn = Callable[P, None]
 StreamFn = MapFn | FilterFn | TapFn
 
-AsyncMapFn = Callable[P, Awaitable[U]]
-AsyncFilterFn = Callable[P, Awaitable[bool]]
-AsyncTapFn = Callable[P, Awaitable[None]]
-AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 _MAP = 0
 _FILTER = 1
