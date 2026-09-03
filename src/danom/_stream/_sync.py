@@ -5,8 +5,7 @@ from functools import partial, reduce
 
 import attrs
 
-from danom._either import Either
-from danom._result import Result
+from danom import Either, Result
 
 from ._base import _FILTER, _MAP, _TAP, E, FilterFn, MapFn, T, TapFn, U, _BaseStream, _Tap
 

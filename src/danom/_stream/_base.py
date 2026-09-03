@@ -12,8 +12,7 @@ from typing import ParamSpec, Self, TypeVar
 
 import attrs
 
-from danom._either import Either
-from danom._result import Result
+from danom import Either, Result
 
 T = TypeVar("T")
 U = TypeVar("U")
