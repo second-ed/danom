@@ -24,12 +24,11 @@ S = TypeVar("S", bound="_BaseStream")
 MapFn = Callable[P, U]
 FilterFn = Callable[P, bool]
 TapFn = Callable[P, None]
+StreamFn = MapFn | FilterFn | TapFn
 
 AsyncMapFn = Callable[P, Awaitable[U]]
 AsyncFilterFn = Callable[P, Awaitable[bool]]
 AsyncTapFn = Callable[P, Awaitable[None]]
-
-StreamFn = MapFn | FilterFn | TapFn
 AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 _MAP = 0

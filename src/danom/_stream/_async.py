@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Callable, Iterable
+from collections.abc import Awaitable, Callable, Iterable
 from copy import deepcopy
 from functools import partial, reduce
 from typing import cast
@@ -11,23 +11,12 @@ import attrs
 from danom._either import Either
 from danom._result import Result
 
-from ._base import (
-    _FILTER,
-    _MAP,
-    _TAP,
-    AsyncFilterFn,
-    AsyncMapFn,
-    AsyncStreamFn,
-    AsyncTapFn,
-    E,
-    FilterFn,
-    MapFn,
-    S,
-    T,
-    TapFn,
-    U,
-    _BaseStream,
-)
+from ._base import _FILTER, _MAP, _TAP, E, FilterFn, MapFn, P, S, T, TapFn, U, _BaseStream
+
+AsyncMapFn = Callable[P, Awaitable[U]]
+AsyncFilterFn = Callable[P, Awaitable[bool]]
+AsyncTapFn = Callable[P, Awaitable[None]]
+AsyncStreamFn = AsyncMapFn | AsyncFilterFn | AsyncTapFn
 
 
 @attrs.define(frozen=True)
