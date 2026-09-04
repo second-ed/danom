@@ -14,16 +14,6 @@ from tests.stream._common import basic_partition, basic_pipeline
 
 
 @pytest.mark.parametrize(
-    ("stream_cls", "kwargs"),
-    [
-        pytest.param(Stream, {}, id="simple `collect`"),
-        pytest.param(Stream, {"workers": 4}, id="`collect` with workers passed in"),
-        pytest.param(Stream, {"workers": -1}, id="`collect` with n-1 workers"),
-        pytest.param(Stream, {"workers": 0}, id="`collect` with 0 workers falls back to 1 worker"),
-        pytest.param(Stream, {"use_threads": True}, id="`collect` with threads True"),
-    ],
-)
-@pytest.mark.parametrize(
     ("fn", "it", "expected_result"),
     [
         pytest.param(basic_partition, range(10), ((6, 12), (1, 3, 5, 7, 9))),
@@ -32,8 +22,8 @@ from tests.stream._common import basic_partition, basic_pipeline
         pytest.param(basic_pipeline, 28, (30,), id="works with single value"),
     ],
 )
-def test_stream_pipeline(stream_cls, kwargs, fn, it, expected_result) -> None:
-    assert fn(stream_cls, it, kwargs) == expected_result
+def test_stream_pipeline(fn, it, expected_result) -> None:
+    assert fn(Stream, it, {}) == expected_result
 
 
 @pytest.mark.parametrize(

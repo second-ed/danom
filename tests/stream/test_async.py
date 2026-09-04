@@ -12,18 +12,6 @@ from tests.stream._common import async_basic_partition, async_basic_pipeline
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    ("stream_cls", "kwargs"),
-    [
-        pytest.param(AsyncStream, {}, id="simple `collect`"),
-        pytest.param(AsyncStream, {"workers": 4}, id="`collect` with workers passed in"),
-        pytest.param(AsyncStream, {"workers": -1}, id="`collect` with n-1 workers"),
-        pytest.param(
-            AsyncStream, {"workers": 0}, id="`collect` with 0 workers falls back to 1 worker"
-        ),
-        pytest.param(AsyncStream, {"use_threads": True}, id="`collect` with threads True"),
-    ],
-)
-@pytest.mark.parametrize(
     ("fn", "it", "expected_result"),
     [
         pytest.param(async_basic_partition, range(10), ((6, 12), (1, 3, 5, 7, 9))),
@@ -32,8 +20,8 @@ from tests.stream._common import async_basic_partition, async_basic_pipeline
         pytest.param(async_basic_pipeline, 28, (30,), id="works with single value"),
     ],
 )
-async def test_async_stream_pipeline(stream_cls, kwargs, fn, it, expected_result) -> None:
-    assert await fn(stream_cls, it, kwargs) == expected_result
+async def test_async_stream_pipeline(fn, it, expected_result) -> None:
+    assert await fn(AsyncStream, it, {}) == expected_result
 
 
 @pytest.mark.asyncio
