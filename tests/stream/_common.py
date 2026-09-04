@@ -46,8 +46,7 @@ async def async_basic_pipeline(
         .map(make_async(add_one))
         .filter(make_async(divisible_by_3))
         .filter(make_async(divisible_by_5))
-        .collect(**kwargs)
-    )
+    ).collect(**kwargs)
 
 
 async def async_basic_partition(

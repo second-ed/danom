@@ -6,7 +6,7 @@ import pytest
 from danom import AsyncStream
 from danom._either import Right
 from danom._result import Err, Ok
-from tests.conftest import REPO_ROOT, AsyncValueLogger, async_is_file, async_read_text
+from tests.conftest import REPO_ROOT, AsyncValueLogger, add, async_is_file, async_read_text
 from tests.stream._common import async_basic_partition, async_basic_pipeline
 
 
@@ -54,6 +54,22 @@ async def test_async_tap() -> None:
     ).collect() == (0, 1, 2, 3)
     assert sorted(val_logger.values) == [0, 1, 2, 3]
     assert sorted(val_logger_2.values) == [0, 1, 2, 3]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("starting", "initial", "fn", "workers", "expected_result"),
+    [
+        pytest.param(range(10), 0, add, 1, 45),
+        pytest.param(range(10), 0, add, 4, 45),
+        pytest.param(range(10), 5, add, 4, 50),
+    ],
+)
+async def test_fold(starting, initial, fn, workers, expected_result) -> None:
+    assert (
+        await AsyncStream.from_iterable(starting).fold(initial, fn, workers=workers)
+        == expected_result
+    )
 
 
 @pytest.mark.asyncio
