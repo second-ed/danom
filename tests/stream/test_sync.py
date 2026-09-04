@@ -64,7 +64,6 @@ def test_tap() -> None:
         assert sorted(values) == [1, 1, 2, 2, 3, 3, 4, 4]
 
 
-@pytest.mark.parametrize(("kwargs"), [pytest.param({}, id="simple `collect`")])
 @pytest.mark.parametrize(
     ("seq", "expected_result", "expected_context"),
     [
@@ -97,9 +96,9 @@ def test_tap() -> None:
         ),
     ],
 )
-def test_sequence(kwargs, seq, expected_result, expected_context):
+def test_sequence(seq, expected_result, expected_context):
     with expected_context:
-        assert Stream.from_iterable(seq).sequence(**kwargs) == expected_result
+        assert Stream.from_iterable(seq).sequence() == expected_result
 
 
 @given(

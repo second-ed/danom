@@ -12,10 +12,14 @@ def basic_pipeline(
     kwargs = kwargs or {}
     return (
         stream_cls.from_iterable(it)
+        .to_par()
+        .to_par()
         .map(add_one)
         .map(add_one)
         .filter(divisible_by_3)
         .filter(divisible_by_5)
+        .to_stream()
+        .to_stream()
         .collect(**kwargs)
     )
 

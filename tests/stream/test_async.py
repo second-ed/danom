@@ -1,8 +1,11 @@
+from contextlib import nullcontext
 from pathlib import Path
 
 import pytest
 
 from danom import AsyncStream
+from danom._either import Right
+from danom._result import Err, Ok
 from tests.conftest import REPO_ROOT, AsyncValueLogger, async_is_file, async_read_text
 from tests.stream._common import async_basic_partition, async_basic_pipeline
 
@@ -63,3 +66,41 @@ async def test_async_tap() -> None:
     ).collect() == (0, 1, 2, 3)
     assert sorted(val_logger.values) == [0, 1, 2, 3]
     assert sorted(val_logger_2.values) == [0, 1, 2, 3]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("seq", "expected_result", "expected_context"),
+    [
+        pytest.param(
+            (Ok(0), Ok(1), Ok(2)),
+            Ok(AsyncStream.from_iterable((0, 1, 2))),
+            nullcontext(),
+            id="sequence of Oks returns Ok[tuple[T]]",
+        ),
+        pytest.param(
+            (Right(0), Right(1), Right(2)),
+            Right(AsyncStream.from_iterable((0, 1, 2))),
+            nullcontext(),
+            id="sequence of Rights returns Right[tuple[T]]",
+        ),
+        pytest.param(
+            (Ok(0), Err(1), Ok(2)), Err(1), nullcontext(), id="returns first Err in the seq"
+        ),
+        pytest.param(
+            (Ok(0), 1, Ok(2)),
+            Ok(AsyncStream.from_iterable((0, 1, 2))),
+            pytest.raises(TypeError),
+            id="raises error if not all elements are Result",
+        ),
+        pytest.param(
+            [],
+            Ok(AsyncStream.from_iterable(())),
+            nullcontext(),
+            id="empty sequence of either Rights or Ok returns Ok[tuple[T]]",
+        ),
+    ],
+)
+async def test_sequence(seq, expected_result, expected_context) -> None:
+    with expected_context:
+        assert await AsyncStream.from_iterable(seq).sequence() == expected_result

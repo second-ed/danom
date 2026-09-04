@@ -5,14 +5,13 @@ import os
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from copy import deepcopy
 from itertools import batched
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Self, cast
 
 import attrs
 
 from ._base import _FILTER, _MAP, _TAP, PlannedOps, T, U, _BaseSyncStream
 
 if TYPE_CHECKING:
-    from ._async import AsyncStream
     from ._sync import Stream
 
 
@@ -37,15 +36,13 @@ class ParStream[T](_BaseSyncStream):
                 tuple(itertools.chain.from_iterable(ex.map(_apply_fns_worker, batches))),
             )
 
-    def to_async(self, *, workers: int = 4, use_threads: bool = False) -> AsyncStream:
-        from ._async import AsyncStream
-
-        return AsyncStream.from_iterable(self.collect(workers=workers, use_threads=use_threads))
-
     def to_stream(self) -> Stream[T]:
         from ._sync import Stream
 
         return Stream(self.seq, self.ops)
+
+    def to_par(self) -> Self:
+        return self
 
 
 def _apply_fns_worker[T](args: tuple[tuple[T], tuple[PlannedOps, ...]]) -> tuple[T, ...]:

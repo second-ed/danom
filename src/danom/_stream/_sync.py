@@ -7,7 +7,6 @@ import attrs
 from ._base import _FILTER, _MAP, _TAP, U, _BaseSyncStream, _Tap
 
 if TYPE_CHECKING:
-    from ._async import AsyncStream
     from ._par import ParStream
 
 
@@ -130,12 +129,10 @@ class Stream[T](_BaseSyncStream):
 
         return tuple(pipeline)
 
-    def to_async(self, *, workers: int = 4, use_threads: bool = False) -> AsyncStream:
-        from ._async import AsyncStream
-
-        return AsyncStream.from_iterable(self.collect(workers=workers, use_threads=use_threads))
-
     def to_par(self) -> ParStream[T]:
         from ._par import ParStream
 
         return ParStream(self.seq, self.ops)
+
+    def to_stream(self) -> Stream[T]:
+        return self

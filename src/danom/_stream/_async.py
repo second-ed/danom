@@ -139,6 +139,9 @@ class AsyncStream[T](_BaseAsyncStream):
 
         return ParStream.from_iterable(await self.collect())
 
+    async def to_async(self) -> Self:
+        return self
+
 
 NOTHING = object()
 AsyncPlannedOps = tuple[str, AsyncStreamFn]
