@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from multiprocessing.managers import ListProxy
 from pathlib import Path
-from typing import Any, Callable, NoReturn, Self
+from typing import Any, NoReturn, Self
 
 from danom import safe, safe_method
 from danom._result import Err, Ok, Result

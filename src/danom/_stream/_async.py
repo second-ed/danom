@@ -5,13 +5,17 @@ from abc import abstractmethod
 from collections.abc import Awaitable, Callable, Iterable
 from copy import deepcopy
 from functools import partial, reduce
-from typing import Self, cast
+from typing import TYPE_CHECKING, Self, cast
 
 import attrs
 
 from danom import Either, Result
 
 from ._base import _FILTER, _MAP, _TAP, E, P, T, U, _BaseStream
+
+if TYPE_CHECKING:
+    from ._par import ParStream
+    from ._sync import Stream
 
 AsyncMapFn = Callable[P, Awaitable[U]]
 AsyncFilterFn = Callable[P, Awaitable[bool]]
@@ -124,6 +128,16 @@ class AsyncStream[T](_BaseAsyncStream):
 
         res = await asyncio.gather(*(_async_apply_fns(x, self.ops) for x in self.seq))
         return cast(tuple[U, ...], tuple(elem for elem in res if elem != NOTHING))
+
+    async def to_stream(self) -> Stream[T]:
+        from ._sync import Stream
+
+        return Stream.from_iterable(await self.collect())
+
+    async def to_par(self) -> ParStream[T]:
+        from ._par import ParStream
+
+        return ParStream.from_iterable(await self.collect())
 
 
 NOTHING = object()
