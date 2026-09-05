@@ -1,3 +1,8 @@
+"""Result monad
+
+repo-map-desc: A simple Result monad, includes the base Result, Ok and Err.
+"""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -264,7 +269,9 @@ class Err(Result[Never, E_co]):
         return self
 
     def map_err[**P](self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Err[E_co]:
-        return Err(func(self.error, *args, **kwargs))
+        return Err(
+            func(self.error, *args, **kwargs), input_args=self.input_args, traceback=self.traceback
+        )
 
     def and_then[**P](self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
         return self

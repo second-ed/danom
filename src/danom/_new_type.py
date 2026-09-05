@@ -1,3 +1,8 @@
+"""new_type function
+
+repo-map-desc: function to create a new type, probably worth deprecating soon
+"""
+
 from __future__ import annotations
 
 import inspect

@@ -1,3 +1,8 @@
+"""utils
+
+repo-map-desc: random junk I can't think of place to put. compose, all_of, any_of, etc
+"""
+
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence

@@ -1,3 +1,8 @@
+"""safe and safe_method decorators
+
+repo-map-desc: decorators that except given exception types and return a monad of the result
+"""
+
 import functools
 import traceback
 from collections.abc import Callable

@@ -67,9 +67,9 @@ def test_traceback():
 
     expected_lines = [
         "Traceback (most recent call last):",
-        '  File "./src/danom/_safe.py", line 63, in wrapper',
+        '  File "./src/danom/_safe.py", line 68, in wrapper',
         "    return Ok(func(*args, **kwargs))",
-        '  File "./tests/conftest.py", line 117, in div_zero',
+        '  File "./tests/conftest.py", line 125, in div_zero',
         "    return x / 0",
         "ZeroDivisionError: division by zero",
     ]

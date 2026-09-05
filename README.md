@@ -1,6 +1,7 @@
 # danom
 
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom) ![coverage](./coverage.svg) [![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/second-ed/danom?utm_source=badge)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/danom?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=BLUE&left_text=downloads)](https://pepy.tech/projects/danom) ![coverage](./coverage.svg) [![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/second-ed/danom?utm_source=badge) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json)](https://github.com/charliermarsh/ruff) [![ty](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty)
+
 
 # API Reference
 
@@ -265,14 +266,25 @@ Alternatively the map method can be used to return a new type instance with the 
 │       └── conf.py
 ├── src
 │   └── danom
+│       ├── _stream
+│       │   ├── __init__.py
+│       │   ├── _async.py
+│       │   ├── _base.py     # the base class for Stream
+│       │   ├── _par.py
+│       │   └── _sync.py
 │       ├── __init__.py
-│       ├── _either.py
-│       ├── _new_type.py
-│       ├── _result.py
-│       ├── _safe.py
-│       ├── _stream.py
-│       └── _utils.py
+│       ├── _either.py       # A simple Either monad, includes the base Either, Right and Left.
+│       ├── _new_type.py     # function to create a new type, probably worth deprecating soon
+│       ├── _result.py       # A simple Result monad, includes the base Result, Ok and Err.
+│       ├── _safe.py         # decorators that except given exception types and return a monad of the result
+│       └── _utils.py        # random junk I can't think of place to put. compose, all_of, any_of, etc
 ├── tests
+│   ├── stream
+│   │   ├── __init__.py
+│   │   ├── _common.py
+│   │   ├── test_async.py
+│   │   ├── test_par.py
+│   │   └── test_sync.py
 │   ├── __init__.py
 │   ├── conftest.py
 │   ├── test_api.py
@@ -282,7 +294,6 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── test_new_type.py
 │   ├── test_result.py
 │   ├── test_safe.py
-│   ├── test_stream.py
 │   └── test_utils.py
 ├── .pre-commit-config.yaml
 ├── README.md
