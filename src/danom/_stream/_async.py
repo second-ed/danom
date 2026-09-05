@@ -62,21 +62,66 @@ class _BaseAsyncStream[T](_BaseStream):
 
 @attrs.define(frozen=True)
 class AsyncStream[T](_BaseAsyncStream):
+    """A stream that applies async functions to its values.
+
+    Version changes
+    ----------
+    ``0.16.0``: Added ``AsyncStream``
+    """
+
+    @classmethod
+    def from_iterable(cls, it: Iterable) -> Self:
+        """Create an ``AsyncStream`` from an iterable.
+
+        .. code-block:: python
+
+            from danom import AsyncStream
+
+            stream = AsyncStream.from_iterable([1, 2, 3])
+        """
+        return super().from_iterable(it)
+
     def map[**P](self, fn: AsyncMapFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
+        """Map an async function to the values in the ``AsyncStream``.
+
+        .. code-block:: python
+
+            await stream.map(add_one).collect()
+        """
         plan = (*self.ops, (_MAP, partial(fn, *args, **kwargs)))
         return AsyncStream(seq=self.seq, ops=plan)
 
     def filter[**P](self, fn: AsyncFilterFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
+        """Filter the ``AsyncStream`` with an async predicate.
+
+        .. code-block:: python
+
+            await stream.filter(is_even).collect()
+        """
         plan = (*self.ops, (_FILTER, partial(fn, *args, **kwargs)))
         return AsyncStream(seq=self.seq, ops=plan)
 
     def tap[**P](self, fn: AsyncTapFn, *args: P.args, **kwargs: P.kwargs) -> AsyncStream[T]:
+        """Apply an async function to a copy of each value.
+
+        The original values remain in the ``AsyncStream``.
+
+        .. code-block:: python
+
+            await stream.tap(log_value).collect()
+        """
         plan = (*self.ops, (_TAP, partial(fn, *args, **kwargs)))
         return AsyncStream(seq=self.seq, ops=plan)
 
     async def partition(
         self, fn: AsyncFilterFn, *, workers: int = 1, use_threads: bool = False
     ) -> tuple[AsyncStream[T], AsyncStream[U]]:
+        """Split the ``AsyncStream`` into values accepted and rejected by a predicate.
+
+        .. code-block:: python
+
+            accepted, rejected = await stream.partition(is_valid)
+        """
         # have to materialise to be able to replay each side independently
         seq_tuple = await self.collect(workers=workers, use_threads=use_threads)
 
@@ -92,6 +137,12 @@ class AsyncStream[T](_BaseAsyncStream):
     async def sequence(  # ty: ignore[invalid-method-override]
         self, *, workers: int = 1, use_threads: bool = False
     ) -> Result[Self, E] | Either[Self, E]:
+        """Convert a stream of ``Result`` or ``Either`` values into one monad of stream.
+
+        .. code-block:: python
+
+            result = await stream.sequence()
+        """
         if not self:
             return Result.unit(self)
 
@@ -114,6 +165,12 @@ class AsyncStream[T](_BaseAsyncStream):
     async def fold(
         self, initial: T, fn: Callable[[T, U], T], *, workers: int = 1, use_threads: bool = False
     ) -> T:
+        """Reduce the collected values into one value.
+
+        .. code-block:: python
+
+            total = await stream.fold(0, add)
+        """
         return reduce(fn, await self.collect(workers=workers, use_threads=use_threads), initial)
 
     async def collect(
@@ -122,6 +179,12 @@ class AsyncStream[T](_BaseAsyncStream):
         workers: int = 4,  # noqa: ARG002
         use_threads: bool = False,  # noqa: ARG002
     ) -> tuple[U, ...]:
+        """Materialise the ``AsyncStream`` into a tuple.
+
+        .. code-block:: python
+
+            values = await stream.collect()
+        """
         if not self.ops:
             return self.seq
 

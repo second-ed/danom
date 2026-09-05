@@ -130,9 +130,11 @@ class Stream[T](_BaseSyncStream):
         return tuple(pipeline)
 
     def to_par(self) -> ParStream[T]:
+        """Convert the ``Stream`` to a ``ParStream``."""
         from ._par import ParStream
 
         return ParStream(self.seq, self.ops)
 
     def to_stream(self) -> Stream[T]:
+        """Return the ``Stream`` unchanged."""
         return self

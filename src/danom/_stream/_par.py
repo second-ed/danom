@@ -17,7 +17,25 @@ if TYPE_CHECKING:
 
 @attrs.define(frozen=True)
 class ParStream[T](_BaseSyncStream):
+    """A stream that applies its operations with a thread or process pool.
+
+    Version changes
+    ----------
+    ``0.16.0``: Added ``ParStream``
+    """
+
     def collect(self, *, workers: int = 4, use_threads: bool = False) -> tuple[U, ...]:
+        """Materialise the ``ParStream`` with the configured workers.
+
+        ``workers=-1`` uses one worker for each available CPU, except one.
+        Set ``use_threads`` to ``True`` to use threads instead of processes.
+
+        .. code-block:: python
+
+            from danom import ParStream
+
+            ParStream.from_iterable([1, 2, 3]).map(add_one).collect(workers=2)
+        """
         if workers == -1:
             workers = (os.cpu_count() or 5) - 1
 
@@ -37,11 +55,13 @@ class ParStream[T](_BaseSyncStream):
             )
 
     def to_stream(self) -> Stream[T]:
+        """Convert the ``ParStream`` to a synchronous ``Stream``."""
         from ._sync import Stream
 
         return Stream(self.seq, self.ops)
 
     def to_par(self) -> Self:
+        """Return the ``ParStream`` unchanged."""
         return self
 
 
