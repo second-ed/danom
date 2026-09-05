@@ -265,14 +265,25 @@ Alternatively the map method can be used to return a new type instance with the 
 │       └── conf.py
 ├── src
 │   └── danom
+│       ├── _stream
+│       │   ├── __init__.py
+│       │   ├── _async.py
+│       │   ├── _base.py     # the base class for Stream
+│       │   ├── _par.py
+│       │   └── _sync.py
 │       ├── __init__.py
 │       ├── _either.py       # A simple Either monad, includes the base Either, Right and Left.
 │       ├── _new_type.py     # function to create a new type, probably worth deprecating soon
 │       ├── _result.py       # A simple Result monad, includes the base Result, Ok and Err.
 │       ├── _safe.py         # decorators that except given exception types and return a monad of the result
-│       ├── _stream.py       # a lazy Stream with a fluent api
 │       └── _utils.py        # random junk I can't think of place to put. compose, all_of, any_of, etc
 ├── tests
+│   ├── stream
+│   │   ├── __init__.py
+│   │   ├── _common.py
+│   │   ├── test_async.py
+│   │   ├── test_par.py
+│   │   └── test_sync.py
 │   ├── __init__.py
 │   ├── conftest.py
 │   ├── test_api.py
@@ -282,7 +293,6 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── test_new_type.py
 │   ├── test_result.py
 │   ├── test_safe.py
-│   ├── test_stream.py
 │   └── test_utils.py
 ├── .pre-commit-config.yaml
 ├── README.md
