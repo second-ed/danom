@@ -2,7 +2,7 @@ from contextlib import nullcontext
 
 import pytest
 
-from danom import Null, Option, Some
+from danom import Err, Null, Ok, Option, Some
 from tests.conftest import add_one, is_even
 
 
@@ -143,9 +143,20 @@ def test_map_or_else[U](monad: Option, default, fn, expected_result) -> None:
     assert monad.map_or_else(default, fn) == expected_result
 
 
-# def test_ok_or[E](monad: Option, err, expected_result) -> None:
+@pytest.mark.parametrize(
+    ("monad", "err", "expected_result"),
+    [pytest.param(Some("foo"), 0, Ok("foo")), pytest.param(Null(), 0, Err(0))],
+)
+def test_ok_or[E](monad: Option, err, expected_result) -> None:
+    assert monad.ok_or(err) == expected_result
 
-# def test_ok_or_else[E](monad: Option, err, expected_result) -> None:
+
+@pytest.mark.parametrize(
+    ("monad", "err", "expected_result"),
+    [pytest.param(Some("foo"), lambda: 0, Ok("foo")), pytest.param(Null(), lambda: 0, Err(0))],
+)
+def test_ok_or_else[E](monad: Option, err, expected_result) -> None:
+    assert monad.ok_or_else(err) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -173,9 +184,12 @@ def test_or_else(monad: Option, opt_b, expected_result) -> None:
     assert monad.or_else(opt_b) == expected_result
 
 
-@pytest.mark.parametrize(("monad", "value", "expected_result"), [])
+@pytest.mark.parametrize(
+    ("monad", "value", "expected_result"),
+    [pytest.param(Some(2), 5, Some(5)), pytest.param(Null(), 3, Null())],
+)
 def test_replace(monad: Option, value, expected_result) -> None:
-    pass
+    assert monad.replace(value) == expected_result
 
 
 @pytest.mark.parametrize(("monad", "expected_result"), [])
