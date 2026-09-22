@@ -8,7 +8,7 @@ import traceback
 from collections.abc import Callable
 from typing import Concatenate, ParamSpec, TypeVar, overload
 
-from danom._result import Err, Ok, Result
+from ._result import Err, Ok, Result
 
 T = TypeVar("T")
 P = ParamSpec("P")

@@ -55,9 +55,7 @@ class _BaseAsyncStream[T](_BaseStream):
     ) -> Result[Self, E] | Either[Self, E]: ...
 
     @abstractmethod
-    async def collect(
-        self, *, workers: int = 4, use_threads: bool = False
-    ) -> tuple[U, ...]: ...  # ty: ignore[invalid-method-override]
+    async def collect(self, *, workers: int = 4, use_threads: bool = False) -> tuple[U, ...]: ...  # ty: ignore[invalid-method-override]
 
 
 @attrs.define(frozen=True)

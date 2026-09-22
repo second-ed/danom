@@ -6,8 +6,7 @@ from multiprocessing.managers import ListProxy
 from pathlib import Path
 from typing import Any, NoReturn, Self
 
-from danom import safe, safe_method
-from danom._result import Err, Ok, Result
+from danom import Err, Ok, Result, safe, safe_method
 
 REPO_ROOT = Path(__file__).parents[1]
 
@@ -84,7 +83,7 @@ def lt_10(x: float) -> bool:
 
 
 async def async_is_file(path: Path) -> bool:
-    return path.is_file()
+    return path.is_file()  # noqa: ASYNC240
 
 
 async def async_read_text(path: str) -> str:

@@ -266,6 +266,11 @@ Alternatively the map method can be used to return a new type instance with the 
 │       └── conf.py
 ├── src
 │   └── danom
+│       ├── _monads
+│       │   ├── __init__.py
+│       │   ├── _either.py   # A simple Either monad, includes the base Either, Right and Left.
+│       │   ├── _result.py   # A simple Result monad, includes the base Result, Ok and Err.
+│       │   └── _safe.py     # decorators that except given exception types and return a monad of the result
 │       ├── _stream
 │       │   ├── __init__.py
 │       │   ├── _async.py
@@ -273,10 +278,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │       │   ├── _par.py
 │       │   └── _sync.py
 │       ├── __init__.py
-│       ├── _either.py       # A simple Either monad, includes the base Either, Right and Left.
 │       ├── _new_type.py     # function to create a new type, probably worth deprecating soon
-│       ├── _result.py       # A simple Result monad, includes the base Result, Ok and Err.
-│       ├── _safe.py         # decorators that except given exception types and return a monad of the result
 │       └── _utils.py        # random junk I can't think of place to put. compose, all_of, any_of, etc
 ├── tests
 │   ├── stream
