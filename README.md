@@ -269,6 +269,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │       ├── _monads
 │       │   ├── __init__.py
 │       │   ├── _either.py   # A simple Either monad, includes the base Either, Right and Left.
+│       │   ├── _option.py
 │       │   ├── _result.py   # A simple Result monad, includes the base Result, Ok and Err.
 │       │   └── _safe.py     # decorators that except given exception types and return a monad of the result
 │       ├── _stream
