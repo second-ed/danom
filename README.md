@@ -286,6 +286,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │   │   ├── __init__.py
 │   │   ├── test_either.py
 │   │   ├── test_monad_laws.py
+│   │   ├── test_option.py
 │   │   └── test_result.py
 │   ├── stream
 │   │   ├── __init__.py
