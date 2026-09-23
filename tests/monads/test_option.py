@@ -49,14 +49,24 @@ def test_as_tuple(monad: Option, expected_result) -> None:
     assert monad.as_tuple() == expected_result
 
 
-@pytest.mark.parametrize(("monad", "expected_result"), [])
+@pytest.mark.parametrize(
+    ("monad", "expected_result"), [pytest.param(Some(2), Some(2)), pytest.param(Null(), Null())]
+)
 def test_cloned(monad: Option, expected_result) -> None:
-    pass
+    assert monad.cloned() == expected_result
+    assert id(monad) != id(expected_result)
 
 
-@pytest.mark.parametrize(("monad", "msg", "expected_result"), [])
-def test_expect(monad: Option, msg, expected_result) -> None:
-    assert monad.expect(msg) == expected_result
+@pytest.mark.parametrize(
+    ("monad", "msg", "expected_result", "expected_context"),
+    [
+        pytest.param(Some(2), "must be positive", 2, nullcontext()),
+        pytest.param(Null(), "must be positive", None, pytest.raises(ValueError)),
+    ],
+)
+def test_expect(monad: Option, msg, expected_result, expected_context) -> None:
+    with expected_context:
+        assert monad.expect(msg) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -71,12 +81,30 @@ def test_filter_(monad: Option, predicate, expected_result) -> None:
     assert monad.filter_(predicate) == expected_result
 
 
-@pytest.mark.parametrize(("monad", "expected_result"), [])
+@pytest.mark.parametrize(
+    ("monad", "expected_result"),
+    [
+        pytest.param(Some(Some(Some(2))), Some(Some(2))),
+        pytest.param(Some(Some(2)), Some(2)),
+        pytest.param(Some(2), Some(2)),
+        pytest.param(Null(), Null()),
+    ],
+)
 def test_flatten(monad: Option, expected_result) -> None:
     assert monad.flatten() == expected_result
 
 
-@pytest.mark.parametrize(("monad", "fn", "expected_result"), [])
+def append_to_list(x) -> None:
+    x.append(2)
+
+
+@pytest.mark.parametrize(
+    ("monad", "fn", "expected_result"),
+    [
+        pytest.param(Some([1]), append_to_list, Some([1])),
+        pytest.param(Null(), append_to_list, Null()),
+    ],
+)
 def test_inspect(monad: Option, fn, expected_result) -> None:
     assert monad.inspect(fn) == expected_result
 
@@ -192,9 +220,18 @@ def test_replace(monad: Option, value, expected_result) -> None:
     assert monad.replace(value) == expected_result
 
 
-@pytest.mark.parametrize(("monad", "expected_result"), [])
-def test_transpose[E](monad: Option, expected_result) -> None:
-    assert monad.transpose() == expected_result
+@pytest.mark.parametrize(
+    ("monad", "expected_result", "expected_context"),
+    [
+        pytest.param(Some(Ok(2)), Ok(Some(2)), nullcontext()),
+        pytest.param(Some(Err(2)), Err(Some(2)), nullcontext()),
+        pytest.param(Null(), Ok(Null()), nullcontext()),
+        pytest.param(Some(2), None, pytest.raises(TypeError)),
+    ],
+)
+def test_transpose[E](monad: Option, expected_result, expected_context) -> None:
+    with expected_context:
+        assert monad.transpose() == expected_result
 
 
 @pytest.mark.parametrize(
@@ -224,7 +261,11 @@ def test_unwrap_or_else(monad: Option, fn, expected_result) -> None:
 
 @pytest.mark.parametrize(
     ("monad", "other", "expected_result"),
-    [pytest.param(Some(1), Some("hi"), Some((1, "hi"))), pytest.param(Some(1), Null(), Null())],
+    [
+        pytest.param(Some(1), Some("hi"), Some((1, "hi"))),
+        pytest.param(Some(1), Null(), Null()),
+        pytest.param(Null(), Some(1), Null()),
+    ],
 )
 def test_zip(monad: Option, other, expected_result) -> None:
     assert monad.zip(other) == expected_result

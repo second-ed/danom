@@ -161,8 +161,13 @@ class Some[T](Option):
     def replace(self, value: T) -> Option[T]:
         return Some(value)
 
-    def transpose[E](self) -> Result[Option[T], E]:
-        return Ok(Some(self.inner))
+    def transpose[E](self) -> Result[Option[T], Option[T]]:
+        if isinstance(self.inner, Result):
+            if isinstance(self.inner, Ok):
+                return Ok(Some(self.inner.inner))
+            if isinstance(self.inner, Err):
+                return cast(Result[Option[T], Option[T]], Err[Option[T]](Some(self.inner.error)))
+        raise TypeError("inner must be a `Result` type")
 
     def unwrap(self) -> T:
         return self.inner
