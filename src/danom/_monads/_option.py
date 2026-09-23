@@ -161,7 +161,7 @@ class Some[T](Option):
     def replace(self, value: T) -> Option[T]:
         return Some(value)
 
-    def transpose[E](self) -> Result[Option[T], Option[T]]:
+    def transpose(self) -> Result[Option[T], Option[T]]:
         if isinstance(self.inner, Ok):
             return Ok(Some(self.inner.inner))
         if isinstance(self.inner, Err):

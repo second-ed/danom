@@ -31,7 +31,7 @@ def must_be_less_than_10(x: int) -> Option[int]:
         pytest.param(Null(), must_be_less_than_10, Null()),
     ],
 )
-def test_and_then[U](monad: Option, fn, expected_result) -> None:
+def test_and_then(monad: Option, fn, expected_result) -> None:
     assert monad.and_then(fn) == expected_result
 
 
@@ -151,7 +151,7 @@ def test_is_some_and(monad: Option, fn, expected_result) -> None:
     ("monad", "fn", "expected_result"),
     [pytest.param(Some(1), add_one, Some(2)), pytest.param(Null(), add_one, Null())],
 )
-def test_map[U](monad: Option, fn, expected_result) -> None:
+def test_map(monad: Option, fn, expected_result) -> None:
     assert monad.map(fn) == expected_result
 
 
@@ -159,7 +159,7 @@ def test_map[U](monad: Option, fn, expected_result) -> None:
     ("monad", "default", "fn", "expected_result"),
     [pytest.param(Some("foo"), 42, len, 3), pytest.param(Null(), 42, len, 42)],
 )
-def test_map_or[U](monad: Option, default, fn, expected_result) -> None:
+def test_map_or(monad: Option, default, fn, expected_result) -> None:
     assert monad.map_or(default, fn) == expected_result
 
 
@@ -167,7 +167,7 @@ def test_map_or[U](monad: Option, default, fn, expected_result) -> None:
     ("monad", "default", "fn", "expected_result"),
     [pytest.param(Some("foo"), lambda: 42, len, 3), pytest.param(Null(), lambda: 42, len, 42)],
 )
-def test_map_or_else[U](monad: Option, default, fn, expected_result) -> None:
+def test_map_or_else(monad: Option, default, fn, expected_result) -> None:
     assert monad.map_or_else(default, fn) == expected_result
 
 
@@ -175,7 +175,7 @@ def test_map_or_else[U](monad: Option, default, fn, expected_result) -> None:
     ("monad", "err", "expected_result"),
     [pytest.param(Some("foo"), 0, Ok("foo")), pytest.param(Null(), 0, Err(0))],
 )
-def test_ok_or[E](monad: Option, err, expected_result) -> None:
+def test_ok_or(monad: Option, err, expected_result) -> None:
     assert monad.ok_or(err) == expected_result
 
 
@@ -183,7 +183,7 @@ def test_ok_or[E](monad: Option, err, expected_result) -> None:
     ("monad", "err", "expected_result"),
     [pytest.param(Some("foo"), lambda: 0, Ok("foo")), pytest.param(Null(), lambda: 0, Err(0))],
 )
-def test_ok_or_else[E](monad: Option, err, expected_result) -> None:
+def test_ok_or_else(monad: Option, err, expected_result) -> None:
     assert monad.ok_or_else(err) == expected_result
 
 
@@ -229,7 +229,7 @@ def test_replace(monad: Option, value, expected_result) -> None:
         pytest.param(Some(2), None, pytest.raises(TypeError)),
     ],
 )
-def test_transpose[E](monad: Option, expected_result, expected_context) -> None:
+def test_transpose(monad: Option, expected_result, expected_context) -> None:
     with expected_context:
         assert monad.transpose() == expected_result
 
