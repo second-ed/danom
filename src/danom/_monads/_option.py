@@ -3,11 +3,12 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from copy import deepcopy
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import attrs
 
-from ._result import Err, Ok, Result
+if TYPE_CHECKING:
+    from ._result_v2 import Result
 
 
 @attrs.define(frozen=True)
@@ -147,10 +148,14 @@ class Some[T](Option):
         return fn(self.inner)
 
     def ok_or[E](self, err: E) -> Result[T, E]:  # noqa: ARG002
-        return Ok(self.inner)
+        from ._result_v2 import Ok, Result  # noqa: PLC0415
+
+        return cast(Result[T, E], Ok(self.inner))
 
     def ok_or_else[E](self, err: Callable[[], E]) -> Result[T, E]:  # noqa: ARG002
-        return Ok(self.inner)
+        from ._result_v2 import Ok, Result  # noqa: PLC0415
+
+        return cast(Result[T, E], Ok(self.inner))
 
     def or_(self, opt_b: Option[T]) -> Option[T]:  # noqa: ARG002
         return self
@@ -162,8 +167,10 @@ class Some[T](Option):
         return Some(value)
 
     def transpose(self) -> Result[Option[T], Option[T]]:
+        from ._result_v2 import Err, Ok, Result  # noqa: PLC0415
+
         if isinstance(self.inner, Ok):
-            return Ok(Some(self.inner.inner))
+            return cast(Result[Option[T], Option[T]], Ok(Some(self.inner.inner)))
         if isinstance(self.inner, Err):
             return cast(Result[Option[T], Option[T]], Err[Option[T]](Some(self.inner.error)))
         raise TypeError("inner must be a `Result` type")
@@ -236,9 +243,13 @@ class Null[T](Option):
         return default()
 
     def ok_or[E](self, err: E) -> Result[T, E]:
+        from ._result_v2 import Err, Result  # noqa: PLC0415
+
         return cast(Result[T, E], Err[E](err))
 
     def ok_or_else[E](self, err: Callable[[], E]) -> Result[T, E]:
+        from ._result_v2 import Err, Result  # noqa: PLC0415
+
         return cast(Result[T, E], Err[E](err()))
 
     def or_(self, opt_b: Option[T]) -> Option[T]:
@@ -251,7 +262,9 @@ class Null[T](Option):
         return self
 
     def transpose[E](self) -> Result[Option[T], E]:
-        return Ok(self)
+        from ._result_v2 import Ok, Result  # noqa: PLC0415
+
+        return cast(Result[Option[T], E], Ok(self))
 
     def unwrap(self) -> T:
         raise TypeError("Can't call `unwrap` on `Null`")

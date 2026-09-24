@@ -4,7 +4,7 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from multiprocessing.managers import ListProxy
 from pathlib import Path
-from typing import Any, NoReturn, Self
+from typing import Any, NoReturn, Self, cast
 
 from danom import Err, Ok, Result, safe, safe_method
 
@@ -98,9 +98,9 @@ def safe_add(a: int, b: int) -> int:
 
 def safe_add_one(x: float | str) -> Result[float | str, TypeError]:
     if isinstance(x, (int, float)):
-        return Ok(x + 1)
+        return cast(Result[float | str, TypeError], Ok(x + 1))
     if isinstance(x, str):
-        return Ok(x + "1")
+        return cast(Result[float | str, TypeError], Ok(x + "1"))
     return Err(TypeError(f"unsupported type: {type(x)}"))
 
 

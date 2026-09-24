@@ -76,7 +76,10 @@ def test_traceback():
     if not isinstance(err, Err):
         raise TypeError("This should be an Err by now")
 
-    tb_lines = err.traceback.replace(str(REPO_ROOT), ".").splitlines()
+    tb_lines = [
+        line.split("#")[0].rstrip()
+        for line in err.traceback.replace(str(REPO_ROOT), ".").splitlines()
+    ]
 
     missing_lines = [line for line in expected_lines if line not in tb_lines]
 
