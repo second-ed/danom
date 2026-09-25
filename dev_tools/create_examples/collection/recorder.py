@@ -34,6 +34,7 @@ class Recorder:
 
     def write_examples(self) -> Self:
         for path, data in self.files.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(data)
         return self
 
