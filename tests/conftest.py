@@ -1,14 +1,27 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Generator
 from multiprocessing.managers import ListProxy
 from pathlib import Path
-from typing import Any, NoReturn, Self
+from typing import Any, Literal, NoReturn, Self, cast
+
+import pytest
 
 from danom import Err, Ok, Result, safe, safe_method
+from danom._monads._option import Some
+from dev_tools.create_examples.collection.recorder import _RECORDER
+from dev_tools.create_examples.transformation.transform import update_modified_docstrings
 
 REPO_ROOT = Path(__file__).parents[1]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def collect_examples() -> Generator[Any, None, None]:
+    yield
+    _RECORDER.path = REPO_ROOT / ".papertrail_cache/examples.json"
+    _RECORDER.prepare_files().write_examples()
+    update_modified_docstrings(_RECORDER.path)
 
 
 def make_async(fn: Callable[..., Any]) -> Callable[..., Awaitable[Any]]:
@@ -98,9 +111,9 @@ def safe_add(a: int, b: int) -> int:
 
 def safe_add_one(x: float | str) -> Result[float | str, TypeError]:
     if isinstance(x, (int, float)):
-        return Ok(x + 1)
+        return cast(Result[float | str, TypeError], Ok(x + 1))
     if isinstance(x, str):
-        return Ok(x + "1")
+        return cast(Result[float | str, TypeError], Ok(x + "1"))
     return Err(TypeError(f"unsupported type: {type(x)}"))
 
 
@@ -122,6 +135,18 @@ def safe_get_error_type(exception: Exception) -> str:
 @safe
 def div_zero(x: int) -> float:
     return x / 0
+
+
+def get_some_vikings() -> Some[str]:
+    return Some("vikings")
+
+
+def get_ok_vikings(*args) -> Ok[str]:  # noqa: ARG001 ANN002
+    return Ok("vikings")
+
+
+def get_42(*args) -> Literal[42]:  # noqa: ARG001 ANN002
+    return 42
 
 
 class Adder:

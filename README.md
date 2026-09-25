@@ -258,6 +258,18 @@ Alternatively the map method can be used to return a new type instance with the 
 │       ├── ci_tests.yaml
 │       └── publish.yaml
 ├── dev_tools
+│   ├── create_examples
+│   │   ├── collection
+│   │   │   ├── __init__.py
+│   │   │   ├── example.py
+│   │   │   ├── record.py
+│   │   │   └── recorder.py         # User entrypoint `example` and it's inner class `Example`
+│   │   ├── transformation
+│   │   │   ├── __init__.py
+│   │   │   ├── ast_editing.py
+│   │   │   ├── format_examples.py
+│   │   │   └── transform.py
+│   │   └── __init__.py
 │   ├── __init__.py
 │   ├── update_cov.py
 │   └── update_readme.py
@@ -268,26 +280,26 @@ Alternatively the map method can be used to return a new type instance with the 
 │   └── danom
 │       ├── _monads
 │       │   ├── __init__.py
-│       │   ├── _either.py      # A simple Either monad, includes the base Either, Right and Left.
+│       │   ├── _either.py          # A simple Either monad, includes the base Either, Right and Left.
 │       │   ├── _option.py
-│       │   ├── _result.py      # A simple Result monad, includes the base Result, Ok and Err.
-│       │   └── _safe.py        # decorators that except given exception types and return a monad of the result
+│       │   ├── _result_v2.py
+│       │   └── _safe.py            # decorators that except given exception types and return a monad of the result
 │       ├── _stream
 │       │   ├── __init__.py
 │       │   ├── _async.py
-│       │   ├── _base.py        # the base class for Stream
+│       │   ├── _base.py            # the base class for Stream
 │       │   ├── _par.py
 │       │   └── _sync.py
 │       ├── __init__.py
-│       ├── _new_type.py        # function to create a new type, probably worth deprecating soon
-│       └── _utils.py           # random junk I can't think of place to put. compose, all_of, any_of, etc
+│       ├── _new_type.py            # function to create a new type, probably worth deprecating soon
+│       └── _utils.py               # random junk I can't think of place to put. compose, all_of, any_of, etc
 ├── tests
 │   ├── monads
 │   │   ├── __init__.py
 │   │   ├── test_either.py
 │   │   ├── test_monad_laws.py
 │   │   ├── test_option.py
-│   │   └── test_result.py
+│   │   └── test_result_v2.py
 │   ├── stream
 │   │   ├── __init__.py
 │   │   ├── _common.py
