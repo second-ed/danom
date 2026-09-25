@@ -31,21 +31,7 @@ class Either[T_co, E_co: object](ABC):
 
     @classmethod
     def unit(cls, inner: T_co) -> Right[T_co]:
-        """Unit method. Given an item of type ``T`` return ``Right(T)``
-
-        .. doctest::
-
-            >>> from danom import Left, Right, Either
-
-            >>> Either.unit(0) == Right(inner=0)
-            True
-
-            >>> Right.unit(0) == Right(inner=0)
-            True
-
-            >>> Left.unit(0) == Right(inner=0)
-            True
-        """
+        """Unit method. Given an item of type ``T`` return ``Right(T)``"""
         return Right(inner)
 
     @abstractmethod
@@ -53,15 +39,15 @@ class Either[T_co, E_co: object](ABC):
         """Returns ``True`` if the result type is ``Right``.
         Returns ``False`` if the result type is ``Left``.
 
-        .. doctest::
 
-            >>> from danom import Left, Right
+        .. code-block:: python
 
-            >>> Right().is_ok() == True
+            >>> Right(inner=None).is_ok() == True
             True
 
-            >>> Left().is_ok() == False
+            >>> Left(inner=None).is_ok() == False
             True
+        ::
         """
         ...
 
@@ -70,12 +56,15 @@ class Either[T_co, E_co: object](ABC):
         """Pipe a pure function and wrap the return value with ``Right``.
         Given an ``Left`` will return ``self``.
 
+
         .. code-block:: python
 
-            from danom import Left, Right
+            >>> Right(inner=0).map(add_one) == Right(inner=1)
+            True
 
-            Right(1).map(add_one) == Right(2)
-            Left(1).map(add_one) == Left(1)
+            >>> Left(inner=None).map(add_one) == Left(inner=None)
+            True
+        ::
         """
         ...
 
@@ -84,106 +73,62 @@ class Either[T_co, E_co: object](ABC):
         """Pipe a pure function and wrap the return value with ``Left``.
         Given an ``Right`` will return ``self``.
 
+
         .. code-block:: python
 
-            from danom import Left, Right
+            >>> Right(inner=0).map_err(add_one) == Right(inner=0)
+            True
 
-            Left(TypeError()).map_err(type_err_to_value_err) == Left(ValueError())
-            Right(1).map(type_err_to_value_err) == Right(1)
+            >>> Left(inner=0).map_err(add_one) == Left(inner=1)
+            True
+        ::
         """
         ...
 
     @abstractmethod
     def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        """Pipe another function that returns a monad. For ``Left`` will return original inner.
-
-        .. code-block:: python
-
-            from danom import Left, Right
-
-            Right(1).and_then(add_one) == Right(2)
-            Right(1).and_then(raise_err) == Left(TypeError())
-            Left(TypeError()).and_then(add_one) == Left(TypeError())
-            Left(TypeError()).and_then(raise_value_err) == Left(TypeError())
-        """
+        """Pipe another function that returns a monad. For ``Left`` will return original inner."""
         ...
 
     @abstractmethod
     def or_else(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
-        """Pipe a function that returns a monad to recover from an ``Left``. For ``Right`` will return original ``Either``.
-
-        .. code-block:: python
-
-            from danom import Left, Right
-
-            Right(1).or_else(replace_err_with_zero) == Right(1)
-            Left(TypeError()).or_else(replace_err_with_zero) == Right(0)
-        """
+        """Pipe a function that returns a monad to recover from an ``Left``. For ``Right`` will return original ``Either``."""
         ...
 
     @abstractmethod
     def unwrap(self) -> T_co:
-        """Unwrap the `Right` or ``Left`` monad to get the inner value.
-
-        .. doctest::
-
-            >>> from danom import Left, Right
-
-            >>> Right().unwrap() == None
-            True
-
-            >>> Right(1).unwrap() == 1
-            True
-
-            >>> Right("ok").unwrap() == 'ok'
-            True
-
-            >>> Left(-1).unwrap() == -1
-            True
-
-        """
+        """Unwrap the `Right` or ``Left`` monad to get the inner value."""
         ...
 
     @staticmethod
     def either_is_ok(result: Either[T_co, E_co]) -> bool:
-        """Check whether the monad is ok. Allows for ``filter`` or ``partition`` in a ``Stream`` without needing a lambda or custom function.
-
-        .. code-block:: python
-
-            from danom import Stream, Either
-
-            Stream.from_iterable([Right(), Right(), Left()]).filter(Either.either_is_ok).collect() == (Right(), Right())
-
-        """
+        """Check whether the monad is ok. Allows for ``filter`` or ``partition`` in a ``Stream`` without needing a lambda or custom function."""
         return result.is_ok()
 
     @staticmethod
     def either_unwrap(result: Either[T_co, E_co]) -> T_co:
-        """Unwrap the `Right` or ``Left`` monad to get the inner value.
-
-        .. code-block:: python
-
-            from danom import Stream, Either
-
-            oks, errs = Stream.from_iterable([Right(1), Right(2), Left()]).partition(Either.either_is_ok)
-            oks.map(Either.either_unwrap).collect == (1, 2)
-
-        """
+        """Unwrap the `Right` or ``Left`` monad to get the inner value."""
         return result.unwrap()
 
     def flatten(self) -> Either[T_co, E_co]:
         """Flatten the monad. Will return the first ``Left`` or the lowest ``Right`` instance.
 
-        .. doctest::
 
-            >>> from danom import Left, Right, Stream, Either
 
-            >>> Right(Right(Right(1))).flatten() == Right(1)
+        .. code-block:: python
+
+            >>> Right(inner=Right(inner=None)).flatten() == Right(inner=None)
             True
 
-            >>> Right(Right(Left())).flatten() == Left()
+            >>> Right(inner=Left(inner=None)).flatten() == Left(inner=None)
             True
 
+            >>> Left(inner=Right(inner=None)).flatten() == Right(inner=None)
+            True
+
+            >>> Left(inner=Left(inner=None)).flatten() == Left(inner=None)
+            True
+        ::
         """
         current = self
 
@@ -196,12 +141,39 @@ class Either[T_co, E_co: object](ABC):
 @attrs.define(frozen=True, hash=True)
 class Right(Either[T_co, Never]):
     def is_ok(self) -> Literal[True]:
+        """.. code-block:: python
+
+            >>> Right(inner=None).is_ok() == True
+            True
+
+            >>> Left(inner=None).is_ok() == False
+            True
+        ::
+        """
         return True
 
     def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Right[U_co]:
+        """.. code-block:: python
+
+            >>> Right(inner=0).map(add_one) == Right(inner=1)
+            True
+
+            >>> Left(inner=None).map(add_one) == Left(inner=None)
+            True
+        ::
+        """
         return Right(func(self.inner, *args, **kwargs))
 
     def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
+        """.. code-block:: python
+
+            >>> Right(inner=0).map_err(add_one) == Right(inner=0)
+            True
+
+            >>> Left(inner=0).map_err(add_one) == Left(inner=1)
+            True
+        ::
+        """
         return self
 
     def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Either[U_co, E_co]:
@@ -217,12 +189,39 @@ class Right(Either[T_co, Never]):
 @attrs.define(frozen=True, hash=True)
 class Left(Either[Never, E_co]):
     def is_ok(self) -> Literal[False]:
+        """.. code-block:: python
+
+            >>> Right(inner=None).is_ok() == True
+            True
+
+            >>> Left(inner=None).is_ok() == False
+            True
+        ::
+        """
         return False
 
     def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
+        """.. code-block:: python
+
+            >>> Right(inner=0).map(add_one) == Right(inner=1)
+            True
+
+            >>> Left(inner=None).map(add_one) == Left(inner=None)
+            True
+        ::
+        """
         return self
 
     def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Left[F_co]:
+        """.. code-block:: python
+
+            >>> Right(inner=0).map_err(add_one) == Right(inner=0)
+            True
+
+            >>> Left(inner=0).map_err(add_one) == Left(inner=1)
+            True
+        ::
+        """
         return Left(func(self.inner, *args, **kwargs))
 
     def and_then(self, func: Bindable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002

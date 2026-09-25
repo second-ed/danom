@@ -94,6 +94,4 @@ def _format_example(example: str) -> str:
     if not lines:
         return ""
 
-    return lines[0] + textwrap.indent(
-        "".join(lines[1:]), "        ", predicate=lambda line: bool(line.strip())
-    )
+    return textwrap.indent("".join(lines), "        ", predicate=lambda line: bool(line.strip()))
