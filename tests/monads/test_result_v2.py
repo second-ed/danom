@@ -5,6 +5,7 @@ import pytest
 
 from danom._monads._option import Null, Some
 from danom._monads._result_v2 import Err, Ok, Result
+from dev_tools.create_examples.collection.example import example
 from tests.conftest import add_one, is_even
 
 
@@ -18,7 +19,7 @@ from tests.conftest import add_one, is_even
     ],
 )
 def test_and_(monad: Result, res, expected_result) -> None:
-    assert monad.and_(res) == expected_result
+    assert example(monad.and_, res) == expected_result
 
 
 def must_be_less_than_10(x: int) -> Result[int, str]:
@@ -34,14 +35,14 @@ def must_be_less_than_10(x: int) -> Result[int, str]:
     ],
 )
 def test_and_then(monad: Result, fn, expected_result) -> None:
-    assert monad.and_then(fn) == expected_result
+    assert example(monad.and_then, fn) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Ok(2), Ok(2)), pytest.param(Err(2), Err(2))]
 )
 def test_cloned(monad: Result, expected_result) -> None:
-    assert monad.cloned() == expected_result
+    assert example(monad.cloned) == expected_result
     assert id(monad) != id(expected_result)
 
 
@@ -50,7 +51,7 @@ def test_cloned(monad: Result, expected_result) -> None:
     [pytest.param(Ok(2), Null()), pytest.param(Err("Nothing here"), Some("Nothing here"))],
 )
 def test_err(monad: Result, expected_result) -> None:
-    assert monad.err() == expected_result
+    assert example(monad.err) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -62,7 +63,7 @@ def test_err(monad: Result, expected_result) -> None:
 )
 def test_expect(monad: Result, msg, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.expect(msg) == expected_result
+        assert example(monad.expect, msg) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -74,7 +75,7 @@ def test_expect(monad: Result, msg, expected_result, expected_context) -> None:
 )
 def test_expect_err(monad: Result, msg, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.expect_err(msg) == expected_result
+        assert example(monad.expect_err, msg) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -87,7 +88,7 @@ def test_expect_err(monad: Result, msg, expected_result, expected_context) -> No
     ],
 )
 def test_flatten(monad: Result, expected_result) -> None:
-    assert monad.flatten() == expected_result
+    assert example(monad.flatten) == expected_result
 
 
 def append_to_list(x) -> None:
@@ -102,7 +103,7 @@ def append_to_list(x) -> None:
     ],
 )
 def test_inspect(monad: Result, fn, expected_result) -> None:
-    assert monad.inspect(fn) == expected_result
+    assert example(monad.inspect, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -113,14 +114,14 @@ def test_inspect(monad: Result, fn, expected_result) -> None:
     ],
 )
 def test_inspect_err(monad: Result, fn, expected_result) -> None:
-    assert monad.inspect_err(fn) == expected_result
+    assert example(monad.inspect_err, fn) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Ok(2), False), pytest.param(Err(2), True)]
 )
 def test_is_err(monad: Result, expected_result) -> None:
-    assert monad.is_err() == expected_result
+    assert example(monad.is_err) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -132,14 +133,14 @@ def test_is_err(monad: Result, expected_result) -> None:
     ],
 )
 def test_is_err_and(monad: Result, fn, expected_result) -> None:
-    assert monad.is_err_and(fn) == expected_result
+    assert example(monad.is_err_and, fn) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Ok(2), True), pytest.param(Err(2), False)]
 )
 def test_is_ok(monad: Result, expected_result) -> None:
-    assert monad.is_ok() == expected_result
+    assert example(monad.is_ok) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -151,7 +152,7 @@ def test_is_ok(monad: Result, expected_result) -> None:
     ],
 )
 def test_is_ok_and(monad: Result, fn, expected_result) -> None:
-    assert monad.is_ok_and(fn) == expected_result
+    assert example(monad.is_ok_and, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -159,7 +160,7 @@ def test_is_ok_and(monad: Result, fn, expected_result) -> None:
     [pytest.param(Ok(1), add_one, Ok(2)), pytest.param(Err(1), add_one, Err(1))],
 )
 def test_map(monad: Result, fn, expected_result) -> None:
-    assert monad.map(fn) == expected_result
+    assert example(monad.map, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -167,7 +168,7 @@ def test_map(monad: Result, fn, expected_result) -> None:
     [pytest.param(Err(1), add_one, Err(2)), pytest.param(Ok(1), add_one, Ok(1))],
 )
 def test_map_err(monad: Result, fn, expected_result) -> None:
-    assert monad.map_err(fn) == expected_result
+    assert example(monad.map_err, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -190,7 +191,7 @@ def test_map_or_else(monad: Result, default, fn, expected_result) -> None:
     ("monad", "expected_result"), [pytest.param(Ok(2), Some(2)), pytest.param(Err(2), Null())]
 )
 def test_ok(monad: Result, expected_result) -> None:
-    assert monad.ok() == expected_result
+    assert example(monad.ok) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -203,7 +204,7 @@ def test_ok(monad: Result, expected_result) -> None:
     ],
 )
 def test_or_(monad: Result, res, expected_result) -> None:
-    assert monad.or_(res) == expected_result
+    assert example(monad.or_, res) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -215,7 +216,7 @@ def test_or_(monad: Result, res, expected_result) -> None:
     ],
 )
 def test_or_else(monad: Result, fn, expected_result) -> None:
-    assert monad.or_else(fn) == expected_result
+    assert example(monad.or_else, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -229,7 +230,7 @@ def test_or_else(monad: Result, fn, expected_result) -> None:
 )
 def test_transpose(monad: Result, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.transpose() == expected_result
+        assert example(monad.transpose) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -238,7 +239,7 @@ def test_transpose(monad: Result, expected_result, expected_context) -> None:
 )
 def test_unwrap(monad: Result, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.unwrap() == expected_result
+        assert example(monad.unwrap) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -250,7 +251,7 @@ def test_unwrap(monad: Result, expected_result, expected_context) -> None:
 )
 def test_unwrap_err(monad: Result, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.unwrap_err() == expected_result
+        assert example(monad.unwrap_err) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -258,7 +259,7 @@ def test_unwrap_err(monad: Result, expected_result, expected_context) -> None:
     [pytest.param(Ok("car"), "bike", "car"), pytest.param(Err(), "bike", "bike")],
 )
 def test_unwrap_or(monad: Result, default, expected_result) -> None:
-    assert monad.unwrap_or(default) == expected_result
+    assert example(monad.unwrap_or, default) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -266,4 +267,4 @@ def test_unwrap_or(monad: Result, default, expected_result) -> None:
     [pytest.param(Ok(4), lambda _: 20, 4), pytest.param(Err(), lambda _: 20, 20)],
 )
 def test_unwrap_or_else(monad: Result, fn, expected_result) -> None:
-    assert monad.unwrap_or_else(fn) == expected_result
+    assert example(monad.unwrap_or_else, fn) == expected_result

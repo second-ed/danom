@@ -3,6 +3,7 @@ from contextlib import nullcontext
 import pytest
 
 from danom import Err, Null, Ok, Option, Some
+from dev_tools.create_examples.collection.example import example
 from tests.conftest import add_one, is_even
 
 
@@ -16,7 +17,7 @@ from tests.conftest import add_one, is_even
     ],
 )
 def test_and_(monad: Option, opt_b, expected_result) -> None:
-    assert monad.and_(opt_b) == expected_result
+    assert example(monad.and_, opt_b) == expected_result
 
 
 def must_be_less_than_10(x: int) -> Option[int]:
@@ -32,28 +33,28 @@ def must_be_less_than_10(x: int) -> Option[int]:
     ],
 )
 def test_and_then(monad: Option, fn, expected_result) -> None:
-    assert monad.and_then(fn) == expected_result
+    assert example(monad.and_then, fn) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Some(2), [2]), pytest.param(Null(), [])]
 )
 def test_as_list(monad: Option, expected_result) -> None:
-    assert monad.as_list() == expected_result
+    assert example(monad.as_list) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Some(2), (2,)), pytest.param(Null(), ())]
 )
 def test_as_tuple(monad: Option, expected_result) -> None:
-    assert monad.as_tuple() == expected_result
+    assert example(monad.as_tuple) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Some(2), Some(2)), pytest.param(Null(), Null())]
 )
 def test_cloned(monad: Option, expected_result) -> None:
-    assert monad.cloned() == expected_result
+    assert example(monad.cloned) == expected_result
     assert id(monad) != id(expected_result)
 
 
@@ -66,7 +67,7 @@ def test_cloned(monad: Option, expected_result) -> None:
 )
 def test_expect(monad: Option, msg, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.expect(msg) == expected_result
+        assert example(monad.expect, msg) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -78,7 +79,7 @@ def test_expect(monad: Option, msg, expected_result, expected_context) -> None:
     ],
 )
 def test_filter_(monad: Option, predicate, expected_result) -> None:
-    assert monad.filter_(predicate) == expected_result
+    assert example(monad.filter_, predicate) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -91,7 +92,7 @@ def test_filter_(monad: Option, predicate, expected_result) -> None:
     ],
 )
 def test_flatten(monad: Option, expected_result) -> None:
-    assert monad.flatten() == expected_result
+    assert example(monad.flatten) == expected_result
 
 
 def append_to_list(x) -> None:
@@ -106,14 +107,14 @@ def append_to_list(x) -> None:
     ],
 )
 def test_inspect(monad: Option, fn, expected_result) -> None:
-    assert monad.inspect(fn) == expected_result
+    assert example(monad.inspect, fn) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Some(2), False), pytest.param(Null(), True)]
 )
 def test_is_none(monad: Option, expected_result) -> None:
-    assert monad.is_none() == expected_result
+    assert example(monad.is_none) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -125,14 +126,14 @@ def test_is_none(monad: Option, expected_result) -> None:
     ],
 )
 def test_is_none_or(monad: Option, fn, expected_result) -> None:
-    assert monad.is_none_or(fn) == expected_result
+    assert example(monad.is_none_or, fn) == expected_result
 
 
 @pytest.mark.parametrize(
     ("monad", "expected_result"), [pytest.param(Some(2), True), pytest.param(Null(), False)]
 )
 def test_is_some(monad: Option, expected_result) -> None:
-    assert monad.is_some() == expected_result
+    assert example(monad.is_some) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -144,7 +145,7 @@ def test_is_some(monad: Option, expected_result) -> None:
     ],
 )
 def test_is_some_and(monad: Option, fn, expected_result) -> None:
-    assert monad.is_some_and(fn) == expected_result
+    assert example(monad.is_some_and, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -152,7 +153,7 @@ def test_is_some_and(monad: Option, fn, expected_result) -> None:
     [pytest.param(Some(1), add_one, Some(2)), pytest.param(Null(), add_one, Null())],
 )
 def test_map(monad: Option, fn, expected_result) -> None:
-    assert monad.map(fn) == expected_result
+    assert example(monad.map, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -176,7 +177,7 @@ def test_map_or_else(monad: Option, default, fn, expected_result) -> None:
     [pytest.param(Some("foo"), 0, Ok("foo")), pytest.param(Null(), 0, Err(0))],
 )
 def test_ok_or(monad: Option, err, expected_result) -> None:
-    assert monad.ok_or(err) == expected_result
+    assert example(monad.ok_or, err) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -184,7 +185,7 @@ def test_ok_or(monad: Option, err, expected_result) -> None:
     [pytest.param(Some("foo"), lambda: 0, Ok("foo")), pytest.param(Null(), lambda: 0, Err(0))],
 )
 def test_ok_or_else(monad: Option, err, expected_result) -> None:
-    assert monad.ok_or_else(err) == expected_result
+    assert example(monad.ok_or_else, err) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -197,7 +198,7 @@ def test_ok_or_else(monad: Option, err, expected_result) -> None:
     ],
 )
 def test_or_(monad: Option, opt_b, expected_result) -> None:
-    assert monad.or_(opt_b) == expected_result
+    assert example(monad.or_, opt_b) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -209,7 +210,7 @@ def test_or_(monad: Option, opt_b, expected_result) -> None:
     ],
 )
 def test_or_else(monad: Option, opt_b, expected_result) -> None:
-    assert monad.or_else(opt_b) == expected_result
+    assert example(monad.or_else, opt_b) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -217,7 +218,7 @@ def test_or_else(monad: Option, opt_b, expected_result) -> None:
     [pytest.param(Some(2), 5, Some(5)), pytest.param(Null(), 3, Null())],
 )
 def test_replace(monad: Option, value, expected_result) -> None:
-    assert monad.replace(value) == expected_result
+    assert example(monad.replace, value) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -231,7 +232,7 @@ def test_replace(monad: Option, value, expected_result) -> None:
 )
 def test_transpose(monad: Option, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.transpose() == expected_result
+        assert example(monad.transpose) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -240,7 +241,7 @@ def test_transpose(monad: Option, expected_result, expected_context) -> None:
 )
 def test_unwrap(monad: Option, expected_result, expected_context) -> None:
     with expected_context:
-        assert monad.unwrap() == expected_result
+        assert example(monad.unwrap) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -248,7 +249,7 @@ def test_unwrap(monad: Option, expected_result, expected_context) -> None:
     [pytest.param(Some("car"), "bike", "car"), pytest.param(Null(), "bike", "bike")],
 )
 def test_unwrap_or(monad: Option, default, expected_result) -> None:
-    assert monad.unwrap_or(default) == expected_result
+    assert example(monad.unwrap_or, default) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -256,7 +257,7 @@ def test_unwrap_or(monad: Option, default, expected_result) -> None:
     [pytest.param(Some(4), lambda: 20, 4), pytest.param(Null(), lambda: 20, 20)],
 )
 def test_unwrap_or_else(monad: Option, fn, expected_result) -> None:
-    assert monad.unwrap_or_else(fn) == expected_result
+    assert example(monad.unwrap_or_else, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -268,7 +269,7 @@ def test_unwrap_or_else(monad: Option, fn, expected_result) -> None:
     ],
 )
 def test_zip(monad: Option, other, expected_result) -> None:
-    assert monad.zip(other) == expected_result
+    assert example(monad.zip, other) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -280,4 +281,4 @@ def test_zip(monad: Option, other, expected_result) -> None:
     ],
 )
 def test_unzip(monad: Option, expected_result) -> None:
-    assert monad.unzip() == expected_result
+    assert example(monad.unzip) == expected_result

@@ -258,6 +258,13 @@ Alternatively the map method can be used to return a new type instance with the 
 │       ├── ci_tests.yaml
 │       └── publish.yaml
 ├── dev_tools
+│   ├── create_examples
+│   │   ├── collection
+│   │   │   ├── __init__.py
+│   │   │   ├── example.py
+│   │   │   ├── record.py
+│   │   │   └── recorder.py     # User entrypoint `example` and it's inner class `Example`
+│   │   └── __init__.py
 │   ├── __init__.py
 │   ├── update_cov.py
 │   └── update_readme.py

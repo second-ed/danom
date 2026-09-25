@@ -1,14 +1,24 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Generator
 from multiprocessing.managers import ListProxy
 from pathlib import Path
 from typing import Any, NoReturn, Self, cast
 
+import pytest
+
 from danom import Err, Ok, Result, safe, safe_method
+from dev_tools.create_examples.collection.recorder import _RECORDER
 
 REPO_ROOT = Path(__file__).parents[1]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def collect_examples() -> Generator[Any, None, None]:
+    yield
+    _RECORDER.path = REPO_ROOT / ".papertrail_cache/examples.json"
+    _RECORDER.prepare_files().write_examples()
 
 
 def make_async(fn: Callable[..., Any]) -> Callable[..., Awaitable[Any]]:
