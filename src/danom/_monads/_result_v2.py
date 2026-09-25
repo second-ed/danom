@@ -65,19 +65,13 @@ class Result[T, E](ABC):
     def and_[U, F](self, res: Result[U, F]) -> Result[U, F]:
         """.. code-block:: python
 
-            >>> Ok(inner=2).and_(Err(error="late error", traceback="")) == Err(
-            ...     error="late error", traceback=""
-            ... )
+            >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
-            >>> Err(error="early error", traceback="").and_(Ok(inner="foo")) == Err(
-            ...     error="early error", traceback=""
-            ... )
+            >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
-            >>> Err(error="not a 2", traceback="").and_(Err(error="late error", traceback="")) == Err(
-            ...     error="not a 2", traceback=""
-            ... )
+            >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
 
             >>> Ok(inner=2).and_(Ok(inner="different result type")) == Ok(inner="different result type")
@@ -95,12 +89,10 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
-            >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high", traceback="")
+            >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
 
-            >>> Err(error="not a number", traceback="").and_then(must_be_less_than_10) == Err(
-            ...     error="not a number", traceback=""
-            ... )
+            >>> Err(error="not a number").and_then(must_be_less_than_10) == Err(error="not a number")
             True
         ::
         """
@@ -112,7 +104,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).cloned() == Ok(inner=2)
             True
 
-            >>> Err(error=2, traceback="").cloned() == Err(error=2, traceback="")
+            >>> Err(error=2).cloned() == Err(error=2)
             True
         ::
         """
@@ -125,7 +117,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).err() == Null()
             True
 
-            >>> Err(error="Nothing here", traceback="").err() == Some(inner="Nothing here")
+            >>> Err(error="Nothing here").err() == Some(inner="Nothing here")
             True
         ::
         """
@@ -145,7 +137,7 @@ class Result[T, E](ABC):
     def expect_err(self, msg: str) -> E:
         """.. code-block:: python
 
-            >>> Err(error=2, traceback="").expect_err("must be err") == 2
+            >>> Err(error=2).expect_err("must be err") == 2
             True
         ::
         """
@@ -164,7 +156,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
 
-            >>> Err(error=None, traceback="").flatten() == Err(error=None, traceback="")
+            >>> Err(error=None).flatten() == Err(error=None)
             True
         ::
         """
@@ -177,9 +169,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
 
-            >>> Err(error="un-appendable", traceback="").inspect(append_to_list) == Err(
-            ...     error="un-appendable", traceback=""
-            ... )
+            >>> Err(error="un-appendable").inspect(append_to_list) == Err(error="un-appendable")
             True
         ::
         """
@@ -189,7 +179,7 @@ class Result[T, E](ABC):
     def inspect_err(self, fn: Callable[[E], None]) -> Result[T, E]:
         """.. code-block:: python
 
-            >>> Err(error=[1], traceback="").inspect_err(append_to_list) == Err(error=[1], traceback="")
+            >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
 
             >>> Ok(inner="un-appendable").inspect_err(append_to_list) == Ok(inner="un-appendable")
@@ -205,7 +195,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).is_err() == False
             True
 
-            >>> Err(error=2, traceback="").is_err() == True
+            >>> Err(error=2).is_err() == True
             True
         ::
         """
@@ -215,10 +205,10 @@ class Result[T, E](ABC):
     def is_err_and(self, fn: Callable[[E], bool]) -> bool:
         """.. code-block:: python
 
-            >>> Err(error=1, traceback="").is_err_and(is_even) == False
+            >>> Err(error=1).is_err_and(is_even) == False
             True
 
-            >>> Err(error=2, traceback="").is_err_and(is_even) == True
+            >>> Err(error=2).is_err_and(is_even) == True
             True
 
             >>> Ok(inner=2).is_err_and(is_even) == False
@@ -234,7 +224,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).is_ok() == True
             True
 
-            >>> Err(error=2, traceback="").is_ok() == False
+            >>> Err(error=2).is_ok() == False
             True
         ::
         """
@@ -250,7 +240,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
 
-            >>> Err(error=2, traceback="").is_ok_and(is_even) == False
+            >>> Err(error=2).is_ok_and(is_even) == False
             True
         ::
         """
@@ -265,7 +255,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
 
-            >>> Err(error=1, traceback="").map(add_one) == Err(error=1, traceback="")
+            >>> Err(error=1).map(add_one) == Err(error=1)
             True
         ::
         """
@@ -277,7 +267,7 @@ class Result[T, E](ABC):
     ) -> Result[T, F]:
         """.. code-block:: python
 
-            >>> Err(error=1, traceback="").map_err(add_one) == Err(error=2, traceback="")
+            >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
 
             >>> Ok(inner=1).map_err(add_one) == Ok(inner=1)
@@ -289,7 +279,17 @@ class Result[T, E](ABC):
     @abstractmethod
     def map_or[U, **P](
         self, default: U, fn: Callable[Concatenate[T, P], U], *args: P.args, **kwargs: P.kwargs
-    ) -> U: ...
+    ) -> U:
+        """.. code-block:: python
+
+            >>> Ok(inner="foo").map_or(42, len) == 3
+            True
+
+            >>> Err(error=None).map_or(42, len) == 42
+            True
+        ::
+        """
+        ...
 
     @abstractmethod
     def map_or_else[U, **P](
@@ -298,7 +298,17 @@ class Result[T, E](ABC):
         fn: Callable[Concatenate[T, P], U],
         *args: P.args,
         **kwargs: P.kwargs,
-    ) -> U: ...
+    ) -> U:
+        """.. code-block:: python
+
+            >>> Ok(inner="foo").map_or_else(get_42, len) == 3
+            True
+
+            >>> Err(error=None).map_or_else(get_42, len) == 42
+            True
+        ::
+        """
+        ...
 
     @abstractmethod
     def ok(self) -> Option[T]:
@@ -307,7 +317,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
 
-            >>> Err(error=2, traceback="").ok() == Null()
+            >>> Err(error=2).ok() == Null()
             True
         ::
         """
@@ -317,18 +327,16 @@ class Result[T, E](ABC):
     def or_[F](self, res: Result[T, F]) -> Result[T, F]:
         """.. code-block:: python
 
-            >>> Ok(inner=2).or_(Err(error="foo", traceback="")) == Ok(inner=2)
+            >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
-            >>> Err(error="foo", traceback="").or_(Ok(inner=100)) == Ok(inner=100)
+            >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
 
-            >>> Err(error="foo", traceback="").or_(Err(error="foo", traceback="")) == Err(
-            ...     error="foo", traceback=""
-            ... )
+            >>> Err(error="foo").or_(Err(error="foo")) == Err(error="foo")
             True
         ::
         """
@@ -343,10 +351,10 @@ class Result[T, E](ABC):
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
-            >>> Err(error="foo", traceback="").or_else(get_ok_vikings) == Ok(inner="vikings")
+            >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
 
-            >>> Err(error="foo", traceback="").or_else(Err) == Err(error="foo", traceback="")
+            >>> Err(error="foo").or_else(Err) == Err(error="foo")
             True
         ::
         """
@@ -362,7 +370,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=Null()).transpose() == Null()
             True
 
-            >>> Err(error=None, traceback="").transpose() == Some(inner=Err(error=None, traceback=""))
+            >>> Err(error=None).transpose() == Some(inner=Err(error=None))
             True
         ::
         """
@@ -382,7 +390,7 @@ class Result[T, E](ABC):
     def unwrap_err(self) -> E:
         """.. code-block:: python
 
-            >>> Err(error="failed", traceback="").unwrap_err() == "failed"
+            >>> Err(error="failed").unwrap_err() == "failed"
             True
         ::
         """
@@ -395,7 +403,7 @@ class Result[T, E](ABC):
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
 
-            >>> Err(error=None, traceback="").unwrap_or("bike") == "bike"
+            >>> Err(error=None).unwrap_or("bike") == "bike"
             True
         ::
         """
@@ -408,7 +416,7 @@ class Result[T, E](ABC):
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
 
-            >>> Err(error=None, traceback="").unwrap_or_else(get_42) == 42
+            >>> Err(error=None).unwrap_or_else(get_42) == 42
             True
         ::
         """
@@ -422,19 +430,13 @@ class Ok[T](Result[T, Never]):
     def and_[U, E](self, res: Result[U, E]) -> Result[U, E]:
         """.. code-block:: python
 
-            >>> Ok(inner=2).and_(Err(error="late error", traceback="")) == Err(
-            ...     error="late error", traceback=""
-            ... )
+            >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
-            >>> Err(error="early error", traceback="").and_(Ok(inner="foo")) == Err(
-            ...     error="early error", traceback=""
-            ... )
+            >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
-            >>> Err(error="not a 2", traceback="").and_(Err(error="late error", traceback="")) == Err(
-            ...     error="not a 2", traceback=""
-            ... )
+            >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
 
             >>> Ok(inner=2).and_(Ok(inner="different result type")) == Ok(inner="different result type")
@@ -451,12 +453,10 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
-            >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high", traceback="")
+            >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
 
-            >>> Err(error="not a number", traceback="").and_then(must_be_less_than_10) == Err(
-            ...     error="not a number", traceback=""
-            ... )
+            >>> Err(error="not a number").and_then(must_be_less_than_10) == Err(error="not a number")
             True
         ::
         """
@@ -468,7 +468,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=2).err() == Null()
             True
 
-            >>> Err(error="Nothing here", traceback="").err() == Some(inner="Nothing here")
+            >>> Err(error="Nothing here").err() == Some(inner="Nothing here")
             True
         ::
         """
@@ -488,7 +488,7 @@ class Ok[T](Result[T, Never]):
     def expect_err(self, msg: str) -> Never:
         """.. code-block:: python
 
-            >>> Err(error=2, traceback="").expect_err("must be err") == 2
+            >>> Err(error=2).expect_err("must be err") == 2
             True
         ::
         """
@@ -506,7 +506,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
 
-            >>> Err(error=None, traceback="").flatten() == Err(error=None, traceback="")
+            >>> Err(error=None).flatten() == Err(error=None)
             True
         ::
         """
@@ -520,9 +520,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
 
-            >>> Err(error="un-appendable", traceback="").inspect(append_to_list) == Err(
-            ...     error="un-appendable", traceback=""
-            ... )
+            >>> Err(error="un-appendable").inspect(append_to_list) == Err(error="un-appendable")
             True
         ::
         """
@@ -532,7 +530,7 @@ class Ok[T](Result[T, Never]):
     def inspect_err(self, fn: Callable[[Never], None]) -> Result[T, Never]:  # noqa: ARG002
         """.. code-block:: python
 
-            >>> Err(error=[1], traceback="").inspect_err(append_to_list) == Err(error=[1], traceback="")
+            >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
 
             >>> Ok(inner="un-appendable").inspect_err(append_to_list) == Ok(inner="un-appendable")
@@ -547,7 +545,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=2).is_err() == False
             True
 
-            >>> Err(error=2, traceback="").is_err() == True
+            >>> Err(error=2).is_err() == True
             True
         ::
         """
@@ -556,10 +554,10 @@ class Ok[T](Result[T, Never]):
     def is_err_and(self, fn: Callable[[Never], bool]) -> bool:  # noqa: ARG002
         """.. code-block:: python
 
-            >>> Err(error=1, traceback="").is_err_and(is_even) == False
+            >>> Err(error=1).is_err_and(is_even) == False
             True
 
-            >>> Err(error=2, traceback="").is_err_and(is_even) == True
+            >>> Err(error=2).is_err_and(is_even) == True
             True
 
             >>> Ok(inner=2).is_err_and(is_even) == False
@@ -574,7 +572,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=2).is_ok() == True
             True
 
-            >>> Err(error=2, traceback="").is_ok() == False
+            >>> Err(error=2).is_ok() == False
             True
         ::
         """
@@ -589,7 +587,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
 
-            >>> Err(error=2, traceback="").is_ok_and(is_even) == False
+            >>> Err(error=2).is_ok_and(is_even) == False
             True
         ::
         """
@@ -603,7 +601,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
 
-            >>> Err(error=1, traceback="").map(add_one) == Err(error=1, traceback="")
+            >>> Err(error=1).map(add_one) == Err(error=1)
             True
         ::
         """
@@ -617,7 +615,7 @@ class Ok[T](Result[T, Never]):
     ) -> Result[T, F]:
         """.. code-block:: python
 
-            >>> Err(error=1, traceback="").map_err(add_one) == Err(error=2, traceback="")
+            >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
 
             >>> Ok(inner=1).map_err(add_one) == Ok(inner=1)
@@ -633,6 +631,15 @@ class Ok[T](Result[T, Never]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> U:
+        """.. code-block:: python
+
+            >>> Ok(inner="foo").map_or(42, len) == 3
+            True
+
+            >>> Err(error=None).map_or(42, len) == 42
+            True
+        ::
+        """
         return fn(self.inner, *args, **kwargs)
 
     def map_or_else[U, **P](
@@ -642,6 +649,15 @@ class Ok[T](Result[T, Never]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> U:
+        """.. code-block:: python
+
+            >>> Ok(inner="foo").map_or_else(get_42, len) == 3
+            True
+
+            >>> Err(error=None).map_or_else(get_42, len) == 42
+            True
+        ::
+        """
         return fn(self.inner, *args, **kwargs)
 
     def ok(self) -> Option[T]:
@@ -650,7 +666,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
 
-            >>> Err(error=2, traceback="").ok() == Null()
+            >>> Err(error=2).ok() == Null()
             True
         ::
         """
@@ -661,18 +677,16 @@ class Ok[T](Result[T, Never]):
     def or_[F](self, res: Result[T, F]) -> Result[T, F]:  # noqa: ARG002
         """.. code-block:: python
 
-            >>> Ok(inner=2).or_(Err(error="foo", traceback="")) == Ok(inner=2)
+            >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
-            >>> Err(error="foo", traceback="").or_(Ok(inner=100)) == Ok(inner=100)
+            >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
 
-            >>> Err(error="foo", traceback="").or_(Err(error="foo", traceback="")) == Err(
-            ...     error="foo", traceback=""
-            ... )
+            >>> Err(error="foo").or_(Err(error="foo")) == Err(error="foo")
             True
         ::
         """
@@ -689,10 +703,10 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
-            >>> Err(error="foo", traceback="").or_else(get_ok_vikings) == Ok(inner="vikings")
+            >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
 
-            >>> Err(error="foo", traceback="").or_else(Err) == Err(error="foo", traceback="")
+            >>> Err(error="foo").or_else(Err) == Err(error="foo")
             True
         ::
         """
@@ -707,7 +721,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=Null()).transpose() == Null()
             True
 
-            >>> Err(error=None, traceback="").transpose() == Some(inner=Err(error=None, traceback=""))
+            >>> Err(error=None).transpose() == Some(inner=Err(error=None))
             True
         ::
         """
@@ -731,7 +745,7 @@ class Ok[T](Result[T, Never]):
     def unwrap_err(self) -> Never:
         """.. code-block:: python
 
-            >>> Err(error="failed", traceback="").unwrap_err() == "failed"
+            >>> Err(error="failed").unwrap_err() == "failed"
             True
         ::
         """
@@ -743,7 +757,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
 
-            >>> Err(error=None, traceback="").unwrap_or("bike") == "bike"
+            >>> Err(error=None).unwrap_or("bike") == "bike"
             True
         ::
         """
@@ -755,7 +769,7 @@ class Ok[T](Result[T, Never]):
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
 
-            >>> Err(error=None, traceback="").unwrap_or_else(get_42) == 42
+            >>> Err(error=None).unwrap_or_else(get_42) == 42
             True
         ::
         """
@@ -772,24 +786,18 @@ class Err[E](Result[Never, E]):
     input_args: tuple[()] | SafeArgs | SafeMethodArgs = attrs.field(
         default=(), validator=instance_of(tuple), repr=False
     )
-    traceback: str = attrs.field(default="", validator=instance_of(str))
+    traceback: str = attrs.field(default="", validator=instance_of(str), repr=False)
 
     def and_[U, F](self, res: Result[U, F]) -> Result[U, F]:  # noqa: ARG002
         """.. code-block:: python
 
-            >>> Ok(inner=2).and_(Err(error="late error", traceback="")) == Err(
-            ...     error="late error", traceback=""
-            ... )
+            >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
-            >>> Err(error="early error", traceback="").and_(Ok(inner="foo")) == Err(
-            ...     error="early error", traceback=""
-            ... )
+            >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
-            >>> Err(error="not a 2", traceback="").and_(Err(error="late error", traceback="")) == Err(
-            ...     error="not a 2", traceback=""
-            ... )
+            >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
 
             >>> Ok(inner=2).and_(Ok(inner="different result type")) == Ok(inner="different result type")
@@ -809,12 +817,10 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
-            >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high", traceback="")
+            >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
 
-            >>> Err(error="not a number", traceback="").and_then(must_be_less_than_10) == Err(
-            ...     error="not a number", traceback=""
-            ... )
+            >>> Err(error="not a number").and_then(must_be_less_than_10) == Err(error="not a number")
             True
         ::
         """
@@ -826,7 +832,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=2).err() == Null()
             True
 
-            >>> Err(error="Nothing here", traceback="").err() == Some(inner="Nothing here")
+            >>> Err(error="Nothing here").err() == Some(inner="Nothing here")
             True
         ::
         """
@@ -846,7 +852,7 @@ class Err[E](Result[Never, E]):
     def expect_err(self, msg: str) -> E:  # noqa: ARG002
         """.. code-block:: python
 
-            >>> Err(error=2, traceback="").expect_err("must be err") == 2
+            >>> Err(error=2).expect_err("must be err") == 2
             True
         ::
         """
@@ -864,7 +870,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
 
-            >>> Err(error=None, traceback="").flatten() == Err(error=None, traceback="")
+            >>> Err(error=None).flatten() == Err(error=None)
             True
         ::
         """
@@ -876,9 +882,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
 
-            >>> Err(error="un-appendable", traceback="").inspect(append_to_list) == Err(
-            ...     error="un-appendable", traceback=""
-            ... )
+            >>> Err(error="un-appendable").inspect(append_to_list) == Err(error="un-appendable")
             True
         ::
         """
@@ -887,7 +891,7 @@ class Err[E](Result[Never, E]):
     def inspect_err(self, fn: Callable[[E], None]) -> Result[Never, E]:
         """.. code-block:: python
 
-            >>> Err(error=[1], traceback="").inspect_err(append_to_list) == Err(error=[1], traceback="")
+            >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
 
             >>> Ok(inner="un-appendable").inspect_err(append_to_list) == Ok(inner="un-appendable")
@@ -903,7 +907,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=2).is_err() == False
             True
 
-            >>> Err(error=2, traceback="").is_err() == True
+            >>> Err(error=2).is_err() == True
             True
         ::
         """
@@ -912,10 +916,10 @@ class Err[E](Result[Never, E]):
     def is_err_and(self, fn: Callable[[E], bool]) -> bool:
         """.. code-block:: python
 
-            >>> Err(error=1, traceback="").is_err_and(is_even) == False
+            >>> Err(error=1).is_err_and(is_even) == False
             True
 
-            >>> Err(error=2, traceback="").is_err_and(is_even) == True
+            >>> Err(error=2).is_err_and(is_even) == True
             True
 
             >>> Ok(inner=2).is_err_and(is_even) == False
@@ -930,7 +934,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=2).is_ok() == True
             True
 
-            >>> Err(error=2, traceback="").is_ok() == False
+            >>> Err(error=2).is_ok() == False
             True
         ::
         """
@@ -945,7 +949,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
 
-            >>> Err(error=2, traceback="").is_ok_and(is_even) == False
+            >>> Err(error=2).is_ok_and(is_even) == False
             True
         ::
         """
@@ -962,7 +966,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
 
-            >>> Err(error=1, traceback="").map(add_one) == Err(error=1, traceback="")
+            >>> Err(error=1).map(add_one) == Err(error=1)
             True
         ::
         """
@@ -973,7 +977,7 @@ class Err[E](Result[Never, E]):
     ) -> Result[Never, F]:
         """.. code-block:: python
 
-            >>> Err(error=1, traceback="").map_err(add_one) == Err(error=2, traceback="")
+            >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
 
             >>> Ok(inner=1).map_err(add_one) == Ok(inner=1)
@@ -991,6 +995,15 @@ class Err[E](Result[Never, E]):
         *args: P.args,  # noqa: ARG002
         **kwargs: P.kwargs,  # noqa: ARG002
     ) -> U:
+        """.. code-block:: python
+
+            >>> Ok(inner="foo").map_or(42, len) == 3
+            True
+
+            >>> Err(error=None).map_or(42, len) == 42
+            True
+        ::
+        """
         return default
 
     def map_or_else[U, **P](
@@ -1000,6 +1013,15 @@ class Err[E](Result[Never, E]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> U:
+        """.. code-block:: python
+
+            >>> Ok(inner="foo").map_or_else(get_42, len) == 3
+            True
+
+            >>> Err(error=None).map_or_else(get_42, len) == 42
+            True
+        ::
+        """
         return default(*args, **kwargs)
 
     def ok(self) -> Option[Never]:
@@ -1008,7 +1030,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
 
-            >>> Err(error=2, traceback="").ok() == Null()
+            >>> Err(error=2).ok() == Null()
             True
         ::
         """
@@ -1019,18 +1041,16 @@ class Err[E](Result[Never, E]):
     def or_[F](self, res: Result[Never, F]) -> Result[Never, F]:
         """.. code-block:: python
 
-            >>> Ok(inner=2).or_(Err(error="foo", traceback="")) == Ok(inner=2)
+            >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
-            >>> Err(error="foo", traceback="").or_(Ok(inner=100)) == Ok(inner=100)
+            >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
 
-            >>> Err(error="foo", traceback="").or_(Err(error="foo", traceback="")) == Err(
-            ...     error="foo", traceback=""
-            ... )
+            >>> Err(error="foo").or_(Err(error="foo")) == Err(error="foo")
             True
         ::
         """
@@ -1044,10 +1064,10 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
-            >>> Err(error="foo", traceback="").or_else(get_ok_vikings) == Ok(inner="vikings")
+            >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
 
-            >>> Err(error="foo", traceback="").or_else(Err) == Err(error="foo", traceback="")
+            >>> Err(error="foo").or_else(Err) == Err(error="foo")
             True
         ::
         """
@@ -1062,7 +1082,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=Null()).transpose() == Null()
             True
 
-            >>> Err(error=None, traceback="").transpose() == Some(inner=Err(error=None, traceback=""))
+            >>> Err(error=None).transpose() == Some(inner=Err(error=None))
             True
         ::
         """
@@ -1084,7 +1104,7 @@ class Err[E](Result[Never, E]):
     def unwrap_err(self) -> E:
         """.. code-block:: python
 
-            >>> Err(error="failed", traceback="").unwrap_err() == "failed"
+            >>> Err(error="failed").unwrap_err() == "failed"
             True
         ::
         """
@@ -1096,7 +1116,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
 
-            >>> Err(error=None, traceback="").unwrap_or("bike") == "bike"
+            >>> Err(error=None).unwrap_or("bike") == "bike"
             True
         ::
         """
@@ -1108,7 +1128,7 @@ class Err[E](Result[Never, E]):
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
 
-            >>> Err(error=None, traceback="").unwrap_or_else(get_42) == 42
+            >>> Err(error=None).unwrap_or_else(get_42) == 42
             True
         ::
         """

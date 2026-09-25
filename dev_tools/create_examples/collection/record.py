@@ -56,4 +56,6 @@ def _clean_repr(raw: str) -> str:
         return raw.removeprefix("<function ").split(" at ")[0]
     if raw.startswith("<class "):
         return raw.removeprefix("<class ").strip("'>").split(".")[-1]
+    if raw.startswith("<built-in function "):
+        return raw.removeprefix("<built-in function ").strip(" >")
     return raw

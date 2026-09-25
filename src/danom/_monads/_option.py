@@ -216,10 +216,30 @@ class Option[T](ABC):
         ...
 
     @abstractmethod
-    def map_or[U](self, default: U, fn: Callable[[T], U]) -> U: ...
+    def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:
+        """.. code-block:: python
+
+            >>> Some(inner="foo").map_or(42, len) == 3
+            True
+
+            >>> Null().map_or(42, len) == 42
+            True
+        ::
+        """
+        ...
 
     @abstractmethod
-    def map_or_else[U](self, default: Callable[..., U], fn: Callable[[T], U]) -> U: ...
+    def map_or_else[U](self, default: Callable[..., U], fn: Callable[[T], U]) -> U:
+        """.. code-block:: python
+
+            >>> Some(inner="foo").map_or_else(get_42, len) == 3
+            True
+
+            >>> Null().map_or_else(get_42, len) == 42
+            True
+        ::
+        """
+        ...
 
     @abstractmethod
     def ok_or[E](self, err: E) -> Result[T, E]:
@@ -228,7 +248,7 @@ class Option[T](ABC):
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
 
-            >>> Null().ok_or(0) == Err(error=0, traceback="")
+            >>> Null().ok_or(0) == Err(error=0)
             True
         ::
         """
@@ -241,7 +261,7 @@ class Option[T](ABC):
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
 
-            >>> Null().ok_or_else(get_42) == Err(error=42, traceback="")
+            >>> Null().ok_or_else(get_42) == Err(error=42)
             True
         ::
         """
@@ -302,9 +322,7 @@ class Option[T](ABC):
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
 
-            >>> Some(inner=Err(error=2, traceback="")).transpose() == Err(
-            ...     error=Some(inner=2), traceback=""
-            ... )
+            >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
 
             >>> Null().transpose() == Ok(inner=Null())
@@ -567,9 +585,27 @@ class Some[T](Option):
         return Some(fn(self.inner))
 
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:  # noqa: ARG002
+        """.. code-block:: python
+
+            >>> Some(inner="foo").map_or(42, len) == 3
+            True
+
+            >>> Null().map_or(42, len) == 42
+            True
+        ::
+        """
         return fn(self.inner)
 
     def map_or_else[U](self, default: Callable[[], U], fn: Callable[[T], U]) -> U:  # noqa: ARG002
+        """.. code-block:: python
+
+            >>> Some(inner="foo").map_or_else(get_42, len) == 3
+            True
+
+            >>> Null().map_or_else(get_42, len) == 42
+            True
+        ::
+        """
         return fn(self.inner)
 
     def ok_or[E](self, err: E) -> Result[T, E]:  # noqa: ARG002
@@ -578,7 +614,7 @@ class Some[T](Option):
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
 
-            >>> Null().ok_or(0) == Err(error=0, traceback="")
+            >>> Null().ok_or(0) == Err(error=0)
             True
         ::
         """
@@ -592,7 +628,7 @@ class Some[T](Option):
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
 
-            >>> Null().ok_or_else(get_42) == Err(error=42, traceback="")
+            >>> Null().ok_or_else(get_42) == Err(error=42)
             True
         ::
         """
@@ -651,9 +687,7 @@ class Some[T](Option):
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
 
-            >>> Some(inner=Err(error=2, traceback="")).transpose() == Err(
-            ...     error=Some(inner=2), traceback=""
-            ... )
+            >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
 
             >>> Null().transpose() == Ok(inner=Null())
@@ -916,9 +950,27 @@ class Null[T](Option):
         return self
 
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:  # noqa: ARG002
+        """.. code-block:: python
+
+            >>> Some(inner="foo").map_or(42, len) == 3
+            True
+
+            >>> Null().map_or(42, len) == 42
+            True
+        ::
+        """
         return default
 
     def map_or_else[U](self, default: Callable[..., U], fn: Callable[[T], U]) -> U:  # noqa: ARG002
+        """.. code-block:: python
+
+            >>> Some(inner="foo").map_or_else(get_42, len) == 3
+            True
+
+            >>> Null().map_or_else(get_42, len) == 42
+            True
+        ::
+        """
         return default()
 
     def ok_or[E](self, err: E) -> Result[T, E]:
@@ -927,7 +979,7 @@ class Null[T](Option):
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
 
-            >>> Null().ok_or(0) == Err(error=0, traceback="")
+            >>> Null().ok_or(0) == Err(error=0)
             True
         ::
         """
@@ -941,7 +993,7 @@ class Null[T](Option):
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
 
-            >>> Null().ok_or_else(get_42) == Err(error=42, traceback="")
+            >>> Null().ok_or_else(get_42) == Err(error=42)
             True
         ::
         """
@@ -1000,9 +1052,7 @@ class Null[T](Option):
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
 
-            >>> Some(inner=Err(error=2, traceback="")).transpose() == Err(
-            ...     error=Some(inner=2), traceback=""
-            ... )
+            >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
 
             >>> Null().transpose() == Ok(inner=Null())

@@ -161,7 +161,7 @@ def test_map(monad: Option, fn, expected_result) -> None:
     [pytest.param(Some("foo"), 42, len, 3), pytest.param(Null(), 42, len, 42)],
 )
 def test_map_or(monad: Option, default, fn, expected_result) -> None:
-    assert monad.map_or(default, fn) == expected_result
+    assert example(monad.map_or, default, fn) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -169,7 +169,7 @@ def test_map_or(monad: Option, default, fn, expected_result) -> None:
     [pytest.param(Some("foo"), get_42, len, 3), pytest.param(Null(), get_42, len, 42)],
 )
 def test_map_or_else(monad: Option, default, fn, expected_result) -> None:
-    assert monad.map_or_else(default, fn) == expected_result
+    assert example(monad.map_or_else, default, fn) == expected_result
 
 
 @pytest.mark.parametrize(
