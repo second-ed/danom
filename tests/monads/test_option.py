@@ -4,7 +4,7 @@ import pytest
 
 from danom import Err, Null, Ok, Option, Some
 from dev_tools.create_examples.collection.example import example
-from tests.conftest import add_one, is_even
+from tests.conftest import add_one, get_42, get_some_vikings, is_even
 
 
 @pytest.mark.parametrize(
@@ -166,7 +166,7 @@ def test_map_or(monad: Option, default, fn, expected_result) -> None:
 
 @pytest.mark.parametrize(
     ("monad", "default", "fn", "expected_result"),
-    [pytest.param(Some("foo"), lambda: 42, len, 3), pytest.param(Null(), lambda: 42, len, 42)],
+    [pytest.param(Some("foo"), get_42, len, 3), pytest.param(Null(), get_42, len, 42)],
 )
 def test_map_or_else(monad: Option, default, fn, expected_result) -> None:
     assert monad.map_or_else(default, fn) == expected_result
@@ -182,7 +182,7 @@ def test_ok_or(monad: Option, err, expected_result) -> None:
 
 @pytest.mark.parametrize(
     ("monad", "err", "expected_result"),
-    [pytest.param(Some("foo"), lambda: 0, Ok("foo")), pytest.param(Null(), lambda: 0, Err(0))],
+    [pytest.param(Some("foo"), get_42, Ok("foo")), pytest.param(Null(), get_42, Err(42))],
 )
 def test_ok_or_else(monad: Option, err, expected_result) -> None:
     assert example(monad.ok_or_else, err) == expected_result
@@ -204,8 +204,8 @@ def test_or_(monad: Option, opt_b, expected_result) -> None:
 @pytest.mark.parametrize(
     ("monad", "opt_b", "expected_result"),
     [
-        pytest.param(Some("barbarians"), lambda: Some("vikings"), Some("barbarians")),
-        pytest.param(Null(), lambda: Some("vikings"), Some("vikings")),
+        pytest.param(Some("barbarians"), get_some_vikings, Some("barbarians")),
+        pytest.param(Null(), get_some_vikings, Some("vikings")),
         pytest.param(Null(), Null, Null()),
     ],
 )
@@ -254,7 +254,7 @@ def test_unwrap_or(monad: Option, default, expected_result) -> None:
 
 @pytest.mark.parametrize(
     ("monad", "fn", "expected_result"),
-    [pytest.param(Some(4), lambda: 20, 4), pytest.param(Null(), lambda: 20, 20)],
+    [pytest.param(Some(4), get_42, 4), pytest.param(Null(), get_42, 42)],
 )
 def test_unwrap_or_else(monad: Option, fn, expected_result) -> None:
     assert example(monad.unwrap_or_else, fn) == expected_result

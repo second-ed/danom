@@ -6,7 +6,7 @@ import pytest
 from danom._monads._option import Null, Some
 from danom._monads._result_v2 import Err, Ok, Result
 from dev_tools.create_examples.collection.example import example
-from tests.conftest import add_one, is_even
+from tests.conftest import add_one, get_42, get_ok_vikings, is_even
 
 
 @pytest.mark.parametrize(
@@ -181,7 +181,7 @@ def test_map_or(monad: Result, default, fn, expected_result) -> None:
 
 @pytest.mark.parametrize(
     ("monad", "default", "fn", "expected_result"),
-    [pytest.param(Ok("foo"), lambda: 42, len, 3), pytest.param(Err(), lambda: 42, len, 42)],
+    [pytest.param(Ok("foo"), get_42, len, 3), pytest.param(Err(), get_42, len, 42)],
 )
 def test_map_or_else(monad: Result, default, fn, expected_result) -> None:
     assert monad.map_or_else(default, fn) == expected_result
@@ -210,8 +210,8 @@ def test_or_(monad: Result, res, expected_result) -> None:
 @pytest.mark.parametrize(
     ("monad", "fn", "expected_result"),
     [
-        pytest.param(Ok("barbarians"), lambda _: Ok("vikings"), Ok("barbarians")),
-        pytest.param(Err("foo"), lambda _: Ok("vikings"), Ok("vikings")),
+        pytest.param(Ok("barbarians"), get_ok_vikings, Ok("barbarians")),
+        pytest.param(Err("foo"), get_ok_vikings, Ok("vikings")),
         pytest.param(Err("foo"), Err, Err("foo")),
     ],
 )
@@ -264,7 +264,7 @@ def test_unwrap_or(monad: Result, default, expected_result) -> None:
 
 @pytest.mark.parametrize(
     ("monad", "fn", "expected_result"),
-    [pytest.param(Ok(4), lambda _: 20, 4), pytest.param(Err(), lambda _: 20, 20)],
+    [pytest.param(Ok(4), get_42, 4), pytest.param(Err(), get_42, 42)],
 )
 def test_unwrap_or_else(monad: Result, fn, expected_result) -> None:
     assert example(monad.unwrap_or_else, fn) == expected_result

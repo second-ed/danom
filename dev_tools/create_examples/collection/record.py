@@ -48,9 +48,12 @@ class ExampleRecord:
 
 
 def _get_repr(arg: Any) -> str:  # noqa: ANN401
-    value = repr(arg)
-    return (
-        value.removeprefix("<function ").split(" at ")[0]
-        if value.startswith("<function ")
-        else value
-    )
+    return _clean_repr(repr(arg))
+
+
+def _clean_repr(raw: str) -> str:
+    if raw.startswith("<function "):
+        return raw.removeprefix("<function ").split(" at ")[0]
+    if raw.startswith("<class "):
+        return raw.removeprefix("<class ").strip("'>").split(".")[-1]
+    return raw
