@@ -16,7 +16,7 @@ from dev_tools.create_examples.transformation.transform import update_modified_d
 REPO_ROOT = Path(__file__).parents[1]
 
 
-@pytest.fixture(scope="session", autouse=False)
+@pytest.fixture(scope="session", autouse=True)
 def collect_examples() -> Generator[Any, None, None]:
     yield
     _RECORDER.path = REPO_ROOT / ".papertrail_cache/examples.json"

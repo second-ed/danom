@@ -30,6 +30,7 @@ danom = ["py.typed"]
 dev = [
     "hypothesis>=6.148.2",
     "ipykernel>=7.1.0",
+    "libcst>=1.9.0",
     "papertrail>=0.1.2",
     "pre-commit>=4.5.0",
     "pytest>=9.0.1",
