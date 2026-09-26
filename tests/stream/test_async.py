@@ -3,9 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from danom import AsyncStream
-from danom._either import Right
-from danom._result import Err, Ok
+from danom import AsyncStream, Err, Ok, Right
 from tests.conftest import REPO_ROOT, AsyncValueLogger, add, async_is_file, async_read_text
 from tests.stream._common import async_basic_partition, async_basic_pipeline
 
@@ -27,14 +25,14 @@ async def test_async_stream_pipeline(fn, it, expected_result) -> None:
 @pytest.mark.asyncio
 async def test_async_collect() -> None:
     assert await AsyncStream.from_iterable(
-        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))  # noqa: ASYNC240
     ).filter(async_is_file).map(async_read_text).collect() == ("", "x = 1\n", "y = 2\n", "z = 3\n")
 
 
 @pytest.mark.asyncio
 async def test_async_collect_no_fns() -> None:
     assert await AsyncStream.from_iterable(
-        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))
+        sorted(Path(f"{REPO_ROOT}/tests/mock_data").glob("*"))  # noqa: ASYNC240
     ).collect() == (
         Path(f"{REPO_ROOT}/tests/mock_data/__init__.py"),
         Path(f"{REPO_ROOT}/tests/mock_data/dir_should_skip"),

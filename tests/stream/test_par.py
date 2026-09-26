@@ -5,9 +5,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from danom import ParStream
-from danom._either import Right
-from danom._result import Err, Ok
+from danom import Err, Ok, ParStream, Right
 from danom._stream._sync import _FILTER, _MAP, _TAP
 from tests.conftest import ValueLogger, add, add_one, divisible_by_3
 from tests.stream._common import basic_partition, basic_pipeline

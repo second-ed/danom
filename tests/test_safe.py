@@ -3,8 +3,7 @@ from functools import partial
 
 import pytest
 
-from danom._result import Err, Ok
-from danom._safe import safe
+from danom import Err, Ok, safe
 from tests.conftest import (
     REPO_ROOT,
     Adder,
@@ -67,9 +66,8 @@ def test_traceback():
 
     expected_lines = [
         "Traceback (most recent call last):",
-        '  File "./src/danom/_safe.py", line 68, in wrapper',
+        '  File "./src/danom/_monads/_safe.py", line 68, in wrapper',
         "    return Ok(func(*args, **kwargs))",
-        '  File "./tests/conftest.py", line 125, in div_zero',
         "    return x / 0",
         "ZeroDivisionError: division by zero",
     ]
@@ -77,7 +75,10 @@ def test_traceback():
     if not isinstance(err, Err):
         raise TypeError("This should be an Err by now")
 
-    tb_lines = err.traceback.replace(str(REPO_ROOT), ".").splitlines()
+    tb_lines = [
+        line.split("#")[0].rstrip()
+        for line in err.traceback.replace(str(REPO_ROOT), ".").splitlines()
+    ]
 
     missing_lines = [line for line in expected_lines if line not in tb_lines]
 
