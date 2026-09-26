@@ -45,6 +45,6 @@ def reduce_examples_to_example_str(
     fn_examples: dict[str, dict[str, list[str]]],
 ) -> dict[str, dict[str, str]]:
     return {
-        path: {k: "Papertrail examples:\n\n" + "\n\n".join(v) + "\n::" for k, v in fn.items()}
+        path: {k: "Papertrail examples:\n\n" + "\n".join(v) + "\n::" for k, v in fn.items()}
         for path, fn in fn_examples.items()
     }

@@ -25,19 +25,16 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().and_(Some(inner="foo")) == Null()
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
-
 
 
         .. code-block:: python
@@ -60,12 +57,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
-
 
 
         .. code-block:: python
@@ -88,7 +83,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().as_list() == []
@@ -109,7 +103,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().as_tuple() == ()
@@ -127,7 +120,6 @@ class Option[T](ABC):
 
             >>> Some(inner=2).cloned() == Some(inner=2)
             True
-
 
 
         .. code-block:: python
@@ -164,12 +156,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
-
 
 
         .. code-block:: python
@@ -192,19 +182,16 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
-
 
 
         .. code-block:: python
@@ -227,7 +214,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().inspect(append_to_list) == Null()
@@ -246,7 +232,6 @@ class Option[T](ABC):
 
             >>> Some(inner=2).is_none() == False
             True
-
 
 
         .. code-block:: python
@@ -269,12 +254,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).is_none_or(is_even) == True
             True
-
 
 
         .. code-block:: python
@@ -297,7 +280,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().is_some() == False
@@ -318,12 +300,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).is_some_and(is_even) == True
             True
-
 
 
         .. code-block:: python
@@ -346,7 +326,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().map(add_one) == Null()
@@ -365,7 +344,6 @@ class Option[T](ABC):
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
-
 
 
         .. code-block:: python
@@ -388,7 +366,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().map_or_else(get_42, len) == 42
@@ -407,7 +384,6 @@ class Option[T](ABC):
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
-
 
 
         .. code-block:: python
@@ -430,7 +406,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().ok_or_else(get_42) == Err(error=42)
@@ -451,19 +426,16 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
-
 
 
         .. code-block:: python
@@ -486,12 +458,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
-
 
 
         .. code-block:: python
@@ -514,7 +484,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().replace(3) == Null()
@@ -535,12 +504,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
-
 
 
         .. code-block:: python
@@ -577,7 +544,6 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().unwrap_or("bike") == "bike"
@@ -596,7 +562,6 @@ class Option[T](ABC):
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
-
 
 
         .. code-block:: python
@@ -619,12 +584,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=1).zip(Null()) == Null()
             True
-
 
 
         .. code-block:: python
@@ -647,12 +610,10 @@ class Option[T](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
-
 
 
         .. code-block:: python
@@ -679,19 +640,16 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().and_(Some(inner="foo")) == Null()
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
-
 
 
         .. code-block:: python
@@ -713,12 +671,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
-
 
 
         .. code-block:: python
@@ -740,7 +696,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().as_list() == []
@@ -758,7 +713,6 @@ class Some[T](Option):
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
-
 
 
         .. code-block:: python
@@ -793,12 +747,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
-
 
 
         .. code-block:: python
@@ -820,19 +772,16 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
-
 
 
         .. code-block:: python
@@ -856,7 +805,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().inspect(append_to_list) == Null()
@@ -875,7 +823,6 @@ class Some[T](Option):
 
             >>> Some(inner=2).is_none() == False
             True
-
 
 
         .. code-block:: python
@@ -897,12 +844,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).is_none_or(is_even) == True
             True
-
 
 
         .. code-block:: python
@@ -924,7 +869,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().is_some() == False
@@ -944,12 +888,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).is_some_and(is_even) == True
             True
-
 
 
         .. code-block:: python
@@ -971,7 +913,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().map(add_one) == Null()
@@ -989,7 +930,6 @@ class Some[T](Option):
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
-
 
 
         .. code-block:: python
@@ -1011,7 +951,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().map_or_else(get_42, len) == 42
@@ -1029,7 +968,6 @@ class Some[T](Option):
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
-
 
 
         .. code-block:: python
@@ -1053,7 +991,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().ok_or_else(get_42) == Err(error=42)
@@ -1075,19 +1012,16 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
-
 
 
         .. code-block:: python
@@ -1109,12 +1043,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
-
 
 
         .. code-block:: python
@@ -1136,7 +1068,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().replace(3) == Null()
@@ -1156,12 +1087,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
-
 
 
         .. code-block:: python
@@ -1202,7 +1131,6 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().unwrap_or("bike") == "bike"
@@ -1220,7 +1148,6 @@ class Some[T](Option):
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
-
 
 
         .. code-block:: python
@@ -1242,12 +1169,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=1).zip(Null()) == Null()
             True
-
 
 
         .. code-block:: python
@@ -1271,12 +1196,10 @@ class Some[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
-
 
 
         .. code-block:: python
@@ -1303,19 +1226,16 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().and_(Some(inner="foo")) == Null()
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
-
 
 
         .. code-block:: python
@@ -1337,12 +1257,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
-
 
 
         .. code-block:: python
@@ -1364,7 +1282,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().as_list() == []
@@ -1382,7 +1299,6 @@ class Null[T](Option):
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
-
 
 
         .. code-block:: python
@@ -1417,12 +1333,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
-
 
 
         .. code-block:: python
@@ -1444,19 +1358,16 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
-
 
 
         .. code-block:: python
@@ -1478,7 +1389,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().inspect(append_to_list) == Null()
@@ -1496,7 +1406,6 @@ class Null[T](Option):
 
             >>> Some(inner=2).is_none() == False
             True
-
 
 
         .. code-block:: python
@@ -1518,12 +1427,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).is_none_or(is_even) == True
             True
-
 
 
         .. code-block:: python
@@ -1545,7 +1452,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().is_some() == False
@@ -1565,12 +1471,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).is_some_and(is_even) == True
             True
-
 
 
         .. code-block:: python
@@ -1592,7 +1496,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().map(add_one) == Null()
@@ -1610,7 +1513,6 @@ class Null[T](Option):
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
-
 
 
         .. code-block:: python
@@ -1632,7 +1534,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().map_or_else(get_42, len) == 42
@@ -1650,7 +1551,6 @@ class Null[T](Option):
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
-
 
 
         .. code-block:: python
@@ -1674,7 +1574,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().ok_or_else(get_42) == Err(error=42)
@@ -1696,19 +1595,16 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
-
 
 
         .. code-block:: python
@@ -1730,12 +1626,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
-
 
 
         .. code-block:: python
@@ -1757,7 +1651,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().replace(3) == Null()
@@ -1777,12 +1670,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
-
 
 
         .. code-block:: python
@@ -1819,7 +1710,6 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Null().unwrap_or("bike") == "bike"
@@ -1837,7 +1727,6 @@ class Null[T](Option):
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
-
 
 
         .. code-block:: python
@@ -1859,12 +1748,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=1).zip(Null()) == Null()
             True
-
 
 
         .. code-block:: python
@@ -1886,12 +1773,10 @@ class Null[T](Option):
             True
 
 
-
         .. code-block:: python
 
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
-
 
 
         .. code-block:: python

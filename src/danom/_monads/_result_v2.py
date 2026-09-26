@@ -71,21 +71,18 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
-
         If you call ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
-
         If you call ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
 
         .. code-block:: python
 
             >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
-
         Whereas, calling ``and_`` on an ``Ok`` with another ``Ok`` as the arg then the first ``Ok`` is discarded and the second is returned.
 
         .. code-block:: python
@@ -108,14 +105,12 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
-
         When the function passed to ``and_then`` produces an ``Err``, that ``Err`` becomes the result.
 
         .. code-block:: python
 
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
-
         An existing ``Err`` passes through ``and_then`` unchanged, without calling the function.
 
         .. code-block:: python
@@ -135,7 +130,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).cloned() == Ok(inner=2)
             True
-
         Cloning an ``Err`` creates a separate ``Err`` with the same value.
 
         .. code-block:: python
@@ -156,7 +150,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).err() == Null()
             True
-
         If you call ``err`` on an ``Err`` then ``Some`` with the wrapped error is returned.
 
         .. code-block:: python
@@ -205,21 +198,18 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
-
         This is made obvious calling ``flatten`` on a doubly wrapped value returning just the inner monad.
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
-
         Calling ``flatten`` if the inner is not a monad of the same type is a no-op.
 
         .. code-block:: python
 
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
-
         An ``Err`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
@@ -240,7 +230,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
-
         If you call ``inspect`` on an ``Err`` then the ``Err`` is returned and the function is not called.
 
         .. code-block:: python
@@ -261,7 +250,6 @@ class Result[T, E](ABC):
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
-
         Similarly to calling ``inspect`` on an ``Err``, if you call ``inspect_err`` on an ``Ok`` then the ``Ok`` is returned and the function is not called.
 
         .. code-block:: python
@@ -282,7 +270,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).is_err() == False
             True
-
         For an ``Err``, ``is_err`` reports ``True``.
 
         .. code-block:: python
@@ -303,14 +290,12 @@ class Result[T, E](ABC):
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
-
         Therefore, if you call ``is_err_and`` on an ``Err`` with a function that returns ``True`` then ``True`` is returned.
 
         .. code-block:: python
 
             >>> Err(error=2).is_err_and(is_even) == True
             True
-
         Whereas, if you call ``is_err_and`` on an ``Ok`` with a function then ``False`` is returned and the function is not called.
 
         .. code-block:: python
@@ -331,7 +316,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).is_ok() == True
             True
-
         For an ``Err``, ``is_ok`` reports ``False``.
 
         .. code-block:: python
@@ -352,14 +336,12 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
-
         When the predicate accepts an ``Ok``, ``is_ok_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
-
         An ``Err`` makes ``is_ok_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
@@ -382,7 +364,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
-
         Mapping an ``Err`` leaves it unchanged and skips the function.
 
         .. code-block:: python
@@ -405,7 +386,6 @@ class Result[T, E](ABC):
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
-
         Mapping an ``Ok`` leaves it unchanged and skips the function.
 
         .. code-block:: python
@@ -428,7 +408,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
-
         For an ``Err``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
@@ -455,7 +434,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
-
         An ``Err`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
@@ -476,7 +454,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
-
         An ``Err`` converts to ``Null`` through ``ok``.
 
         .. code-block:: python
@@ -497,21 +474,18 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
-
         An ``Err`` gives way to an ``Ok`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
-
         When both values are ``Ok``, ``or_`` keeps the first one.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
-
         When both values are ``Err``, ``or_`` keeps the first error.
 
         .. code-block:: python
@@ -534,14 +508,12 @@ class Result[T, E](ABC):
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
-
         For an ``Err``, ``or_else`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
-
         If the fallback also produces an ``Err``, ``or_else`` keeps the original error.
 
         .. code-block:: python
@@ -562,14 +534,12 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
-
         Transposing ``Ok(Null())`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=Null()).transpose() == Null()
             True
-
         Transposing an ``Err`` wraps it in ``Some``.
 
         .. code-block:: python
@@ -618,7 +588,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
-
         With an ``Err``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
@@ -639,7 +608,6 @@ class Result[T, E](ABC):
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
-
         An ``Err`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
@@ -664,21 +632,18 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
-
         If you call ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
-
         If you call ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
 
         .. code-block:: python
 
             >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
-
         Whereas, calling ``and_`` on an ``Ok`` with another ``Ok`` as the arg then the first ``Ok`` is discarded and the second is returned.
 
         .. code-block:: python
@@ -700,14 +665,12 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
-
         When the function passed to ``and_then`` produces an ``Err``, that ``Err`` becomes the result.
 
         .. code-block:: python
 
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
-
         An existing ``Err`` passes through ``and_then`` unchanged, without calling the function.
 
         .. code-block:: python
@@ -727,7 +690,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=2).err() == Null()
             True
-
         If you call ``err`` on an ``Err`` then ``Some`` with the wrapped error is returned.
 
         .. code-block:: python
@@ -775,21 +737,18 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
-
         This is made obvious calling ``flatten`` on a doubly wrapped value returning just the inner monad.
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
-
         Calling ``flatten`` if the inner is not a monad of the same type is a no-op.
 
         .. code-block:: python
 
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
-
         An ``Err`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
@@ -811,7 +770,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
-
         If you call ``inspect`` on an ``Err`` then the ``Err`` is returned and the function is not called.
 
         .. code-block:: python
@@ -832,7 +790,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
-
         Similarly to calling ``inspect`` on an ``Err``, if you call ``inspect_err`` on an ``Ok`` then the ``Ok`` is returned and the function is not called.
 
         .. code-block:: python
@@ -852,7 +809,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=2).is_err() == False
             True
-
         For an ``Err``, ``is_err`` reports ``True``.
 
         .. code-block:: python
@@ -872,14 +828,12 @@ class Ok[T](Result[T, Never]):
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
-
         Therefore, if you call ``is_err_and`` on an ``Err`` with a function that returns ``True`` then ``True`` is returned.
 
         .. code-block:: python
 
             >>> Err(error=2).is_err_and(is_even) == True
             True
-
         Whereas, if you call ``is_err_and`` on an ``Ok`` with a function then ``False`` is returned and the function is not called.
 
         .. code-block:: python
@@ -899,7 +853,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=2).is_ok() == True
             True
-
         For an ``Err``, ``is_ok`` reports ``False``.
 
         .. code-block:: python
@@ -919,14 +872,12 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
-
         When the predicate accepts an ``Ok``, ``is_ok_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
-
         An ``Err`` makes ``is_ok_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
@@ -948,7 +899,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
-
         Mapping an ``Err`` leaves it unchanged and skips the function.
 
         .. code-block:: python
@@ -973,7 +923,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
-
         Mapping an ``Ok`` leaves it unchanged and skips the function.
 
         .. code-block:: python
@@ -999,7 +948,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
-
         For an ``Err``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
@@ -1025,7 +973,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
-
         An ``Err`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
@@ -1045,7 +992,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
-
         An ``Err`` converts to ``Null`` through ``ok``.
 
         .. code-block:: python
@@ -1067,21 +1013,18 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
-
         An ``Err`` gives way to an ``Ok`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
-
         When both values are ``Ok``, ``or_`` keeps the first one.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
-
         When both values are ``Err``, ``or_`` keeps the first error.
 
         .. code-block:: python
@@ -1106,14 +1049,12 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
-
         For an ``Err``, ``or_else`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
-
         If the fallback also produces an ``Err``, ``or_else`` keeps the original error.
 
         .. code-block:: python
@@ -1133,14 +1074,12 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
-
         Transposing ``Ok(Null())`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=Null()).transpose() == Null()
             True
-
         Transposing an ``Err`` wraps it in ``Some``.
 
         .. code-block:: python
@@ -1192,7 +1131,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
-
         With an ``Err``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
@@ -1212,7 +1150,6 @@ class Ok[T](Result[T, Never]):
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
-
         An ``Err`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
@@ -1245,21 +1182,18 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
-
         If you call ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
-
         If you call ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
 
         .. code-block:: python
 
             >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
-
         Whereas, calling ``and_`` on an ``Ok`` with another ``Ok`` as the arg then the first ``Ok`` is discarded and the second is returned.
 
         .. code-block:: python
@@ -1284,14 +1218,12 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
-
         When the function passed to ``and_then`` produces an ``Err``, that ``Err`` becomes the result.
 
         .. code-block:: python
 
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
-
         An existing ``Err`` passes through ``and_then`` unchanged, without calling the function.
 
         .. code-block:: python
@@ -1311,7 +1243,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=2).err() == Null()
             True
-
         If you call ``err`` on an ``Err`` then ``Some`` with the wrapped error is returned.
 
         .. code-block:: python
@@ -1359,21 +1290,18 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
-
         This is made obvious calling ``flatten`` on a doubly wrapped value returning just the inner monad.
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
-
         Calling ``flatten`` if the inner is not a monad of the same type is a no-op.
 
         .. code-block:: python
 
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
-
         An ``Err`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
@@ -1393,7 +1321,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
-
         If you call ``inspect`` on an ``Err`` then the ``Err`` is returned and the function is not called.
 
         .. code-block:: python
@@ -1413,7 +1340,6 @@ class Err[E](Result[Never, E]):
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
-
         Similarly to calling ``inspect`` on an ``Err``, if you call ``inspect_err`` on an ``Ok`` then the ``Ok`` is returned and the function is not called.
 
         .. code-block:: python
@@ -1434,7 +1360,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=2).is_err() == False
             True
-
         For an ``Err``, ``is_err`` reports ``True``.
 
         .. code-block:: python
@@ -1454,14 +1379,12 @@ class Err[E](Result[Never, E]):
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
-
         Therefore, if you call ``is_err_and`` on an ``Err`` with a function that returns ``True`` then ``True`` is returned.
 
         .. code-block:: python
 
             >>> Err(error=2).is_err_and(is_even) == True
             True
-
         Whereas, if you call ``is_err_and`` on an ``Ok`` with a function then ``False`` is returned and the function is not called.
 
         .. code-block:: python
@@ -1481,7 +1404,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=2).is_ok() == True
             True
-
         For an ``Err``, ``is_ok`` reports ``False``.
 
         .. code-block:: python
@@ -1501,14 +1423,12 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
-
         When the predicate accepts an ``Ok``, ``is_ok_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
-
         An ``Err`` makes ``is_ok_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
@@ -1533,7 +1453,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
-
         Mapping an ``Err`` leaves it unchanged and skips the function.
 
         .. code-block:: python
@@ -1555,7 +1474,6 @@ class Err[E](Result[Never, E]):
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
-
         Mapping an ``Ok`` leaves it unchanged and skips the function.
 
         .. code-block:: python
@@ -1583,7 +1501,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
-
         For an ``Err``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
@@ -1609,7 +1526,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
-
         An ``Err`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
@@ -1629,7 +1545,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
-
         An ``Err`` converts to ``Null`` through ``ok``.
 
         .. code-block:: python
@@ -1651,21 +1566,18 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
-
         An ``Err`` gives way to an ``Ok`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
-
         When both values are ``Ok``, ``or_`` keeps the first one.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
-
         When both values are ``Err``, ``or_`` keeps the first error.
 
         .. code-block:: python
@@ -1687,14 +1599,12 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
-
         For an ``Err``, ``or_else`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
-
         If the fallback also produces an ``Err``, ``or_else`` keeps the original error.
 
         .. code-block:: python
@@ -1714,14 +1624,12 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
-
         Transposing ``Ok(Null())`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=Null()).transpose() == Null()
             True
-
         Transposing an ``Err`` wraps it in ``Some``.
 
         .. code-block:: python
@@ -1771,7 +1679,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
-
         With an ``Err``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
@@ -1791,7 +1698,6 @@ class Err[E](Result[Never, E]):
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
-
         An ``Err`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python

@@ -50,7 +50,6 @@ class Either[T_co, E_co: object](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Left(inner=None).is_ok() == False
@@ -75,7 +74,6 @@ class Either[T_co, E_co: object](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Left(inner=None).map(add_one) == Left(inner=None)
@@ -98,7 +96,6 @@ class Either[T_co, E_co: object](ABC):
 
             >>> Right(inner=0).map_err(add_one) == Right(inner=0)
             True
-
 
 
         .. code-block:: python
@@ -149,19 +146,16 @@ class Either[T_co, E_co: object](ABC):
             True
 
 
-
         .. code-block:: python
 
             >>> Right(inner=Left(inner=None)).flatten() == Left(inner=None)
             True
 
 
-
         .. code-block:: python
 
             >>> Left(inner=Right(inner=None)).flatten() == Right(inner=None)
             True
-
 
 
         .. code-block:: python
@@ -191,7 +185,6 @@ class Right(Either[T_co, Never]):
             True
 
 
-
         .. code-block:: python
 
             >>> Left(inner=None).is_ok() == False
@@ -211,7 +204,6 @@ class Right(Either[T_co, Never]):
             True
 
 
-
         .. code-block:: python
 
             >>> Left(inner=None).map(add_one) == Left(inner=None)
@@ -229,7 +221,6 @@ class Right(Either[T_co, Never]):
 
             >>> Right(inner=0).map_err(add_one) == Right(inner=0)
             True
-
 
 
         .. code-block:: python
@@ -263,7 +254,6 @@ class Left(Either[Never, E_co]):
             True
 
 
-
         .. code-block:: python
 
             >>> Left(inner=None).is_ok() == False
@@ -283,7 +273,6 @@ class Left(Either[Never, E_co]):
             True
 
 
-
         .. code-block:: python
 
             >>> Left(inner=None).map(add_one) == Left(inner=None)
@@ -301,7 +290,6 @@ class Left(Either[Never, E_co]):
 
             >>> Right(inner=0).map_err(add_one) == Right(inner=0)
             True
-
 
 
         .. code-block:: python
