@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>danom &#8212; danom 2025 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=cb975c41"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">danom 2025 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">danom</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="danom">
+<h1>danom<a class="headerlink" href="#danom" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="danom.html">danom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="danom.html#module-danom">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.AsyncStream"><code class="docutils literal notranslate"><span class="pre">AsyncStream</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.collect"><code class="docutils literal notranslate"><span class="pre">AsyncStream.collect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.filter"><code class="docutils literal notranslate"><span class="pre">AsyncStream.filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.fold"><code class="docutils literal notranslate"><span class="pre">AsyncStream.fold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.from_iterable"><code class="docutils literal notranslate"><span class="pre">AsyncStream.from_iterable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.map"><code class="docutils literal notranslate"><span class="pre">AsyncStream.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.partition"><code class="docutils literal notranslate"><span class="pre">AsyncStream.partition()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.sequence"><code class="docutils literal notranslate"><span class="pre">AsyncStream.sequence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.AsyncStream.tap"><code class="docutils literal notranslate"><span class="pre">AsyncStream.tap()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Either"><code class="docutils literal notranslate"><span class="pre">Either</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.and_then"><code class="docutils literal notranslate"><span class="pre">Either.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.either_is_ok"><code class="docutils literal notranslate"><span class="pre">Either.either_is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.either_unwrap"><code class="docutils literal notranslate"><span class="pre">Either.either_unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.flatten"><code class="docutils literal notranslate"><span class="pre">Either.flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.inner"><code class="docutils literal notranslate"><span class="pre">Either.inner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.is_ok"><code class="docutils literal notranslate"><span class="pre">Either.is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.map"><code class="docutils literal notranslate"><span class="pre">Either.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.map_err"><code class="docutils literal notranslate"><span class="pre">Either.map_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.or_else"><code class="docutils literal notranslate"><span class="pre">Either.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.unit"><code class="docutils literal notranslate"><span class="pre">Either.unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Either.unwrap"><code class="docutils literal notranslate"><span class="pre">Either.unwrap()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Err"><code class="docutils literal notranslate"><span class="pre">Err</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.and_"><code class="docutils literal notranslate"><span class="pre">Err.and_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.and_then"><code class="docutils literal notranslate"><span class="pre">Err.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.err"><code class="docutils literal notranslate"><span class="pre">Err.err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.error"><code class="docutils literal notranslate"><span class="pre">Err.error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.expect"><code class="docutils literal notranslate"><span class="pre">Err.expect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.expect_err"><code class="docutils literal notranslate"><span class="pre">Err.expect_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.flatten"><code class="docutils literal notranslate"><span class="pre">Err.flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.input_args"><code class="docutils literal notranslate"><span class="pre">Err.input_args</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.inspect"><code class="docutils literal notranslate"><span class="pre">Err.inspect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.inspect_err"><code class="docutils literal notranslate"><span class="pre">Err.inspect_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.is_err"><code class="docutils literal notranslate"><span class="pre">Err.is_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.is_err_and"><code class="docutils literal notranslate"><span class="pre">Err.is_err_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.is_ok"><code class="docutils literal notranslate"><span class="pre">Err.is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.is_ok_and"><code class="docutils literal notranslate"><span class="pre">Err.is_ok_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.map"><code class="docutils literal notranslate"><span class="pre">Err.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.map_err"><code class="docutils literal notranslate"><span class="pre">Err.map_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.map_or"><code class="docutils literal notranslate"><span class="pre">Err.map_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.map_or_else"><code class="docutils literal notranslate"><span class="pre">Err.map_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.ok"><code class="docutils literal notranslate"><span class="pre">Err.ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.or_"><code class="docutils literal notranslate"><span class="pre">Err.or_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.or_else"><code class="docutils literal notranslate"><span class="pre">Err.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.traceback"><code class="docutils literal notranslate"><span class="pre">Err.traceback</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.transpose"><code class="docutils literal notranslate"><span class="pre">Err.transpose()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.unwrap"><code class="docutils literal notranslate"><span class="pre">Err.unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.unwrap_err"><code class="docutils literal notranslate"><span class="pre">Err.unwrap_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.unwrap_or"><code class="docutils literal notranslate"><span class="pre">Err.unwrap_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Err.unwrap_or_else"><code class="docutils literal notranslate"><span class="pre">Err.unwrap_or_else()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Left"><code class="docutils literal notranslate"><span class="pre">Left</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Left.and_then"><code class="docutils literal notranslate"><span class="pre">Left.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Left.is_ok"><code class="docutils literal notranslate"><span class="pre">Left.is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Left.map"><code class="docutils literal notranslate"><span class="pre">Left.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Left.map_err"><code class="docutils literal notranslate"><span class="pre">Left.map_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Left.or_else"><code class="docutils literal notranslate"><span class="pre">Left.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Left.unwrap"><code class="docutils literal notranslate"><span class="pre">Left.unwrap()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Null"><code class="docutils literal notranslate"><span class="pre">Null</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.and_"><code class="docutils literal notranslate"><span class="pre">Null.and_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.and_then"><code class="docutils literal notranslate"><span class="pre">Null.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.as_list"><code class="docutils literal notranslate"><span class="pre">Null.as_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.as_tuple"><code class="docutils literal notranslate"><span class="pre">Null.as_tuple()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.expect"><code class="docutils literal notranslate"><span class="pre">Null.expect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.filter_"><code class="docutils literal notranslate"><span class="pre">Null.filter_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.flatten"><code class="docutils literal notranslate"><span class="pre">Null.flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.inspect"><code class="docutils literal notranslate"><span class="pre">Null.inspect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.is_none"><code class="docutils literal notranslate"><span class="pre">Null.is_none()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.is_none_or"><code class="docutils literal notranslate"><span class="pre">Null.is_none_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.is_some"><code class="docutils literal notranslate"><span class="pre">Null.is_some()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.is_some_and"><code class="docutils literal notranslate"><span class="pre">Null.is_some_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.map"><code class="docutils literal notranslate"><span class="pre">Null.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.map_or"><code class="docutils literal notranslate"><span class="pre">Null.map_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.map_or_else"><code class="docutils literal notranslate"><span class="pre">Null.map_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.ok_or"><code class="docutils literal notranslate"><span class="pre">Null.ok_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.ok_or_else"><code class="docutils literal notranslate"><span class="pre">Null.ok_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.or_"><code class="docutils literal notranslate"><span class="pre">Null.or_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.or_else"><code class="docutils literal notranslate"><span class="pre">Null.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.replace"><code class="docutils literal notranslate"><span class="pre">Null.replace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.transpose"><code class="docutils literal notranslate"><span class="pre">Null.transpose()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.unwrap"><code class="docutils literal notranslate"><span class="pre">Null.unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.unwrap_or"><code class="docutils literal notranslate"><span class="pre">Null.unwrap_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.unwrap_or_else"><code class="docutils literal notranslate"><span class="pre">Null.unwrap_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.unzip"><code class="docutils literal notranslate"><span class="pre">Null.unzip()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Null.zip"><code class="docutils literal notranslate"><span class="pre">Null.zip()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Ok"><code class="docutils literal notranslate"><span class="pre">Ok</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.and_"><code class="docutils literal notranslate"><span class="pre">Ok.and_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.and_then"><code class="docutils literal notranslate"><span class="pre">Ok.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.err"><code class="docutils literal notranslate"><span class="pre">Ok.err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.expect"><code class="docutils literal notranslate"><span class="pre">Ok.expect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.expect_err"><code class="docutils literal notranslate"><span class="pre">Ok.expect_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.flatten"><code class="docutils literal notranslate"><span class="pre">Ok.flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.inner"><code class="docutils literal notranslate"><span class="pre">Ok.inner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.inspect"><code class="docutils literal notranslate"><span class="pre">Ok.inspect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.inspect_err"><code class="docutils literal notranslate"><span class="pre">Ok.inspect_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.is_err"><code class="docutils literal notranslate"><span class="pre">Ok.is_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.is_err_and"><code class="docutils literal notranslate"><span class="pre">Ok.is_err_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.is_ok"><code class="docutils literal notranslate"><span class="pre">Ok.is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.is_ok_and"><code class="docutils literal notranslate"><span class="pre">Ok.is_ok_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.map"><code class="docutils literal notranslate"><span class="pre">Ok.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.map_err"><code class="docutils literal notranslate"><span class="pre">Ok.map_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.map_or"><code class="docutils literal notranslate"><span class="pre">Ok.map_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.map_or_else"><code class="docutils literal notranslate"><span class="pre">Ok.map_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.ok"><code class="docutils literal notranslate"><span class="pre">Ok.ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.or_"><code class="docutils literal notranslate"><span class="pre">Ok.or_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.or_else"><code class="docutils literal notranslate"><span class="pre">Ok.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.transpose"><code class="docutils literal notranslate"><span class="pre">Ok.transpose()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.unwrap"><code class="docutils literal notranslate"><span class="pre">Ok.unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.unwrap_err"><code class="docutils literal notranslate"><span class="pre">Ok.unwrap_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.unwrap_or"><code class="docutils literal notranslate"><span class="pre">Ok.unwrap_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Ok.unwrap_or_else"><code class="docutils literal notranslate"><span class="pre">Ok.unwrap_or_else()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Option"><code class="docutils literal notranslate"><span class="pre">Option</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.and_"><code class="docutils literal notranslate"><span class="pre">Option.and_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.and_then"><code class="docutils literal notranslate"><span class="pre">Option.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.as_list"><code class="docutils literal notranslate"><span class="pre">Option.as_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.as_tuple"><code class="docutils literal notranslate"><span class="pre">Option.as_tuple()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.cloned"><code class="docutils literal notranslate"><span class="pre">Option.cloned()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.expect"><code class="docutils literal notranslate"><span class="pre">Option.expect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.filter_"><code class="docutils literal notranslate"><span class="pre">Option.filter_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.flatten"><code class="docutils literal notranslate"><span class="pre">Option.flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.inspect"><code class="docutils literal notranslate"><span class="pre">Option.inspect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.is_none"><code class="docutils literal notranslate"><span class="pre">Option.is_none()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.is_none_or"><code class="docutils literal notranslate"><span class="pre">Option.is_none_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.is_some"><code class="docutils literal notranslate"><span class="pre">Option.is_some()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.is_some_and"><code class="docutils literal notranslate"><span class="pre">Option.is_some_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.map"><code class="docutils literal notranslate"><span class="pre">Option.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.map_or"><code class="docutils literal notranslate"><span class="pre">Option.map_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.map_or_else"><code class="docutils literal notranslate"><span class="pre">Option.map_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.ok_or"><code class="docutils literal notranslate"><span class="pre">Option.ok_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.ok_or_else"><code class="docutils literal notranslate"><span class="pre">Option.ok_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.or_"><code class="docutils literal notranslate"><span class="pre">Option.or_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.or_else"><code class="docutils literal notranslate"><span class="pre">Option.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.replace"><code class="docutils literal notranslate"><span class="pre">Option.replace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.transpose"><code class="docutils literal notranslate"><span class="pre">Option.transpose()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.unwrap"><code class="docutils literal notranslate"><span class="pre">Option.unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.unwrap_or"><code class="docutils literal notranslate"><span class="pre">Option.unwrap_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.unwrap_or_else"><code class="docutils literal notranslate"><span class="pre">Option.unwrap_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.unzip"><code class="docutils literal notranslate"><span class="pre">Option.unzip()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Option.zip"><code class="docutils literal notranslate"><span class="pre">Option.zip()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.ParStream"><code class="docutils literal notranslate"><span class="pre">ParStream</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.ParStream.collect"><code class="docutils literal notranslate"><span class="pre">ParStream.collect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.ParStream.to_par"><code class="docutils literal notranslate"><span class="pre">ParStream.to_par()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.ParStream.to_stream"><code class="docutils literal notranslate"><span class="pre">ParStream.to_stream()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Result"><code class="docutils literal notranslate"><span class="pre">Result</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.and_"><code class="docutils literal notranslate"><span class="pre">Result.and_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.and_then"><code class="docutils literal notranslate"><span class="pre">Result.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.cloned"><code class="docutils literal notranslate"><span class="pre">Result.cloned()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.err"><code class="docutils literal notranslate"><span class="pre">Result.err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.expect"><code class="docutils literal notranslate"><span class="pre">Result.expect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.expect_err"><code class="docutils literal notranslate"><span class="pre">Result.expect_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.flatten"><code class="docutils literal notranslate"><span class="pre">Result.flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.inspect"><code class="docutils literal notranslate"><span class="pre">Result.inspect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.inspect_err"><code class="docutils literal notranslate"><span class="pre">Result.inspect_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.is_err"><code class="docutils literal notranslate"><span class="pre">Result.is_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.is_err_and"><code class="docutils literal notranslate"><span class="pre">Result.is_err_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.is_ok"><code class="docutils literal notranslate"><span class="pre">Result.is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.is_ok_and"><code class="docutils literal notranslate"><span class="pre">Result.is_ok_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.map"><code class="docutils literal notranslate"><span class="pre">Result.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.map_err"><code class="docutils literal notranslate"><span class="pre">Result.map_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.map_or"><code class="docutils literal notranslate"><span class="pre">Result.map_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.map_or_else"><code class="docutils literal notranslate"><span class="pre">Result.map_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.ok"><code class="docutils literal notranslate"><span class="pre">Result.ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.or_"><code class="docutils literal notranslate"><span class="pre">Result.or_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.or_else"><code class="docutils literal notranslate"><span class="pre">Result.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.result_is_ok"><code class="docutils literal notranslate"><span class="pre">Result.result_is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.result_unwrap"><code class="docutils literal notranslate"><span class="pre">Result.result_unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.transpose"><code class="docutils literal notranslate"><span class="pre">Result.transpose()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.unit"><code class="docutils literal notranslate"><span class="pre">Result.unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.unwrap"><code class="docutils literal notranslate"><span class="pre">Result.unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.unwrap_err"><code class="docutils literal notranslate"><span class="pre">Result.unwrap_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.unwrap_or"><code class="docutils literal notranslate"><span class="pre">Result.unwrap_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Result.unwrap_or_else"><code class="docutils literal notranslate"><span class="pre">Result.unwrap_or_else()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Right"><code class="docutils literal notranslate"><span class="pre">Right</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Right.and_then"><code class="docutils literal notranslate"><span class="pre">Right.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Right.is_ok"><code class="docutils literal notranslate"><span class="pre">Right.is_ok()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Right.map"><code class="docutils literal notranslate"><span class="pre">Right.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Right.map_err"><code class="docutils literal notranslate"><span class="pre">Right.map_err()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Right.or_else"><code class="docutils literal notranslate"><span class="pre">Right.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Right.unwrap"><code class="docutils literal notranslate"><span class="pre">Right.unwrap()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Some"><code class="docutils literal notranslate"><span class="pre">Some</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.and_"><code class="docutils literal notranslate"><span class="pre">Some.and_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.and_then"><code class="docutils literal notranslate"><span class="pre">Some.and_then()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.as_list"><code class="docutils literal notranslate"><span class="pre">Some.as_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.as_tuple"><code class="docutils literal notranslate"><span class="pre">Some.as_tuple()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.expect"><code class="docutils literal notranslate"><span class="pre">Some.expect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.filter_"><code class="docutils literal notranslate"><span class="pre">Some.filter_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.flatten"><code class="docutils literal notranslate"><span class="pre">Some.flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.inner"><code class="docutils literal notranslate"><span class="pre">Some.inner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.inspect"><code class="docutils literal notranslate"><span class="pre">Some.inspect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.is_none"><code class="docutils literal notranslate"><span class="pre">Some.is_none()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.is_none_or"><code class="docutils literal notranslate"><span class="pre">Some.is_none_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.is_some"><code class="docutils literal notranslate"><span class="pre">Some.is_some()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.is_some_and"><code class="docutils literal notranslate"><span class="pre">Some.is_some_and()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.map"><code class="docutils literal notranslate"><span class="pre">Some.map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.map_or"><code class="docutils literal notranslate"><span class="pre">Some.map_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.map_or_else"><code class="docutils literal notranslate"><span class="pre">Some.map_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.ok_or"><code class="docutils literal notranslate"><span class="pre">Some.ok_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.ok_or_else"><code class="docutils literal notranslate"><span class="pre">Some.ok_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.or_"><code class="docutils literal notranslate"><span class="pre">Some.or_()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.or_else"><code class="docutils literal notranslate"><span class="pre">Some.or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.replace"><code class="docutils literal notranslate"><span class="pre">Some.replace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.transpose"><code class="docutils literal notranslate"><span class="pre">Some.transpose()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.unwrap"><code class="docutils literal notranslate"><span class="pre">Some.unwrap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.unwrap_or"><code class="docutils literal notranslate"><span class="pre">Some.unwrap_or()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.unwrap_or_else"><code class="docutils literal notranslate"><span class="pre">Some.unwrap_or_else()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.unzip"><code class="docutils literal notranslate"><span class="pre">Some.unzip()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Some.zip"><code class="docutils literal notranslate"><span class="pre">Some.zip()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.Stream"><code class="docutils literal notranslate"><span class="pre">Stream</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Stream.collect"><code class="docutils literal notranslate"><span class="pre">Stream.collect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Stream.to_par"><code class="docutils literal notranslate"><span class="pre">Stream.to_par()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="danom.html#danom.Stream.to_stream"><code class="docutils literal notranslate"><span class="pre">Stream.to_stream()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.all_of"><code class="docutils literal notranslate"><span class="pre">all_of()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.any_of"><code class="docutils literal notranslate"><span class="pre">any_of()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.compose"><code class="docutils literal notranslate"><span class="pre">compose()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.identity"><code class="docutils literal notranslate"><span class="pre">identity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.invert"><code class="docutils literal notranslate"><span class="pre">invert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.new_type"><code class="docutils literal notranslate"><span class="pre">new_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.none_of"><code class="docutils literal notranslate"><span class="pre">none_of()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.safe"><code class="docutils literal notranslate"><span class="pre">safe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="danom.html#danom.safe_method"><code class="docutils literal notranslate"><span class="pre">safe_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/modules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">danom 2025 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">danom</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Ed Cuss.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>
