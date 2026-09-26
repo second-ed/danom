@@ -13,6 +13,13 @@ if TYPE_CHECKING:
 
 @attrs.define(frozen=True)
 class Option[T](ABC):
+    """A monad to represent optional values.
+
+    Version changes
+    ----------
+    ``0.17.0``: Added ``Option``, ``Some``, ``Null``
+    """
+
     @abstractmethod
     def and_(self, opt_b: Option[T]) -> Option[T]:
         """Papertrail examples:

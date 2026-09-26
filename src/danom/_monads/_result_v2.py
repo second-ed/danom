@@ -14,6 +14,13 @@ if TYPE_CHECKING:
 
 @attrs.define(frozen=True)
 class Result[T, E](ABC):
+    """A monad to represent failable values.
+
+    Version changes
+    ----------
+    ``0.17.0``: Updated ``Result``, ``Ok``, ``Err``. Added majority of methods that are used in the ``Result`` enum in Rust. There is a breaking change with how ``flatten`` works.
+    """
+
     @classmethod
     def unit(cls, inner: T) -> Result[T, E]:
         """Unit method. Given an item of type ``T`` return ``Ok(T)``
