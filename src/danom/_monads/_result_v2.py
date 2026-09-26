@@ -65,21 +65,21 @@ class Result[T, E](ABC):
     def and_[U, F](self, res: Result[U, F]) -> Result[U, F]:
         """Papertrail examples:
 
-        Calling ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
+        If you call ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
-        Calling ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
+        If you call ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
-        Calling ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
+        If you call ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
 
         .. code-block:: python
 
@@ -102,21 +102,21 @@ class Result[T, E](ABC):
     ) -> Result[U, F]:
         """Papertrail examples:
 
-        monad0-must_be_less_than_10-expected_result0
+        An ``Ok`` passed to ``and_then`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
-        monad1-must_be_less_than_10-expected_result1
+        When the function passed to ``and_then`` produces an ``Err``, that ``Err`` becomes the result.
 
         .. code-block:: python
 
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
 
-        monad2-must_be_less_than_10-expected_result2
+        An existing ``Err`` passes through ``and_then`` unchanged, without calling the function.
 
         .. code-block:: python
 
@@ -129,14 +129,14 @@ class Result[T, E](ABC):
     def cloned(self) -> Result[T, E]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        Cloning an ``Ok`` creates a separate ``Ok`` with the same value.
 
         .. code-block:: python
 
             >>> Ok(inner=2).cloned() == Ok(inner=2)
             True
 
-        monad1-expected_result1
+        Cloning an ``Err`` creates a separate ``Err`` with the same value.
 
         .. code-block:: python
 
@@ -150,14 +150,14 @@ class Result[T, E](ABC):
     def err(self) -> Option[E]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        An ``Ok`` has no error, so ``err`` returns ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).err() == Null()
             True
 
-        monad1-expected_result1
+        If you call ``err`` on an ``Err`` then ``Some`` with the wrapped error is returned.
 
         .. code-block:: python
 
@@ -171,7 +171,7 @@ class Result[T, E](ABC):
     def expect(self, msg: str) -> T:
         """Papertrail examples:
 
-        monad0-must be positive-2-expected_context0
+        ``expect`` extracts the value from an ``Ok``.
 
         .. code-block:: python
 
@@ -185,7 +185,7 @@ class Result[T, E](ABC):
     def expect_err(self, msg: str) -> E:
         """Papertrail examples:
 
-        monad0-must be err-2-expected_context0
+        ``expect_err`` extracts the error from an ``Err``.
 
         .. code-block:: python
 
@@ -199,28 +199,28 @@ class Result[T, E](ABC):
     def flatten(self) -> Result[T, E]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        If you call ``flatten`` on three nested ``Ok`` values then two nested ``Ok`` values are returned. Only the outer monad is removed
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
 
-        monad1-expected_result1
+        This is made obvious calling ``flatten`` on a doubly wrapped value returning just the inner monad.
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
 
-        monad2-expected_result2
+        Calling ``flatten`` if the inner is not a monad of the same type is a no-op.
 
         .. code-block:: python
 
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
 
-        monad3-expected_result3
+        An ``Err`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
 
@@ -234,14 +234,14 @@ class Result[T, E](ABC):
     def inspect(self, fn: Callable[[T], None]) -> Result[T, E]:
         """Papertrail examples:
 
-        monad0-append_to_list-expected_result0
+        If you call ``inspect`` on an ``Ok`` then the original ``Ok`` is returned after the function is called, this is used for logging or side outputs that shouldn't disrupt the existing flow.
 
         .. code-block:: python
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
 
-        monad1-append_to_list-expected_result1
+        If you call ``inspect`` on an ``Err`` then the ``Err`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -255,14 +255,14 @@ class Result[T, E](ABC):
     def inspect_err(self, fn: Callable[[E], None]) -> Result[T, E]:
         """Papertrail examples:
 
-        monad0-append_to_list-expected_result0
+        If you call ``inspect_err`` on an ``Err`` then the original ``Err`` is returned after the function is called, it's essentially the inverse of ``inspect``.
 
         .. code-block:: python
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
 
-        monad1-append_to_list-expected_result1
+        Similarly to calling ``inspect`` on an ``Err``, if you call ``inspect_err`` on an ``Ok`` then the ``Ok`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -276,14 +276,14 @@ class Result[T, E](ABC):
     def is_err(self) -> bool:
         """Papertrail examples:
 
-        monad0-False
+        ``is_err`` reports ``False`` for an ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_err() == False
             True
 
-        monad1-True
+        For an ``Err``, ``is_err`` reports ``True``.
 
         .. code-block:: python
 
@@ -297,21 +297,21 @@ class Result[T, E](ABC):
     def is_err_and(self, fn: Callable[[E], bool]) -> bool:
         """Papertrail examples:
 
-        monad0-is_even-False
+        ``is_err_and`` requires both the monad to be an ``Err`` and the returned value of the passed in callable to be ``True``, for example, if you called ``is_err_and`` with a function that checks for evenness on an ``Err(1)`` then the result is ``False``.
 
         .. code-block:: python
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
 
-        monad1-is_even-True
+        Therefore, if you call ``is_err_and`` on an ``Err`` with a function that returns ``True`` then ``True`` is returned.
 
         .. code-block:: python
 
             >>> Err(error=2).is_err_and(is_even) == True
             True
 
-        monad2-is_even-False
+        Whereas, if you call ``is_err_and`` on an ``Ok`` with a function then ``False`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -325,14 +325,14 @@ class Result[T, E](ABC):
     def is_ok(self) -> bool:
         """Papertrail examples:
 
-        monad0-True
+        ``is_ok`` reports ``True`` for an ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok() == True
             True
 
-        monad1-False
+        For an ``Err``, ``is_ok`` reports ``False``.
 
         .. code-block:: python
 
@@ -346,21 +346,21 @@ class Result[T, E](ABC):
     def is_ok_and(self, fn: Callable[[T], bool]) -> bool:
         """Papertrail examples:
 
-        monad0-is_even-False
+        When the predicate rejects an ``Ok``, ``is_ok_and`` reports ``False``.
 
         .. code-block:: python
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
 
-        monad1-is_even-True
+        When the predicate accepts an ``Ok``, ``is_ok_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
 
-        monad2-is_even-False
+        An ``Err`` makes ``is_ok_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
 
@@ -376,14 +376,14 @@ class Result[T, E](ABC):
     ) -> Result[U, E]:
         """Papertrail examples:
 
-        monad0-add_one-expected_result0
+        Mapping an ``Ok`` applies the function and wraps its result in a new ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
 
-        monad1-add_one-expected_result1
+        Mapping an ``Err`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -399,14 +399,14 @@ class Result[T, E](ABC):
     ) -> Result[T, F]:
         """Papertrail examples:
 
-        monad0-add_one-expected_result0
+        Mapping an ``Err`` applies the function and wraps its result in a new ``Err``.
 
         .. code-block:: python
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
 
-        monad1-add_one-expected_result1
+        Mapping an ``Ok`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -422,14 +422,14 @@ class Result[T, E](ABC):
     ) -> U:
         """Papertrail examples:
 
-        monad0-42-len-3
+        For an ``Ok``, ``map_or`` uses the function result instead of the default.
 
         .. code-block:: python
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
 
-        monad1-42-len-42
+        For an ``Err``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
 
@@ -449,14 +449,14 @@ class Result[T, E](ABC):
     ) -> U:
         """Papertrail examples:
 
-        monad0-get_42-len-3
+        An ``Ok`` makes ``map_or_else`` use the mapping function.
 
         .. code-block:: python
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
 
-        monad1-get_42-len-42
+        An ``Err`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
 
@@ -470,14 +470,14 @@ class Result[T, E](ABC):
     def ok(self) -> Option[T]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        An ``Ok`` converts to ``Some`` through ``ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
 
-        monad1-expected_result1
+        An ``Err`` converts to ``Null`` through ``ok``.
 
         .. code-block:: python
 
@@ -491,28 +491,28 @@ class Result[T, E](ABC):
     def or_[F](self, res: Result[T, F]) -> Result[T, F]:
         """Papertrail examples:
 
-        monad0-res0-expected_result0
+        An ``Ok`` keeps its value when ``or_`` receives an ``Err``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
-        monad1-res1-expected_result1
+        An ``Err`` gives way to an ``Ok`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
-        monad2-res2-expected_result2
+        When both values are ``Ok``, ``or_`` keeps the first one.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
 
-        monad3-res3-expected_result3
+        When both values are ``Err``, ``or_`` keeps the first error.
 
         .. code-block:: python
 
@@ -528,21 +528,21 @@ class Result[T, E](ABC):
     ) -> Result[T, F]:
         """Papertrail examples:
 
-        monad0-get_ok_vikings-expected_result0
+        An ``Ok`` passes through ``or_else`` without calling the function.
 
         .. code-block:: python
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
-        monad1-get_ok_vikings-expected_result1
+        For an ``Err``, ``or_else`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
 
-        monad2-Err-expected_result2
+        If the fallback also produces an ``Err``, ``or_else`` keeps the original error.
 
         .. code-block:: python
 
@@ -556,21 +556,21 @@ class Result[T, E](ABC):
     def transpose(self) -> Option[Result[T, E]]:
         """Papertrail examples:
 
-        monad0-expected_result0-expected_context0
+        Transposing ``Ok(Some(value))`` produces ``Some(Ok(value))``.
 
         .. code-block:: python
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
 
-        monad1-expected_result1-expected_context1
+        Transposing ``Ok(Null())`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=Null()).transpose() == Null()
             True
 
-        monad2-expected_result2-expected_context2
+        Transposing an ``Err`` wraps it in ``Some``.
 
         .. code-block:: python
 
@@ -584,7 +584,7 @@ class Result[T, E](ABC):
     def unwrap(self) -> T:
         """Papertrail examples:
 
-        monad0-2-expected_context0
+        ``unwrap`` extracts the value from an ``Ok``.
 
         .. code-block:: python
 
@@ -598,7 +598,7 @@ class Result[T, E](ABC):
     def unwrap_err(self) -> E:
         """Papertrail examples:
 
-        monad0-failed-expected_context0
+        ``unwrap_err`` extracts the error from an ``Err``.
 
         .. code-block:: python
 
@@ -612,14 +612,14 @@ class Result[T, E](ABC):
     def unwrap_or(self, default: T) -> T:
         """Papertrail examples:
 
-        monad0-bike-car
+        With an ``Ok``, ``unwrap_or`` returns the value and ignores the default.
 
         .. code-block:: python
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
 
-        monad1-bike-bike
+        With an ``Err``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
 
@@ -633,14 +633,14 @@ class Result[T, E](ABC):
     def unwrap_or_else(self, fn: Callable[[E], T]) -> T:
         """Papertrail examples:
 
-        monad0-get_42-4
+        An ``Ok`` makes ``unwrap_or_else`` return its value without calling the function.
 
         .. code-block:: python
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
 
-        monad1-get_42-42
+        An ``Err`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
 
@@ -658,21 +658,21 @@ class Ok[T](Result[T, Never]):
     def and_[U, E](self, res: Result[U, E]) -> Result[U, E]:
         """Papertrail examples:
 
-        Calling ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
+        If you call ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
-        Calling ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
+        If you call ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
-        Calling ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
+        If you call ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
 
         .. code-block:: python
 
@@ -694,21 +694,21 @@ class Ok[T](Result[T, Never]):
     ) -> Result[U, E]:
         """Papertrail examples:
 
-        monad0-must_be_less_than_10-expected_result0
+        An ``Ok`` passed to ``and_then`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
-        monad1-must_be_less_than_10-expected_result1
+        When the function passed to ``and_then`` produces an ``Err``, that ``Err`` becomes the result.
 
         .. code-block:: python
 
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
 
-        monad2-must_be_less_than_10-expected_result2
+        An existing ``Err`` passes through ``and_then`` unchanged, without calling the function.
 
         .. code-block:: python
 
@@ -721,14 +721,14 @@ class Ok[T](Result[T, Never]):
     def err[E](self) -> Option[E]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        An ``Ok`` has no error, so ``err`` returns ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).err() == Null()
             True
 
-        monad1-expected_result1
+        If you call ``err`` on an ``Err`` then ``Some`` with the wrapped error is returned.
 
         .. code-block:: python
 
@@ -743,7 +743,7 @@ class Ok[T](Result[T, Never]):
     def expect(self, msg: str) -> T:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-must be positive-2-expected_context0
+        ``expect`` extracts the value from an ``Ok``.
 
         .. code-block:: python
 
@@ -756,7 +756,7 @@ class Ok[T](Result[T, Never]):
     def expect_err(self, msg: str) -> Never:
         """Papertrail examples:
 
-        monad0-must be err-2-expected_context0
+        ``expect_err`` extracts the error from an ``Err``.
 
         .. code-block:: python
 
@@ -769,28 +769,28 @@ class Ok[T](Result[T, Never]):
     def flatten(self) -> Result[T, Never]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        If you call ``flatten`` on three nested ``Ok`` values then two nested ``Ok`` values are returned. Only the outer monad is removed
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
 
-        monad1-expected_result1
+        This is made obvious calling ``flatten`` on a doubly wrapped value returning just the inner monad.
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
 
-        monad2-expected_result2
+        Calling ``flatten`` if the inner is not a monad of the same type is a no-op.
 
         .. code-block:: python
 
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
 
-        monad3-expected_result3
+        An ``Err`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
 
@@ -805,14 +805,14 @@ class Ok[T](Result[T, Never]):
     def inspect(self, fn: Callable[[T], None]) -> Result[T, Never]:
         """Papertrail examples:
 
-        monad0-append_to_list-expected_result0
+        If you call ``inspect`` on an ``Ok`` then the original ``Ok`` is returned after the function is called, this is used for logging or side outputs that shouldn't disrupt the existing flow.
 
         .. code-block:: python
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
 
-        monad1-append_to_list-expected_result1
+        If you call ``inspect`` on an ``Err`` then the ``Err`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -826,14 +826,14 @@ class Ok[T](Result[T, Never]):
     def inspect_err(self, fn: Callable[[Never], None]) -> Result[T, Never]:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-append_to_list-expected_result0
+        If you call ``inspect_err`` on an ``Err`` then the original ``Err`` is returned after the function is called, it's essentially the inverse of ``inspect``.
 
         .. code-block:: python
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
 
-        monad1-append_to_list-expected_result1
+        Similarly to calling ``inspect`` on an ``Err``, if you call ``inspect_err`` on an ``Ok`` then the ``Ok`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -846,14 +846,14 @@ class Ok[T](Result[T, Never]):
     def is_err(self) -> bool:
         """Papertrail examples:
 
-        monad0-False
+        ``is_err`` reports ``False`` for an ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_err() == False
             True
 
-        monad1-True
+        For an ``Err``, ``is_err`` reports ``True``.
 
         .. code-block:: python
 
@@ -866,21 +866,21 @@ class Ok[T](Result[T, Never]):
     def is_err_and(self, fn: Callable[[Never], bool]) -> bool:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-is_even-False
+        ``is_err_and`` requires both the monad to be an ``Err`` and the returned value of the passed in callable to be ``True``, for example, if you called ``is_err_and`` with a function that checks for evenness on an ``Err(1)`` then the result is ``False``.
 
         .. code-block:: python
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
 
-        monad1-is_even-True
+        Therefore, if you call ``is_err_and`` on an ``Err`` with a function that returns ``True`` then ``True`` is returned.
 
         .. code-block:: python
 
             >>> Err(error=2).is_err_and(is_even) == True
             True
 
-        monad2-is_even-False
+        Whereas, if you call ``is_err_and`` on an ``Ok`` with a function then ``False`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -893,14 +893,14 @@ class Ok[T](Result[T, Never]):
     def is_ok(self) -> bool:
         """Papertrail examples:
 
-        monad0-True
+        ``is_ok`` reports ``True`` for an ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok() == True
             True
 
-        monad1-False
+        For an ``Err``, ``is_ok`` reports ``False``.
 
         .. code-block:: python
 
@@ -913,21 +913,21 @@ class Ok[T](Result[T, Never]):
     def is_ok_and(self, fn: Callable[[T], bool]) -> bool:
         """Papertrail examples:
 
-        monad0-is_even-False
+        When the predicate rejects an ``Ok``, ``is_ok_and`` reports ``False``.
 
         .. code-block:: python
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
 
-        monad1-is_even-True
+        When the predicate accepts an ``Ok``, ``is_ok_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
 
-        monad2-is_even-False
+        An ``Err`` makes ``is_ok_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
 
@@ -942,14 +942,14 @@ class Ok[T](Result[T, Never]):
     ) -> Result[U, Never]:
         """Papertrail examples:
 
-        monad0-add_one-expected_result0
+        Mapping an ``Ok`` applies the function and wraps its result in a new ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
 
-        monad1-add_one-expected_result1
+        Mapping an ``Err`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -967,14 +967,14 @@ class Ok[T](Result[T, Never]):
     ) -> Result[T, F]:
         """Papertrail examples:
 
-        monad0-add_one-expected_result0
+        Mapping an ``Err`` applies the function and wraps its result in a new ``Err``.
 
         .. code-block:: python
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
 
-        monad1-add_one-expected_result1
+        Mapping an ``Ok`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -993,14 +993,14 @@ class Ok[T](Result[T, Never]):
     ) -> U:
         """Papertrail examples:
 
-        monad0-42-len-3
+        For an ``Ok``, ``map_or`` uses the function result instead of the default.
 
         .. code-block:: python
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
 
-        monad1-42-len-42
+        For an ``Err``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
 
@@ -1019,14 +1019,14 @@ class Ok[T](Result[T, Never]):
     ) -> U:
         """Papertrail examples:
 
-        monad0-get_42-len-3
+        An ``Ok`` makes ``map_or_else`` use the mapping function.
 
         .. code-block:: python
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
 
-        monad1-get_42-len-42
+        An ``Err`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
 
@@ -1039,14 +1039,14 @@ class Ok[T](Result[T, Never]):
     def ok(self) -> Option[T]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        An ``Ok`` converts to ``Some`` through ``ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
 
-        monad1-expected_result1
+        An ``Err`` converts to ``Null`` through ``ok``.
 
         .. code-block:: python
 
@@ -1061,28 +1061,28 @@ class Ok[T](Result[T, Never]):
     def or_[F](self, res: Result[T, F]) -> Result[T, F]:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-res0-expected_result0
+        An ``Ok`` keeps its value when ``or_`` receives an ``Err``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
-        monad1-res1-expected_result1
+        An ``Err`` gives way to an ``Ok`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
-        monad2-res2-expected_result2
+        When both values are ``Ok``, ``or_`` keeps the first one.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
 
-        monad3-res3-expected_result3
+        When both values are ``Err``, ``or_`` keeps the first error.
 
         .. code-block:: python
 
@@ -1100,21 +1100,21 @@ class Ok[T](Result[T, Never]):
     ) -> Result[T, F]:
         """Papertrail examples:
 
-        monad0-get_ok_vikings-expected_result0
+        An ``Ok`` passes through ``or_else`` without calling the function.
 
         .. code-block:: python
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
-        monad1-get_ok_vikings-expected_result1
+        For an ``Err``, ``or_else`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
 
-        monad2-Err-expected_result2
+        If the fallback also produces an ``Err``, ``or_else`` keeps the original error.
 
         .. code-block:: python
 
@@ -1127,21 +1127,21 @@ class Ok[T](Result[T, Never]):
     def transpose(self) -> Option[Result[T, Never]]:
         """Papertrail examples:
 
-        monad0-expected_result0-expected_context0
+        Transposing ``Ok(Some(value))`` produces ``Some(Ok(value))``.
 
         .. code-block:: python
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
 
-        monad1-expected_result1-expected_context1
+        Transposing ``Ok(Null())`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=Null()).transpose() == Null()
             True
 
-        monad2-expected_result2-expected_context2
+        Transposing an ``Err`` wraps it in ``Some``.
 
         .. code-block:: python
 
@@ -1160,7 +1160,7 @@ class Ok[T](Result[T, Never]):
     def unwrap(self) -> T:
         """Papertrail examples:
 
-        monad0-2-expected_context0
+        ``unwrap`` extracts the value from an ``Ok``.
 
         .. code-block:: python
 
@@ -1173,7 +1173,7 @@ class Ok[T](Result[T, Never]):
     def unwrap_err(self) -> Never:
         """Papertrail examples:
 
-        monad0-failed-expected_context0
+        ``unwrap_err`` extracts the error from an ``Err``.
 
         .. code-block:: python
 
@@ -1186,14 +1186,14 @@ class Ok[T](Result[T, Never]):
     def unwrap_or(self, default: T) -> T:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-bike-car
+        With an ``Ok``, ``unwrap_or`` returns the value and ignores the default.
 
         .. code-block:: python
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
 
-        monad1-bike-bike
+        With an ``Err``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
 
@@ -1206,14 +1206,14 @@ class Ok[T](Result[T, Never]):
     def unwrap_or_else(self, fn: Callable[[Never], T]) -> T:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-get_42-4
+        An ``Ok`` makes ``unwrap_or_else`` return its value without calling the function.
 
         .. code-block:: python
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
 
-        monad1-get_42-42
+        An ``Err`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
 
@@ -1239,21 +1239,21 @@ class Err[E](Result[Never, E]):
     def and_[U, F](self, res: Result[U, F]) -> Result[U, F]:  # noqa: ARG002
         """Papertrail examples:
 
-        Calling ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
+        If you call ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
-        Calling ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
+        If you call ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
 
         .. code-block:: python
 
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
-        Calling ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
+        If you call ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
 
         .. code-block:: python
 
@@ -1278,21 +1278,21 @@ class Err[E](Result[Never, E]):
     ) -> Result[U, F]:
         """Papertrail examples:
 
-        monad0-must_be_less_than_10-expected_result0
+        An ``Ok`` passed to ``and_then`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
-        monad1-must_be_less_than_10-expected_result1
+        When the function passed to ``and_then`` produces an ``Err``, that ``Err`` becomes the result.
 
         .. code-block:: python
 
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
 
-        monad2-must_be_less_than_10-expected_result2
+        An existing ``Err`` passes through ``and_then`` unchanged, without calling the function.
 
         .. code-block:: python
 
@@ -1305,14 +1305,14 @@ class Err[E](Result[Never, E]):
     def err(self) -> Option[E]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        An ``Ok`` has no error, so ``err`` returns ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).err() == Null()
             True
 
-        monad1-expected_result1
+        If you call ``err`` on an ``Err`` then ``Some`` with the wrapped error is returned.
 
         .. code-block:: python
 
@@ -1327,7 +1327,7 @@ class Err[E](Result[Never, E]):
     def expect(self, msg: str) -> Never:
         """Papertrail examples:
 
-        monad0-must be positive-2-expected_context0
+        ``expect`` extracts the value from an ``Ok``.
 
         .. code-block:: python
 
@@ -1340,7 +1340,7 @@ class Err[E](Result[Never, E]):
     def expect_err(self, msg: str) -> E:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-must be err-2-expected_context0
+        ``expect_err`` extracts the error from an ``Err``.
 
         .. code-block:: python
 
@@ -1353,28 +1353,28 @@ class Err[E](Result[Never, E]):
     def flatten(self) -> Result[Never, E]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        If you call ``flatten`` on three nested ``Ok`` values then two nested ``Ok`` values are returned. Only the outer monad is removed
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
 
-        monad1-expected_result1
+        This is made obvious calling ``flatten`` on a doubly wrapped value returning just the inner monad.
 
         .. code-block:: python
 
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
 
-        monad2-expected_result2
+        Calling ``flatten`` if the inner is not a monad of the same type is a no-op.
 
         .. code-block:: python
 
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
 
-        monad3-expected_result3
+        An ``Err`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
 
@@ -1387,14 +1387,14 @@ class Err[E](Result[Never, E]):
     def inspect(self, fn: Callable[[Never], None]) -> Result[Never, E]:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-append_to_list-expected_result0
+        If you call ``inspect`` on an ``Ok`` then the original ``Ok`` is returned after the function is called, this is used for logging or side outputs that shouldn't disrupt the existing flow.
 
         .. code-block:: python
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
 
-        monad1-append_to_list-expected_result1
+        If you call ``inspect`` on an ``Err`` then the ``Err`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -1407,14 +1407,14 @@ class Err[E](Result[Never, E]):
     def inspect_err(self, fn: Callable[[E], None]) -> Result[Never, E]:
         """Papertrail examples:
 
-        monad0-append_to_list-expected_result0
+        If you call ``inspect_err`` on an ``Err`` then the original ``Err`` is returned after the function is called, it's essentially the inverse of ``inspect``.
 
         .. code-block:: python
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
 
-        monad1-append_to_list-expected_result1
+        Similarly to calling ``inspect`` on an ``Err``, if you call ``inspect_err`` on an ``Ok`` then the ``Ok`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -1428,14 +1428,14 @@ class Err[E](Result[Never, E]):
     def is_err(self) -> bool:
         """Papertrail examples:
 
-        monad0-False
+        ``is_err`` reports ``False`` for an ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_err() == False
             True
 
-        monad1-True
+        For an ``Err``, ``is_err`` reports ``True``.
 
         .. code-block:: python
 
@@ -1448,21 +1448,21 @@ class Err[E](Result[Never, E]):
     def is_err_and(self, fn: Callable[[E], bool]) -> bool:
         """Papertrail examples:
 
-        monad0-is_even-False
+        ``is_err_and`` requires both the monad to be an ``Err`` and the returned value of the passed in callable to be ``True``, for example, if you called ``is_err_and`` with a function that checks for evenness on an ``Err(1)`` then the result is ``False``.
 
         .. code-block:: python
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
 
-        monad1-is_even-True
+        Therefore, if you call ``is_err_and`` on an ``Err`` with a function that returns ``True`` then ``True`` is returned.
 
         .. code-block:: python
 
             >>> Err(error=2).is_err_and(is_even) == True
             True
 
-        monad2-is_even-False
+        Whereas, if you call ``is_err_and`` on an ``Ok`` with a function then ``False`` is returned and the function is not called.
 
         .. code-block:: python
 
@@ -1475,14 +1475,14 @@ class Err[E](Result[Never, E]):
     def is_ok(self) -> bool:
         """Papertrail examples:
 
-        monad0-True
+        ``is_ok`` reports ``True`` for an ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok() == True
             True
 
-        monad1-False
+        For an ``Err``, ``is_ok`` reports ``False``.
 
         .. code-block:: python
 
@@ -1495,21 +1495,21 @@ class Err[E](Result[Never, E]):
     def is_ok_and(self, fn: Callable[[Never], bool]) -> bool:  # noqa: ARG002
         """Papertrail examples:
 
-        monad0-is_even-False
+        When the predicate rejects an ``Ok``, ``is_ok_and`` reports ``False``.
 
         .. code-block:: python
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
 
-        monad1-is_even-True
+        When the predicate accepts an ``Ok``, ``is_ok_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
 
-        monad2-is_even-False
+        An ``Err`` makes ``is_ok_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
 
@@ -1527,14 +1527,14 @@ class Err[E](Result[Never, E]):
     ) -> Result[U, E]:
         """Papertrail examples:
 
-        monad0-add_one-expected_result0
+        Mapping an ``Ok`` applies the function and wraps its result in a new ``Ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
 
-        monad1-add_one-expected_result1
+        Mapping an ``Err`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -1549,14 +1549,14 @@ class Err[E](Result[Never, E]):
     ) -> Result[Never, F]:
         """Papertrail examples:
 
-        monad0-add_one-expected_result0
+        Mapping an ``Err`` applies the function and wraps its result in a new ``Err``.
 
         .. code-block:: python
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
 
-        monad1-add_one-expected_result1
+        Mapping an ``Ok`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -1577,14 +1577,14 @@ class Err[E](Result[Never, E]):
     ) -> U:
         """Papertrail examples:
 
-        monad0-42-len-3
+        For an ``Ok``, ``map_or`` uses the function result instead of the default.
 
         .. code-block:: python
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
 
-        monad1-42-len-42
+        For an ``Err``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
 
@@ -1603,14 +1603,14 @@ class Err[E](Result[Never, E]):
     ) -> U:
         """Papertrail examples:
 
-        monad0-get_42-len-3
+        An ``Ok`` makes ``map_or_else`` use the mapping function.
 
         .. code-block:: python
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
 
-        monad1-get_42-len-42
+        An ``Err`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
 
@@ -1623,14 +1623,14 @@ class Err[E](Result[Never, E]):
     def ok(self) -> Option[Never]:
         """Papertrail examples:
 
-        monad0-expected_result0
+        An ``Ok`` converts to ``Some`` through ``ok``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
 
-        monad1-expected_result1
+        An ``Err`` converts to ``Null`` through ``ok``.
 
         .. code-block:: python
 
@@ -1645,28 +1645,28 @@ class Err[E](Result[Never, E]):
     def or_[F](self, res: Result[Never, F]) -> Result[Never, F]:
         """Papertrail examples:
 
-        monad0-res0-expected_result0
+        An ``Ok`` keeps its value when ``or_`` receives an ``Err``.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
-        monad1-res1-expected_result1
+        An ``Err`` gives way to an ``Ok`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
-        monad2-res2-expected_result2
+        When both values are ``Ok``, ``or_`` keeps the first one.
 
         .. code-block:: python
 
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
 
-        monad3-res3-expected_result3
+        When both values are ``Err``, ``or_`` keeps the first error.
 
         .. code-block:: python
 
@@ -1681,21 +1681,21 @@ class Err[E](Result[Never, E]):
     ) -> Result[Never, F]:
         """Papertrail examples:
 
-        monad0-get_ok_vikings-expected_result0
+        An ``Ok`` passes through ``or_else`` without calling the function.
 
         .. code-block:: python
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
-        monad1-get_ok_vikings-expected_result1
+        For an ``Err``, ``or_else`` returns the ``Ok`` produced by the function.
 
         .. code-block:: python
 
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
 
-        monad2-Err-expected_result2
+        If the fallback also produces an ``Err``, ``or_else`` keeps the original error.
 
         .. code-block:: python
 
@@ -1708,21 +1708,21 @@ class Err[E](Result[Never, E]):
     def transpose(self) -> Option[Result[Never, E]]:
         """Papertrail examples:
 
-        monad0-expected_result0-expected_context0
+        Transposing ``Ok(Some(value))`` produces ``Some(Ok(value))``.
 
         .. code-block:: python
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
 
-        monad1-expected_result1-expected_context1
+        Transposing ``Ok(Null())`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Ok(inner=Null()).transpose() == Null()
             True
 
-        monad2-expected_result2-expected_context2
+        Transposing an ``Err`` wraps it in ``Some``.
 
         .. code-block:: python
 
@@ -1737,7 +1737,7 @@ class Err[E](Result[Never, E]):
     def unwrap(self) -> Never:
         """Papertrail examples:
 
-        monad0-2-expected_context0
+        ``unwrap`` extracts the value from an ``Ok``.
 
         .. code-block:: python
 
@@ -1752,7 +1752,7 @@ class Err[E](Result[Never, E]):
     def unwrap_err(self) -> E:
         """Papertrail examples:
 
-        monad0-failed-expected_context0
+        ``unwrap_err`` extracts the error from an ``Err``.
 
         .. code-block:: python
 
@@ -1765,14 +1765,14 @@ class Err[E](Result[Never, E]):
     def unwrap_or[U](self, default: U) -> U:
         """Papertrail examples:
 
-        monad0-bike-car
+        With an ``Ok``, ``unwrap_or`` returns the value and ignores the default.
 
         .. code-block:: python
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
 
-        monad1-bike-bike
+        With an ``Err``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
 
@@ -1785,14 +1785,14 @@ class Err[E](Result[Never, E]):
     def unwrap_or_else[U](self, fn: Callable[[E], U]) -> U:
         """Papertrail examples:
 
-        monad0-get_42-4
+        An ``Ok`` makes ``unwrap_or_else`` return its value without calling the function.
 
         .. code-block:: python
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
 
-        monad1-get_42-42
+        An ``Err`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
 
