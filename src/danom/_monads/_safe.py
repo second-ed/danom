@@ -8,7 +8,7 @@ import traceback
 from collections.abc import Callable
 from typing import Concatenate, ParamSpec, TypeVar, overload
 
-from ._result import Err, Ok, Result
+from ._result_v2 import Err, Ok, Result
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -65,7 +65,7 @@ def safe[**P, U](
         @functools.wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> Result[U, Exception]:
             try:
-                return Ok(func(*args, **kwargs))
+                return Ok(func(*args, **kwargs))  # ty: ignore[invalid-return-type]
             except errors as e:
                 return Err(error=e, input_args=(args, kwargs), traceback=traceback.format_exc())  # ty: ignore[invalid-return-type]
 
@@ -97,7 +97,7 @@ def safe_method[T, **P, U](
     @functools.wraps(func)
     def wrapper(self: T, *args: P.args, **kwargs: P.kwargs) -> Result[U, Exception]:
         try:
-            return Ok(func(self, *args, **kwargs))
+            return Ok(func(self, *args, **kwargs))  # ty: ignore[invalid-return-type]
         except Exception as e:  # noqa: BLE001
             return Err(error=e, input_args=(self, args, kwargs), traceback=traceback.format_exc())  # ty: ignore[invalid-return-type]
 

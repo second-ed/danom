@@ -131,7 +131,7 @@ class Stream[T](_BaseSyncStream):
 
     def to_par(self) -> ParStream[T]:
         """Convert the ``Stream`` to a ``ParStream``."""
-        from ._par import ParStream
+        from ._par import ParStream  # noqa: PLC0415
 
         return ParStream(self.seq, self.ops)
 

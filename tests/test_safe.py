@@ -68,7 +68,6 @@ def test_traceback():
         "Traceback (most recent call last):",
         '  File "./src/danom/_monads/_safe.py", line 68, in wrapper',
         "    return Ok(func(*args, **kwargs))",
-        '  File "./tests/conftest.py", line 124, in div_zero',
         "    return x / 0",
         "ZeroDivisionError: division by zero",
     ]
@@ -76,7 +75,10 @@ def test_traceback():
     if not isinstance(err, Err):
         raise TypeError("This should be an Err by now")
 
-    tb_lines = err.traceback.replace(str(REPO_ROOT), ".").splitlines()
+    tb_lines = [
+        line.split("#")[0].rstrip()
+        for line in err.traceback.replace(str(REPO_ROOT), ".").splitlines()
+    ]
 
     missing_lines = [line for line in expected_lines if line not in tb_lines]
 

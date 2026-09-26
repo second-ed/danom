@@ -1,6 +1,7 @@
 import pytest
 
 from danom import Either, Left, Right
+from dev_tools.create_examples.collection.example import example
 from tests.conftest import add_one
 
 
@@ -50,7 +51,7 @@ def test_unwrap(monad, inner):
     ("monad", "expected_result"), [pytest.param(Right(), True), pytest.param(Left(), False)]
 )
 def test_is_ok(monad, expected_result):
-    assert monad.is_ok() == expected_result
+    assert example(monad.is_ok) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -58,7 +59,7 @@ def test_is_ok(monad, expected_result):
     [pytest.param(Right(0), add_one, Right(1)), pytest.param(Left(), add_one, Left())],
 )
 def test_map(monad, func, expected_result):
-    assert monad.map(func) == expected_result
+    assert example(monad.map, func) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -66,7 +67,7 @@ def test_map(monad, func, expected_result):
     [pytest.param(Right(0), add_one, Right(0)), pytest.param(Left(0), add_one, Left(1))],
 )
 def test_map_err(monad, func, expected_result):
-    assert monad.map_err(func) == expected_result
+    assert example(monad.map_err, func) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -94,4 +95,4 @@ def test_staticmethod_result_unwrap(monad, inner):
     ],
 )
 def test_flatten(monad, expected_result) -> None:
-    assert monad.flatten() == expected_result
+    assert example(monad.flatten) == expected_result
