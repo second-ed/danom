@@ -17,25 +17,25 @@ class Option[T](ABC):
     def and_(self, opt_b: Option[T]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` combined with ``Null`` through ``and_`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_(Null()) == Null()
             True
-
+        A ``Null`` combined with an ``Some`` through ``and_`` remains ``Null``.
 
         .. code-block:: python
 
             >>> Null().and_(Some(inner="foo")) == Null()
             True
-
+        When both options contain values, ``and_`` keeps the second ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
-
+        Combining two ``Null`` values with ``and_`` produces ``Null``.
 
         .. code-block:: python
 
@@ -49,19 +49,19 @@ class Option[T](ABC):
     def and_then[U](self, fn: Callable[[T], Option[U]]) -> Option[T]:
         """Papertrail examples:
 
-
+        A successful function passed to ``and_then`` returns its ``Some`` result.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_then(must_be_less_than_10) == Some(inner=2)
             True
-
+        When the function returns ``Null``, ``and_then`` passes that ``Null`` through.
 
         .. code-block:: python
 
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
-
+        An existing ``Null`` skips the function passed to ``and_then``.
 
         .. code-block:: python
 
@@ -75,13 +75,13 @@ class Option[T](ABC):
     def as_list(self) -> list[T]:
         """Papertrail examples:
 
-
+        A ``Some`` becomes a one-item list through ``as_list``.
 
         .. code-block:: python
 
             >>> Some(inner=2).as_list() == [2]
             True
-
+        ``as_list`` represents ``Null`` as an empty list.
 
         .. code-block:: python
 
@@ -95,13 +95,13 @@ class Option[T](ABC):
     def as_tuple(self) -> tuple[T, ...]:
         """Papertrail examples:
 
-
+        A ``Some`` becomes a one-item tuple through ``as_tuple``.
 
         .. code-block:: python
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
-
+        ``as_tuple`` represents ``Null`` as an empty tuple.
 
         .. code-block:: python
 
@@ -114,13 +114,13 @@ class Option[T](ABC):
     def cloned(self) -> Option[T]:
         """Papertrail examples:
 
-
+        Cloning a ``Some`` creates a separate option with the same value.
 
         .. code-block:: python
 
             >>> Some(inner=2).cloned() == Some(inner=2)
             True
-
+        Cloning ``Null`` creates a separate ``Null``.
 
         .. code-block:: python
 
@@ -134,7 +134,7 @@ class Option[T](ABC):
     def expect(self, msg: str) -> T:
         """Papertrail examples:
 
-
+        ``expect`` extracts the value from a ``Some``.
 
         .. code-block:: python
 
@@ -148,19 +148,19 @@ class Option[T](ABC):
     def filter_(self, predicate: Callable[[T], bool]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` that fails the predicate becomes ``Null`` through ``filter_``.
 
         .. code-block:: python
 
             >>> Some(inner=3).filter_(is_even) == Null()
             True
-
+        A ``Some`` that passes the predicate remains unchanged.
 
         .. code-block:: python
 
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
-
+        ``filter_`` leaves ``Null`` unchanged without calling the predicate.
 
         .. code-block:: python
 
@@ -174,25 +174,25 @@ class Option[T](ABC):
     def flatten(self) -> Option[T]:
         """Papertrail examples:
 
-
+        Flattening three nested ``Some`` values removes only the outer option.
 
         .. code-block:: python
 
             >>> Some(inner=Some(inner=Some(inner=2))).flatten() == Some(inner=Some(inner=2))
             True
-
+        Flattening a doubly wrapped value returns the inner ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
-
+        Flattening a ``Some`` with a non-option value does nothing.
 
         .. code-block:: python
 
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
-
+        A ``Null`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
 
@@ -206,13 +206,13 @@ class Option[T](ABC):
     def inspect(self, fn: Callable[[T], None]) -> Option[T]:
         """Papertrail examples:
 
-
+        Inspecting a ``Some`` calls the function and returns the original option.
 
         .. code-block:: python
 
             >>> Some(inner=[1]).inspect(append_to_list) == Some(inner=[1])
             True
-
+        Inspecting ``Null`` returns ``Null`` without calling the function.
 
         .. code-block:: python
 
@@ -226,13 +226,13 @@ class Option[T](ABC):
     def is_none(self) -> bool:
         """Papertrail examples:
 
-
+        ``is_none`` reports ``False`` for a ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_none() == False
             True
-
+        For ``Null``, ``is_none`` reports ``True``.
 
         .. code-block:: python
 
@@ -246,19 +246,19 @@ class Option[T](ABC):
     def is_none_or(self, fn: Callable[[T], bool]) -> bool:
         """Papertrail examples:
 
-
+        When the predicate rejects a ``Some``, ``is_none_or`` reports ``False``.
 
         .. code-block:: python
 
             >>> Some(inner=1).is_none_or(is_even) == False
             True
-
+        When the predicate accepts a ``Some``, ``is_none_or`` reports ``True``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_none_or(is_even) == True
             True
-
+        ``Null`` makes ``is_none_or`` report ``True`` without calling the predicate.
 
         .. code-block:: python
 
@@ -272,13 +272,13 @@ class Option[T](ABC):
     def is_some(self) -> bool:
         """Papertrail examples:
 
-
+        ``is_some`` reports ``True`` for a ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_some() == True
             True
-
+        For ``Null``, ``is_some`` reports ``False``.
 
         .. code-block:: python
 
@@ -292,19 +292,19 @@ class Option[T](ABC):
     def is_some_and(self, fn: Callable[[T], bool]) -> bool:
         """Papertrail examples:
 
-
+        When the predicate rejects a ``Some``, ``is_some_and`` reports ``False``.
 
         .. code-block:: python
 
             >>> Some(inner=1).is_some_and(is_even) == False
             True
-
+        When the predicate accepts a ``Some``, ``is_some_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_some_and(is_even) == True
             True
-
+        A ``Null`` makes ``is_some_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
 
@@ -318,13 +318,13 @@ class Option[T](ABC):
     def map[U](self, fn: Callable[[T], U]) -> Option[U]:
         """Papertrail examples:
 
-
+        Mapping a ``Some`` applies the function and wraps its result in a new ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=1).map(add_one) == Some(inner=2)
             True
-
+        Mapping ``Null`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -338,13 +338,13 @@ class Option[T](ABC):
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:
         """Papertrail examples:
 
-
+        For a ``Some``, ``map_or`` uses the function result instead of the default.
 
         .. code-block:: python
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
-
+        For ``Null``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
 
@@ -358,13 +358,13 @@ class Option[T](ABC):
     def map_or_else[U](self, default: Callable[..., U], fn: Callable[[T], U]) -> U:
         """Papertrail examples:
 
-
+        A ``Some`` makes ``map_or_else`` use the mapping function.
 
         .. code-block:: python
 
             >>> Some(inner="foo").map_or_else(get_42, len) == 3
             True
-
+        A ``Null`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
 
@@ -378,13 +378,13 @@ class Option[T](ABC):
     def ok_or[E](self, err: E) -> Result[T, E]:
         """Papertrail examples:
 
-
+        A ``Some`` converts to ``Ok`` through ``ok_or``.
 
         .. code-block:: python
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
-
+        A ``Null`` converts to ``Err`` through ``ok_or``.
 
         .. code-block:: python
 
@@ -398,13 +398,13 @@ class Option[T](ABC):
     def ok_or_else[E](self, err: Callable[..., E]) -> Result[T, E]:
         """Papertrail examples:
 
-
+        A ``Some`` converts to ``Ok`` without calling the error function.
 
         .. code-block:: python
 
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
-
+        A ``Null`` converts to ``Err`` using the error function result.
 
         .. code-block:: python
 
@@ -418,25 +418,25 @@ class Option[T](ABC):
     def or_(self, opt_b: Option[T]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` keeps its value when ``or_`` receives ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=2).or_(Null()) == Some(inner=2)
             True
-
+        A ``Null`` gives way to a ``Some`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
-
+        When both options contain values, ``or_`` keeps the first ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
-
+        When both options are ``Null``, ``or_`` returns ``Null``.
 
         .. code-block:: python
 
@@ -450,19 +450,19 @@ class Option[T](ABC):
     def or_else(self, opt_b: Callable[..., Option[T]]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` passes through ``or_else`` without calling the function.
 
         .. code-block:: python
 
             >>> Some(inner="barbarians").or_else(get_some_vikings) == Some(inner="barbarians")
             True
-
+        For ``Null``, ``or_else`` returns the ``Some`` produced by the function.
 
         .. code-block:: python
 
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
-
+        If the fallback also produces ``Null``, ``or_else`` returns ``Null``.
 
         .. code-block:: python
 
@@ -476,13 +476,13 @@ class Option[T](ABC):
     def replace(self, value: T) -> Option[T]:
         """Papertrail examples:
 
-
+        Replacing a ``Some`` returns a new ``Some`` with the replacement value.
 
         .. code-block:: python
 
             >>> Some(inner=2).replace(5) == Some(inner=5)
             True
-
+        Replacing ``Null`` leaves it as ``Null``.
 
         .. code-block:: python
 
@@ -496,19 +496,19 @@ class Option[T](ABC):
     def transpose[E](self) -> Result[Option[T], E]:
         """Papertrail examples:
 
-
+        Transposing ``Some(Ok(value))`` produces ``Ok(Some(value))``.
 
         .. code-block:: python
 
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
-
+        Transposing ``Some(Err(error))`` produces ``Err(Some(error))``.
 
         .. code-block:: python
 
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
-
+        Transposing ``Null`` produces ``Ok(Null())``.
 
         .. code-block:: python
 
@@ -522,7 +522,7 @@ class Option[T](ABC):
     def unwrap(self) -> T:
         """Papertrail examples:
 
-
+        ``unwrap`` extracts the value from a ``Some``.
 
         .. code-block:: python
 
@@ -536,13 +536,13 @@ class Option[T](ABC):
     def unwrap_or(self, default: T) -> T:
         """Papertrail examples:
 
-
+        With a ``Some``, ``unwrap_or`` returns the value and ignores the default.
 
         .. code-block:: python
 
             >>> Some(inner="car").unwrap_or("bike") == "car"
             True
-
+        With ``Null``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
 
@@ -556,13 +556,13 @@ class Option[T](ABC):
     def unwrap_or_else(self, fn: Callable[..., T]) -> T:
         """Papertrail examples:
 
-
+        A ``Some`` makes ``unwrap_or_else`` return its value without calling the function.
 
         .. code-block:: python
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
-
+        A ``Null`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
 
@@ -576,19 +576,19 @@ class Option[T](ABC):
     def zip[U](self, other: Option[U]) -> Option[tuple[T, U]]:
         """Papertrail examples:
 
-
+        Zipping two ``Some`` values produces a ``Some`` containing both values.
 
         .. code-block:: python
 
             >>> Some(inner=1).zip(Some(inner="hi")) == Some(inner=(1, "hi"))
             True
-
+        Zipping a ``Some`` with ``Null`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=1).zip(Null()) == Null()
             True
-
+        Zipping ``Null`` with a ``Some`` produces ``Null``.
 
         .. code-block:: python
 
@@ -602,19 +602,19 @@ class Option[T](ABC):
     def unzip[U](self) -> tuple[Option[T], Option[U]]:
         """Papertrail examples:
 
-
+        Unzipping a ``Some`` pair produces two ``Some`` values.
 
         .. code-block:: python
 
             >>> Some(inner=(2, 2)).unzip() == (Some(inner=2), Some(inner=2))
             True
-
+        Unzipping a ``Some`` with a non-pair value produces two ``Null`` values.
 
         .. code-block:: python
 
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
-
+        Unzipping ``Null`` produces two ``Null`` values.
 
         .. code-block:: python
 
@@ -632,25 +632,25 @@ class Some[T](Option):
     def and_(self, opt_b: Option[T]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` combined with ``Null`` through ``and_`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_(Null()) == Null()
             True
-
+        A ``Null`` combined with an ``Some`` through ``and_`` remains ``Null``.
 
         .. code-block:: python
 
             >>> Null().and_(Some(inner="foo")) == Null()
             True
-
+        When both options contain values, ``and_`` keeps the second ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
-
+        Combining two ``Null`` values with ``and_`` produces ``Null``.
 
         .. code-block:: python
 
@@ -663,19 +663,19 @@ class Some[T](Option):
     def and_then[U](self, fn: Callable[[T], Option[U]]) -> Option[U]:
         """Papertrail examples:
 
-
+        A successful function passed to ``and_then`` returns its ``Some`` result.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_then(must_be_less_than_10) == Some(inner=2)
             True
-
+        When the function returns ``Null``, ``and_then`` passes that ``Null`` through.
 
         .. code-block:: python
 
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
-
+        An existing ``Null`` skips the function passed to ``and_then``.
 
         .. code-block:: python
 
@@ -688,13 +688,13 @@ class Some[T](Option):
     def as_list(self) -> list[T]:
         """Papertrail examples:
 
-
+        A ``Some`` becomes a one-item list through ``as_list``.
 
         .. code-block:: python
 
             >>> Some(inner=2).as_list() == [2]
             True
-
+        ``as_list`` represents ``Null`` as an empty list.
 
         .. code-block:: python
 
@@ -707,13 +707,13 @@ class Some[T](Option):
     def as_tuple(self) -> tuple[T, ...]:
         """Papertrail examples:
 
-
+        A ``Some`` becomes a one-item tuple through ``as_tuple``.
 
         .. code-block:: python
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
-
+        ``as_tuple`` represents ``Null`` as an empty tuple.
 
         .. code-block:: python
 
@@ -726,7 +726,7 @@ class Some[T](Option):
     def expect(self, msg: str) -> T:  # noqa: ARG002
         """Papertrail examples:
 
-
+        ``expect`` extracts the value from a ``Some``.
 
         .. code-block:: python
 
@@ -739,19 +739,19 @@ class Some[T](Option):
     def filter_(self, predicate: Callable[[T], bool]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` that fails the predicate becomes ``Null`` through ``filter_``.
 
         .. code-block:: python
 
             >>> Some(inner=3).filter_(is_even) == Null()
             True
-
+        A ``Some`` that passes the predicate remains unchanged.
 
         .. code-block:: python
 
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
-
+        ``filter_`` leaves ``Null`` unchanged without calling the predicate.
 
         .. code-block:: python
 
@@ -764,25 +764,25 @@ class Some[T](Option):
     def flatten(self) -> Option[T]:
         """Papertrail examples:
 
-
+        Flattening three nested ``Some`` values removes only the outer option.
 
         .. code-block:: python
 
             >>> Some(inner=Some(inner=Some(inner=2))).flatten() == Some(inner=Some(inner=2))
             True
-
+        Flattening a doubly wrapped value returns the inner ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
-
+        Flattening a ``Some`` with a non-option value does nothing.
 
         .. code-block:: python
 
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
-
+        A ``Null`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
 
@@ -797,13 +797,13 @@ class Some[T](Option):
     def inspect(self, fn: Callable[[T], None]) -> Option[T]:
         """Papertrail examples:
 
-
+        Inspecting a ``Some`` calls the function and returns the original option.
 
         .. code-block:: python
 
             >>> Some(inner=[1]).inspect(append_to_list) == Some(inner=[1])
             True
-
+        Inspecting ``Null`` returns ``Null`` without calling the function.
 
         .. code-block:: python
 
@@ -817,13 +817,13 @@ class Some[T](Option):
     def is_none(self) -> bool:
         """Papertrail examples:
 
-
+        ``is_none`` reports ``False`` for a ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_none() == False
             True
-
+        For ``Null``, ``is_none`` reports ``True``.
 
         .. code-block:: python
 
@@ -836,19 +836,19 @@ class Some[T](Option):
     def is_none_or(self, fn: Callable[[T], bool]) -> bool:
         """Papertrail examples:
 
-
+        When the predicate rejects a ``Some``, ``is_none_or`` reports ``False``.
 
         .. code-block:: python
 
             >>> Some(inner=1).is_none_or(is_even) == False
             True
-
+        When the predicate accepts a ``Some``, ``is_none_or`` reports ``True``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_none_or(is_even) == True
             True
-
+        ``Null`` makes ``is_none_or`` report ``True`` without calling the predicate.
 
         .. code-block:: python
 
@@ -861,13 +861,13 @@ class Some[T](Option):
     def is_some(self) -> bool:
         """Papertrail examples:
 
-
+        ``is_some`` reports ``True`` for a ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_some() == True
             True
-
+        For ``Null``, ``is_some`` reports ``False``.
 
         .. code-block:: python
 
@@ -880,19 +880,19 @@ class Some[T](Option):
     def is_some_and(self, fn: Callable[[T], bool]) -> bool:
         """Papertrail examples:
 
-
+        When the predicate rejects a ``Some``, ``is_some_and`` reports ``False``.
 
         .. code-block:: python
 
             >>> Some(inner=1).is_some_and(is_even) == False
             True
-
+        When the predicate accepts a ``Some``, ``is_some_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_some_and(is_even) == True
             True
-
+        A ``Null`` makes ``is_some_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
 
@@ -905,13 +905,13 @@ class Some[T](Option):
     def map[U](self, fn: Callable[[T], U]) -> Option[U]:
         """Papertrail examples:
 
-
+        Mapping a ``Some`` applies the function and wraps its result in a new ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=1).map(add_one) == Some(inner=2)
             True
-
+        Mapping ``Null`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -924,13 +924,13 @@ class Some[T](Option):
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:  # noqa: ARG002
         """Papertrail examples:
 
-
+        For a ``Some``, ``map_or`` uses the function result instead of the default.
 
         .. code-block:: python
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
-
+        For ``Null``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
 
@@ -943,13 +943,13 @@ class Some[T](Option):
     def map_or_else[U](self, default: Callable[[], U], fn: Callable[[T], U]) -> U:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` makes ``map_or_else`` use the mapping function.
 
         .. code-block:: python
 
             >>> Some(inner="foo").map_or_else(get_42, len) == 3
             True
-
+        A ``Null`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
 
@@ -962,13 +962,13 @@ class Some[T](Option):
     def ok_or[E](self, err: E) -> Result[T, E]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` converts to ``Ok`` through ``ok_or``.
 
         .. code-block:: python
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
-
+        A ``Null`` converts to ``Err`` through ``ok_or``.
 
         .. code-block:: python
 
@@ -983,13 +983,13 @@ class Some[T](Option):
     def ok_or_else[E](self, err: Callable[[], E]) -> Result[T, E]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` converts to ``Ok`` without calling the error function.
 
         .. code-block:: python
 
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
-
+        A ``Null`` converts to ``Err`` using the error function result.
 
         .. code-block:: python
 
@@ -1004,25 +1004,25 @@ class Some[T](Option):
     def or_(self, opt_b: Option[T]) -> Option[T]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` keeps its value when ``or_`` receives ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=2).or_(Null()) == Some(inner=2)
             True
-
+        A ``Null`` gives way to a ``Some`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
-
+        When both options contain values, ``or_`` keeps the first ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
-
+        When both options are ``Null``, ``or_`` returns ``Null``.
 
         .. code-block:: python
 
@@ -1035,19 +1035,19 @@ class Some[T](Option):
     def or_else(self, opt_b: Callable[[], Option[T]]) -> Option[T]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` passes through ``or_else`` without calling the function.
 
         .. code-block:: python
 
             >>> Some(inner="barbarians").or_else(get_some_vikings) == Some(inner="barbarians")
             True
-
+        For ``Null``, ``or_else`` returns the ``Some`` produced by the function.
 
         .. code-block:: python
 
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
-
+        If the fallback also produces ``Null``, ``or_else`` returns ``Null``.
 
         .. code-block:: python
 
@@ -1060,13 +1060,13 @@ class Some[T](Option):
     def replace(self, value: T) -> Option[T]:
         """Papertrail examples:
 
-
+        Replacing a ``Some`` returns a new ``Some`` with the replacement value.
 
         .. code-block:: python
 
             >>> Some(inner=2).replace(5) == Some(inner=5)
             True
-
+        Replacing ``Null`` leaves it as ``Null``.
 
         .. code-block:: python
 
@@ -1079,19 +1079,19 @@ class Some[T](Option):
     def transpose(self) -> Result[Option[T], Option[T]]:
         """Papertrail examples:
 
-
+        Transposing ``Some(Ok(value))`` produces ``Ok(Some(value))``.
 
         .. code-block:: python
 
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
-
+        Transposing ``Some(Err(error))`` produces ``Err(Some(error))``.
 
         .. code-block:: python
 
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
-
+        Transposing ``Null`` produces ``Ok(Null())``.
 
         .. code-block:: python
 
@@ -1110,7 +1110,7 @@ class Some[T](Option):
     def unwrap(self) -> T:
         """Papertrail examples:
 
-
+        ``unwrap`` extracts the value from a ``Some``.
 
         .. code-block:: python
 
@@ -1123,13 +1123,13 @@ class Some[T](Option):
     def unwrap_or(self, default: T) -> T:  # noqa: ARG002
         """Papertrail examples:
 
-
+        With a ``Some``, ``unwrap_or`` returns the value and ignores the default.
 
         .. code-block:: python
 
             >>> Some(inner="car").unwrap_or("bike") == "car"
             True
-
+        With ``Null``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
 
@@ -1142,13 +1142,13 @@ class Some[T](Option):
     def unwrap_or_else(self, fn: Callable[[], T]) -> T:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` makes ``unwrap_or_else`` return its value without calling the function.
 
         .. code-block:: python
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
-
+        A ``Null`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
 
@@ -1161,19 +1161,19 @@ class Some[T](Option):
     def zip[U](self, other: Option[U]) -> Option[tuple[T, U]]:
         """Papertrail examples:
 
-
+        Zipping two ``Some`` values produces a ``Some`` containing both values.
 
         .. code-block:: python
 
             >>> Some(inner=1).zip(Some(inner="hi")) == Some(inner=(1, "hi"))
             True
-
+        Zipping a ``Some`` with ``Null`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=1).zip(Null()) == Null()
             True
-
+        Zipping ``Null`` with a ``Some`` produces ``Null``.
 
         .. code-block:: python
 
@@ -1188,19 +1188,19 @@ class Some[T](Option):
     def unzip[U](self) -> tuple[Option[T], Option[U]]:
         """Papertrail examples:
 
-
+        Unzipping a ``Some`` pair produces two ``Some`` values.
 
         .. code-block:: python
 
             >>> Some(inner=(2, 2)).unzip() == (Some(inner=2), Some(inner=2))
             True
-
+        Unzipping a ``Some`` with a non-pair value produces two ``Null`` values.
 
         .. code-block:: python
 
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
-
+        Unzipping ``Null`` produces two ``Null`` values.
 
         .. code-block:: python
 
@@ -1218,25 +1218,25 @@ class Null[T](Option):
     def and_(self, opt_b: Option[T]) -> Option[T]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` combined with ``Null`` through ``and_`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_(Null()) == Null()
             True
-
+        A ``Null`` combined with an ``Some`` through ``and_`` remains ``Null``.
 
         .. code-block:: python
 
             >>> Null().and_(Some(inner="foo")) == Null()
             True
-
+        When both options contain values, ``and_`` keeps the second ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
-
+        Combining two ``Null`` values with ``and_`` produces ``Null``.
 
         .. code-block:: python
 
@@ -1249,19 +1249,19 @@ class Null[T](Option):
     def and_then[U](self, fn: Callable[[T], Option[U]]) -> Option[U]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A successful function passed to ``and_then`` returns its ``Some`` result.
 
         .. code-block:: python
 
             >>> Some(inner=2).and_then(must_be_less_than_10) == Some(inner=2)
             True
-
+        When the function returns ``Null``, ``and_then`` passes that ``Null`` through.
 
         .. code-block:: python
 
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
-
+        An existing ``Null`` skips the function passed to ``and_then``.
 
         .. code-block:: python
 
@@ -1274,13 +1274,13 @@ class Null[T](Option):
     def as_list(self) -> list[T]:
         """Papertrail examples:
 
-
+        A ``Some`` becomes a one-item list through ``as_list``.
 
         .. code-block:: python
 
             >>> Some(inner=2).as_list() == [2]
             True
-
+        ``as_list`` represents ``Null`` as an empty list.
 
         .. code-block:: python
 
@@ -1293,13 +1293,13 @@ class Null[T](Option):
     def as_tuple(self) -> tuple[T, ...]:
         """Papertrail examples:
 
-
+        A ``Some`` becomes a one-item tuple through ``as_tuple``.
 
         .. code-block:: python
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
-
+        ``as_tuple`` represents ``Null`` as an empty tuple.
 
         .. code-block:: python
 
@@ -1312,7 +1312,7 @@ class Null[T](Option):
     def expect(self, msg: str) -> T:
         """Papertrail examples:
 
-
+        ``expect`` extracts the value from a ``Some``.
 
         .. code-block:: python
 
@@ -1325,19 +1325,19 @@ class Null[T](Option):
     def filter_(self, predicate: Callable[[T], bool]) -> Option[T]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` that fails the predicate becomes ``Null`` through ``filter_``.
 
         .. code-block:: python
 
             >>> Some(inner=3).filter_(is_even) == Null()
             True
-
+        A ``Some`` that passes the predicate remains unchanged.
 
         .. code-block:: python
 
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
-
+        ``filter_`` leaves ``Null`` unchanged without calling the predicate.
 
         .. code-block:: python
 
@@ -1350,25 +1350,25 @@ class Null[T](Option):
     def flatten(self) -> Option[T]:
         """Papertrail examples:
 
-
+        Flattening three nested ``Some`` values removes only the outer option.
 
         .. code-block:: python
 
             >>> Some(inner=Some(inner=Some(inner=2))).flatten() == Some(inner=Some(inner=2))
             True
-
+        Flattening a doubly wrapped value returns the inner ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
-
+        Flattening a ``Some`` with a non-option value does nothing.
 
         .. code-block:: python
 
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
-
+        A ``Null`` passes through ``flatten`` unchanged.
 
         .. code-block:: python
 
@@ -1381,13 +1381,13 @@ class Null[T](Option):
     def inspect(self, fn: Callable[[T], None]) -> Option[T]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        Inspecting a ``Some`` calls the function and returns the original option.
 
         .. code-block:: python
 
             >>> Some(inner=[1]).inspect(append_to_list) == Some(inner=[1])
             True
-
+        Inspecting ``Null`` returns ``Null`` without calling the function.
 
         .. code-block:: python
 
@@ -1400,13 +1400,13 @@ class Null[T](Option):
     def is_none(self) -> bool:
         """Papertrail examples:
 
-
+        ``is_none`` reports ``False`` for a ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_none() == False
             True
-
+        For ``Null``, ``is_none`` reports ``True``.
 
         .. code-block:: python
 
@@ -1419,19 +1419,19 @@ class Null[T](Option):
     def is_none_or(self, fn: Callable[[T], bool]) -> bool:  # noqa: ARG002
         """Papertrail examples:
 
-
+        When the predicate rejects a ``Some``, ``is_none_or`` reports ``False``.
 
         .. code-block:: python
 
             >>> Some(inner=1).is_none_or(is_even) == False
             True
-
+        When the predicate accepts a ``Some``, ``is_none_or`` reports ``True``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_none_or(is_even) == True
             True
-
+        ``Null`` makes ``is_none_or`` report ``True`` without calling the predicate.
 
         .. code-block:: python
 
@@ -1444,13 +1444,13 @@ class Null[T](Option):
     def is_some(self) -> bool:
         """Papertrail examples:
 
-
+        ``is_some`` reports ``True`` for a ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_some() == True
             True
-
+        For ``Null``, ``is_some`` reports ``False``.
 
         .. code-block:: python
 
@@ -1463,19 +1463,19 @@ class Null[T](Option):
     def is_some_and(self, fn: Callable[[T], bool]) -> bool:  # noqa: ARG002
         """Papertrail examples:
 
-
+        When the predicate rejects a ``Some``, ``is_some_and`` reports ``False``.
 
         .. code-block:: python
 
             >>> Some(inner=1).is_some_and(is_even) == False
             True
-
+        When the predicate accepts a ``Some``, ``is_some_and`` reports ``True``.
 
         .. code-block:: python
 
             >>> Some(inner=2).is_some_and(is_even) == True
             True
-
+        A ``Null`` makes ``is_some_and`` report ``False`` without calling the predicate.
 
         .. code-block:: python
 
@@ -1488,13 +1488,13 @@ class Null[T](Option):
     def map[U](self, fn: Callable[[T], U]) -> Option[U]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        Mapping a ``Some`` applies the function and wraps its result in a new ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=1).map(add_one) == Some(inner=2)
             True
-
+        Mapping ``Null`` leaves it unchanged and skips the function.
 
         .. code-block:: python
 
@@ -1507,13 +1507,13 @@ class Null[T](Option):
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:  # noqa: ARG002
         """Papertrail examples:
 
-
+        For a ``Some``, ``map_or`` uses the function result instead of the default.
 
         .. code-block:: python
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
-
+        For ``Null``, ``map_or`` returns the supplied default.
 
         .. code-block:: python
 
@@ -1526,13 +1526,13 @@ class Null[T](Option):
     def map_or_else[U](self, default: Callable[..., U], fn: Callable[[T], U]) -> U:  # noqa: ARG002
         """Papertrail examples:
 
-
+        A ``Some`` makes ``map_or_else`` use the mapping function.
 
         .. code-block:: python
 
             >>> Some(inner="foo").map_or_else(get_42, len) == 3
             True
-
+        A ``Null`` makes ``map_or_else`` use the default function.
 
         .. code-block:: python
 
@@ -1545,13 +1545,13 @@ class Null[T](Option):
     def ok_or[E](self, err: E) -> Result[T, E]:
         """Papertrail examples:
 
-
+        A ``Some`` converts to ``Ok`` through ``ok_or``.
 
         .. code-block:: python
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
-
+        A ``Null`` converts to ``Err`` through ``ok_or``.
 
         .. code-block:: python
 
@@ -1566,13 +1566,13 @@ class Null[T](Option):
     def ok_or_else[E](self, err: Callable[[], E]) -> Result[T, E]:
         """Papertrail examples:
 
-
+        A ``Some`` converts to ``Ok`` without calling the error function.
 
         .. code-block:: python
 
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
-
+        A ``Null`` converts to ``Err`` using the error function result.
 
         .. code-block:: python
 
@@ -1587,25 +1587,25 @@ class Null[T](Option):
     def or_(self, opt_b: Option[T]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` keeps its value when ``or_`` receives ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=2).or_(Null()) == Some(inner=2)
             True
-
+        A ``Null`` gives way to a ``Some`` passed to ``or_``.
 
         .. code-block:: python
 
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
-
+        When both options contain values, ``or_`` keeps the first ``Some``.
 
         .. code-block:: python
 
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
-
+        When both options are ``Null``, ``or_`` returns ``Null``.
 
         .. code-block:: python
 
@@ -1618,19 +1618,19 @@ class Null[T](Option):
     def or_else(self, opt_b: Callable[[], Option[T]]) -> Option[T]:
         """Papertrail examples:
 
-
+        A ``Some`` passes through ``or_else`` without calling the function.
 
         .. code-block:: python
 
             >>> Some(inner="barbarians").or_else(get_some_vikings) == Some(inner="barbarians")
             True
-
+        For ``Null``, ``or_else`` returns the ``Some`` produced by the function.
 
         .. code-block:: python
 
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
-
+        If the fallback also produces ``Null``, ``or_else`` returns ``Null``.
 
         .. code-block:: python
 
@@ -1643,13 +1643,13 @@ class Null[T](Option):
     def replace(self, value: T) -> Option[T]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        Replacing a ``Some`` returns a new ``Some`` with the replacement value.
 
         .. code-block:: python
 
             >>> Some(inner=2).replace(5) == Some(inner=5)
             True
-
+        Replacing ``Null`` leaves it as ``Null``.
 
         .. code-block:: python
 
@@ -1662,19 +1662,19 @@ class Null[T](Option):
     def transpose[E](self) -> Result[Option[T], E]:
         """Papertrail examples:
 
-
+        Transposing ``Some(Ok(value))`` produces ``Ok(Some(value))``.
 
         .. code-block:: python
 
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
-
+        Transposing ``Some(Err(error))`` produces ``Err(Some(error))``.
 
         .. code-block:: python
 
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
-
+        Transposing ``Null`` produces ``Ok(Null())``.
 
         .. code-block:: python
 
@@ -1689,7 +1689,7 @@ class Null[T](Option):
     def unwrap(self) -> T:
         """Papertrail examples:
 
-
+        ``unwrap`` extracts the value from a ``Some``.
 
         .. code-block:: python
 
@@ -1702,13 +1702,13 @@ class Null[T](Option):
     def unwrap_or(self, default: T) -> T:
         """Papertrail examples:
 
-
+        With a ``Some``, ``unwrap_or`` returns the value and ignores the default.
 
         .. code-block:: python
 
             >>> Some(inner="car").unwrap_or("bike") == "car"
             True
-
+        With ``Null``, ``unwrap_or`` returns the default.
 
         .. code-block:: python
 
@@ -1721,13 +1721,13 @@ class Null[T](Option):
     def unwrap_or_else(self, fn: Callable[[], T]) -> T:
         """Papertrail examples:
 
-
+        A ``Some`` makes ``unwrap_or_else`` return its value without calling the function.
 
         .. code-block:: python
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
-
+        A ``Null`` makes ``unwrap_or_else`` return the function result.
 
         .. code-block:: python
 
@@ -1740,19 +1740,19 @@ class Null[T](Option):
     def zip[U](self, other: Option[U]) -> Option[tuple[T, U]]:  # noqa: ARG002
         """Papertrail examples:
 
-
+        Zipping two ``Some`` values produces a ``Some`` containing both values.
 
         .. code-block:: python
 
             >>> Some(inner=1).zip(Some(inner="hi")) == Some(inner=(1, "hi"))
             True
-
+        Zipping a ``Some`` with ``Null`` produces ``Null``.
 
         .. code-block:: python
 
             >>> Some(inner=1).zip(Null()) == Null()
             True
-
+        Zipping ``Null`` with a ``Some`` produces ``Null``.
 
         .. code-block:: python
 
@@ -1765,19 +1765,19 @@ class Null[T](Option):
     def unzip[U](self) -> tuple[Option[T], Option[U]]:
         """Papertrail examples:
 
-
+        Unzipping a ``Some`` pair produces two ``Some`` values.
 
         .. code-block:: python
 
             >>> Some(inner=(2, 2)).unzip() == (Some(inner=2), Some(inner=2))
             True
-
+        Unzipping a ``Some`` with a non-pair value produces two ``Null`` values.
 
         .. code-block:: python
 
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
-
+        Unzipping ``Null`` produces two ``Null`` values.
 
         .. code-block:: python
 
