@@ -16,10 +16,18 @@ class Example[T]:
     kwargs: dict[str, Any]
     actual_result: T
     recorder: Recorder
+    description: str | None = None
 
     def __eq__(self, expected: T) -> bool:
         self.recorder.record_example(
-            ExampleRecord.new(self.fn, self.args, self.kwargs, self.actual_result, expected)
+            ExampleRecord.new(
+                self.fn,
+                self.args,
+                self.kwargs,
+                returned=self.actual_result,
+                expected=expected,
+                description=self.description,
+            )
         )
         return self.actual_result == expected
 
@@ -36,6 +44,10 @@ class Example[T]:
         return hash(hash_value)
 
 
-def example(fn: Callable, *args: tuple[Any, ...], **kwargs: dict[str, Any]) -> Example:
+def example(
+    fn: Callable, *args: tuple[Any, ...], description: str | None = None, **kwargs: dict[str, Any]
+) -> Example:
     value = fn(*args, **kwargs)
-    return Example(fn, args, kwargs, value, recorder=_RECORDER)
+    return Example(
+        fn, args, kwargs, actual_result=value, description=description, recorder=_RECORDER
+    )

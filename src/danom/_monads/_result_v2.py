@@ -63,16 +63,32 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def and_[U, F](self, res: Result[U, F]) -> Result[U, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        Calling ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
+        Calling ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
+
+        .. code-block:: python
+
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
+        Calling ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
+
+        .. code-block:: python
+
             >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
+
+        Whereas, calling ``and_`` on an ``Ok`` with another ``Ok`` as the arg then the first ``Ok`` is discarded and the second is returned.
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_(Ok(inner="different result type")) == Ok(inner="different result type")
             True
@@ -84,13 +100,25 @@ class Result[T, E](ABC):
     def and_then[U, F, **P](
         self, fn: Callable[Concatenate[T, P], Result[U, F]], *args: P.args, **kwargs: P.kwargs
     ) -> Result[U, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must_be_less_than_10-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
+        monad1-must_be_less_than_10-expected_result1
+
+        .. code-block:: python
+
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
+
+        monad2-must_be_less_than_10-expected_result2
+
+        .. code-block:: python
 
             >>> Err(error="not a number").and_then(must_be_less_than_10) == Err(error="not a number")
             True
@@ -99,10 +127,18 @@ class Result[T, E](ABC):
         ...
 
     def cloned(self) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).cloned() == Ok(inner=2)
             True
+
+        monad1-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error=2).cloned() == Err(error=2)
             True
@@ -112,10 +148,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def err(self) -> Option[E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).err() == Null()
             True
+
+        monad1-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error="Nothing here").err() == Some(inner="Nothing here")
             True
@@ -125,7 +169,11 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def expect(self, msg: str) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must be positive-2-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).expect("must be positive") == 2
             True
@@ -135,7 +183,11 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def expect_err(self, msg: str) -> E:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must be err-2-expected_context0
+
+        .. code-block:: python
 
             >>> Err(error=2).expect_err("must be err") == 2
             True
@@ -145,16 +197,32 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def flatten(self) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
 
+        monad1-expected_result1
+
+        .. code-block:: python
+
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
 
+        monad2-expected_result2
+
+        .. code-block:: python
+
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
+
+        monad3-expected_result3
+
+        .. code-block:: python
 
             >>> Err(error=None).flatten() == Err(error=None)
             True
@@ -164,10 +232,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def inspect(self, fn: Callable[[T], None]) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-append_to_list-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
+
+        monad1-append_to_list-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error="un-appendable").inspect(append_to_list) == Err(error="un-appendable")
             True
@@ -177,10 +253,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def inspect_err(self, fn: Callable[[E], None]) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-append_to_list-expected_result0
+
+        .. code-block:: python
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
+
+        monad1-append_to_list-expected_result1
+
+        .. code-block:: python
 
             >>> Ok(inner="un-appendable").inspect_err(append_to_list) == Ok(inner="un-appendable")
             True
@@ -190,10 +274,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def is_err(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-False
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_err() == False
             True
+
+        monad1-True
+
+        .. code-block:: python
 
             >>> Err(error=2).is_err() == True
             True
@@ -203,13 +295,25 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def is_err_and(self, fn: Callable[[E], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-is_even-False
+
+        .. code-block:: python
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
 
+        monad1-is_even-True
+
+        .. code-block:: python
+
             >>> Err(error=2).is_err_and(is_even) == True
             True
+
+        monad2-is_even-False
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_err_and(is_even) == False
             True
@@ -219,10 +323,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def is_ok(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-True
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_ok() == True
             True
+
+        monad1-False
+
+        .. code-block:: python
 
             >>> Err(error=2).is_ok() == False
             True
@@ -232,13 +344,25 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def is_ok_and(self, fn: Callable[[T], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-is_even-False
+
+        .. code-block:: python
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
 
+        monad1-is_even-True
+
+        .. code-block:: python
+
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
+
+        monad2-is_even-False
+
+        .. code-block:: python
 
             >>> Err(error=2).is_ok_and(is_even) == False
             True
@@ -250,10 +374,18 @@ class Result[T, E](ABC):
     def map[U, **P](
         self, fn: Callable[Concatenate[T, P], U], *args: P.args, **kwargs: P.kwargs
     ) -> Result[U, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-add_one-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
+
+        monad1-add_one-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error=1).map(add_one) == Err(error=1)
             True
@@ -265,10 +397,18 @@ class Result[T, E](ABC):
     def map_err[F, **P](
         self, fn: Callable[Concatenate[E, P], F], *args: P.args, **kwargs: P.kwargs
     ) -> Result[T, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-add_one-expected_result0
+
+        .. code-block:: python
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
+
+        monad1-add_one-expected_result1
+
+        .. code-block:: python
 
             >>> Ok(inner=1).map_err(add_one) == Ok(inner=1)
             True
@@ -280,10 +420,18 @@ class Result[T, E](ABC):
     def map_or[U, **P](
         self, default: U, fn: Callable[Concatenate[T, P], U], *args: P.args, **kwargs: P.kwargs
     ) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-42-len-3
+
+        .. code-block:: python
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
+
+        monad1-42-len-42
+
+        .. code-block:: python
 
             >>> Err(error=None).map_or(42, len) == 42
             True
@@ -299,10 +447,18 @@ class Result[T, E](ABC):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_42-len-3
+
+        .. code-block:: python
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
+
+        monad1-get_42-len-42
+
+        .. code-block:: python
 
             >>> Err(error=None).map_or_else(get_42, len) == 42
             True
@@ -312,10 +468,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def ok(self) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
+
+        monad1-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error=2).ok() == Null()
             True
@@ -325,16 +489,32 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def or_[F](self, res: Result[T, F]) -> Result[T, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-res0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
+        monad1-res1-expected_result1
+
+        .. code-block:: python
+
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
+        monad2-res2-expected_result2
+
+        .. code-block:: python
+
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
+
+        monad3-res3-expected_result3
+
+        .. code-block:: python
 
             >>> Err(error="foo").or_(Err(error="foo")) == Err(error="foo")
             True
@@ -346,13 +526,25 @@ class Result[T, E](ABC):
     def or_else[F, **P](
         self, fn: Callable[Concatenate[E, P], F], *args: P.args, **kwargs: P.kwargs
     ) -> Result[T, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_ok_vikings-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
+        monad1-get_ok_vikings-expected_result1
+
+        .. code-block:: python
+
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
+
+        monad2-Err-expected_result2
+
+        .. code-block:: python
 
             >>> Err(error="foo").or_else(Err) == Err(error="foo")
             True
@@ -362,13 +554,25 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def transpose(self) -> Option[Result[T, E]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
 
+        monad1-expected_result1-expected_context1
+
+        .. code-block:: python
+
             >>> Ok(inner=Null()).transpose() == Null()
             True
+
+        monad2-expected_result2-expected_context2
+
+        .. code-block:: python
 
             >>> Err(error=None).transpose() == Some(inner=Err(error=None))
             True
@@ -378,7 +582,11 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def unwrap(self) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-2-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).unwrap() == 2
             True
@@ -388,7 +596,11 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def unwrap_err(self) -> E:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-failed-expected_context0
+
+        .. code-block:: python
 
             >>> Err(error="failed").unwrap_err() == "failed"
             True
@@ -398,10 +610,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def unwrap_or(self, default: T) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-bike-car
+
+        .. code-block:: python
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
+
+        monad1-bike-bike
+
+        .. code-block:: python
 
             >>> Err(error=None).unwrap_or("bike") == "bike"
             True
@@ -411,10 +631,18 @@ class Result[T, E](ABC):
 
     @abstractmethod
     def unwrap_or_else(self, fn: Callable[[E], T]) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_42-4
+
+        .. code-block:: python
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
+
+        monad1-get_42-42
+
+        .. code-block:: python
 
             >>> Err(error=None).unwrap_or_else(get_42) == 42
             True
@@ -428,16 +656,32 @@ class Ok[T](Result[T, Never]):
     inner: T = attrs.field(default=None)
 
     def and_[U, E](self, res: Result[U, E]) -> Result[U, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        Calling ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
+        Calling ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
+
+        .. code-block:: python
+
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
+        Calling ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
+
+        .. code-block:: python
+
             >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
+
+        Whereas, calling ``and_`` on an ``Ok`` with another ``Ok`` as the arg then the first ``Ok`` is discarded and the second is returned.
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_(Ok(inner="different result type")) == Ok(inner="different result type")
             True
@@ -448,13 +692,25 @@ class Ok[T](Result[T, Never]):
     def and_then[U, E, **P](
         self, fn: Callable[Concatenate[T, P], Result[U, E]], *args: P.args, **kwargs: P.kwargs
     ) -> Result[U, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must_be_less_than_10-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
+        monad1-must_be_less_than_10-expected_result1
+
+        .. code-block:: python
+
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
+
+        monad2-must_be_less_than_10-expected_result2
+
+        .. code-block:: python
 
             >>> Err(error="not a number").and_then(must_be_less_than_10) == Err(error="not a number")
             True
@@ -463,10 +719,18 @@ class Ok[T](Result[T, Never]):
         return fn(self.inner, *args, **kwargs)
 
     def err[E](self) -> Option[E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).err() == Null()
             True
+
+        monad1-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error="Nothing here").err() == Some(inner="Nothing here")
             True
@@ -477,7 +741,11 @@ class Ok[T](Result[T, Never]):
         return Null()
 
     def expect(self, msg: str) -> T:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must be positive-2-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).expect("must be positive") == 2
             True
@@ -486,7 +754,11 @@ class Ok[T](Result[T, Never]):
         return self.inner
 
     def expect_err(self, msg: str) -> Never:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must be err-2-expected_context0
+
+        .. code-block:: python
 
             >>> Err(error=2).expect_err("must be err") == 2
             True
@@ -495,16 +767,32 @@ class Ok[T](Result[T, Never]):
         raise ValueError(msg)
 
     def flatten(self) -> Result[T, Never]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
 
+        monad1-expected_result1
+
+        .. code-block:: python
+
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
 
+        monad2-expected_result2
+
+        .. code-block:: python
+
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
+
+        monad3-expected_result3
+
+        .. code-block:: python
 
             >>> Err(error=None).flatten() == Err(error=None)
             True
@@ -515,10 +803,18 @@ class Ok[T](Result[T, Never]):
         return cast(Result[T, Never], self)
 
     def inspect(self, fn: Callable[[T], None]) -> Result[T, Never]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-append_to_list-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
+
+        monad1-append_to_list-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error="un-appendable").inspect(append_to_list) == Err(error="un-appendable")
             True
@@ -528,10 +824,18 @@ class Ok[T](Result[T, Never]):
         return self
 
     def inspect_err(self, fn: Callable[[Never], None]) -> Result[T, Never]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-append_to_list-expected_result0
+
+        .. code-block:: python
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
+
+        monad1-append_to_list-expected_result1
+
+        .. code-block:: python
 
             >>> Ok(inner="un-appendable").inspect_err(append_to_list) == Ok(inner="un-appendable")
             True
@@ -540,10 +844,18 @@ class Ok[T](Result[T, Never]):
         return self
 
     def is_err(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-False
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_err() == False
             True
+
+        monad1-True
+
+        .. code-block:: python
 
             >>> Err(error=2).is_err() == True
             True
@@ -552,13 +864,25 @@ class Ok[T](Result[T, Never]):
         return False
 
     def is_err_and(self, fn: Callable[[Never], bool]) -> bool:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-is_even-False
+
+        .. code-block:: python
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
 
+        monad1-is_even-True
+
+        .. code-block:: python
+
             >>> Err(error=2).is_err_and(is_even) == True
             True
+
+        monad2-is_even-False
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_err_and(is_even) == False
             True
@@ -567,10 +891,18 @@ class Ok[T](Result[T, Never]):
         return False
 
     def is_ok(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-True
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_ok() == True
             True
+
+        monad1-False
+
+        .. code-block:: python
 
             >>> Err(error=2).is_ok() == False
             True
@@ -579,13 +911,25 @@ class Ok[T](Result[T, Never]):
         return True
 
     def is_ok_and(self, fn: Callable[[T], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-is_even-False
+
+        .. code-block:: python
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
 
+        monad1-is_even-True
+
+        .. code-block:: python
+
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
+
+        monad2-is_even-False
+
+        .. code-block:: python
 
             >>> Err(error=2).is_ok_and(is_even) == False
             True
@@ -596,10 +940,18 @@ class Ok[T](Result[T, Never]):
     def map[U, **P](
         self, fn: Callable[Concatenate[T, P], U], *args: P.args, **kwargs: P.kwargs
     ) -> Result[U, Never]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-add_one-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
+
+        monad1-add_one-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error=1).map(add_one) == Err(error=1)
             True
@@ -613,10 +965,18 @@ class Ok[T](Result[T, Never]):
         *args: P.args,  # noqa: ARG002
         **kwargs: P.kwargs,  # noqa: ARG002
     ) -> Result[T, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-add_one-expected_result0
+
+        .. code-block:: python
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
+
+        monad1-add_one-expected_result1
+
+        .. code-block:: python
 
             >>> Ok(inner=1).map_err(add_one) == Ok(inner=1)
             True
@@ -631,10 +991,18 @@ class Ok[T](Result[T, Never]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-42-len-3
+
+        .. code-block:: python
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
+
+        monad1-42-len-42
+
+        .. code-block:: python
 
             >>> Err(error=None).map_or(42, len) == 42
             True
@@ -649,10 +1017,18 @@ class Ok[T](Result[T, Never]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_42-len-3
+
+        .. code-block:: python
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
+
+        monad1-get_42-len-42
+
+        .. code-block:: python
 
             >>> Err(error=None).map_or_else(get_42, len) == 42
             True
@@ -661,10 +1037,18 @@ class Ok[T](Result[T, Never]):
         return fn(self.inner, *args, **kwargs)
 
     def ok(self) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
+
+        monad1-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error=2).ok() == Null()
             True
@@ -675,16 +1059,32 @@ class Ok[T](Result[T, Never]):
         return Some(self.inner)
 
     def or_[F](self, res: Result[T, F]) -> Result[T, F]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-res0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
+        monad1-res1-expected_result1
+
+        .. code-block:: python
+
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
+        monad2-res2-expected_result2
+
+        .. code-block:: python
+
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
+
+        monad3-res3-expected_result3
+
+        .. code-block:: python
 
             >>> Err(error="foo").or_(Err(error="foo")) == Err(error="foo")
             True
@@ -698,13 +1098,25 @@ class Ok[T](Result[T, Never]):
         *args: P.args,  # noqa: ARG002
         **kwargs: P.kwargs,  # noqa: ARG002
     ) -> Result[T, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_ok_vikings-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
+        monad1-get_ok_vikings-expected_result1
+
+        .. code-block:: python
+
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
+
+        monad2-Err-expected_result2
+
+        .. code-block:: python
 
             >>> Err(error="foo").or_else(Err) == Err(error="foo")
             True
@@ -713,13 +1125,25 @@ class Ok[T](Result[T, Never]):
         return cast(Result[T, F], self)
 
     def transpose(self) -> Option[Result[T, Never]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
 
+        monad1-expected_result1-expected_context1
+
+        .. code-block:: python
+
             >>> Ok(inner=Null()).transpose() == Null()
             True
+
+        monad2-expected_result2-expected_context2
+
+        .. code-block:: python
 
             >>> Err(error=None).transpose() == Some(inner=Err(error=None))
             True
@@ -734,7 +1158,11 @@ class Ok[T](Result[T, Never]):
         raise TypeError("inner must be an `Option` type")
 
     def unwrap(self) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-2-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).unwrap() == 2
             True
@@ -743,7 +1171,11 @@ class Ok[T](Result[T, Never]):
         return self.inner
 
     def unwrap_err(self) -> Never:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-failed-expected_context0
+
+        .. code-block:: python
 
             >>> Err(error="failed").unwrap_err() == "failed"
             True
@@ -752,10 +1184,18 @@ class Ok[T](Result[T, Never]):
         raise TypeError("Can't call `unwrap_err` on `Ok`")
 
     def unwrap_or(self, default: T) -> T:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-bike-car
+
+        .. code-block:: python
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
+
+        monad1-bike-bike
+
+        .. code-block:: python
 
             >>> Err(error=None).unwrap_or("bike") == "bike"
             True
@@ -764,10 +1204,18 @@ class Ok[T](Result[T, Never]):
         return self.inner
 
     def unwrap_or_else(self, fn: Callable[[Never], T]) -> T:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_42-4
+
+        .. code-block:: python
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
+
+        monad1-get_42-42
+
+        .. code-block:: python
 
             >>> Err(error=None).unwrap_or_else(get_42) == 42
             True
@@ -789,16 +1237,32 @@ class Err[E](Result[Never, E]):
     traceback: str = attrs.field(default="", validator=instance_of(str), repr=False)
 
     def and_[U, F](self, res: Result[U, F]) -> Result[U, F]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        Calling ``and_`` on an ``Ok`` with an ``Err`` as the arg then the ``Err`` takes precedence over the ``Ok``.
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_(Err(error="late error")) == Err(error="late error")
             True
 
+        Calling ``and_`` on an ``Err`` with an ``Ok`` as the arg then the ``Err`` still takes precedence over the ``Ok``.
+
+        .. code-block:: python
+
             >>> Err(error="early error").and_(Ok(inner="foo")) == Err(error="early error")
             True
 
+        Calling ``and_`` on an ``Err`` with an ``Err`` as the arg then the first ``Err`` is returned and the second is discarded.
+
+        .. code-block:: python
+
             >>> Err(error="not a 2").and_(Err(error="late error")) == Err(error="not a 2")
             True
+
+        Whereas, calling ``and_`` on an ``Ok`` with another ``Ok`` as the arg then the first ``Ok`` is discarded and the second is returned.
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_(Ok(inner="different result type")) == Ok(inner="different result type")
             True
@@ -812,13 +1276,25 @@ class Err[E](Result[Never, E]):
         *args: P.args,  # noqa: ARG002
         **kwargs: P.kwargs,  # noqa: ARG002
     ) -> Result[U, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must_be_less_than_10-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).and_then(must_be_less_than_10) == Ok(inner=2)
             True
 
+        monad1-must_be_less_than_10-expected_result1
+
+        .. code-block:: python
+
             >>> Ok(inner=20).and_then(must_be_less_than_10) == Err(error="too high")
             True
+
+        monad2-must_be_less_than_10-expected_result2
+
+        .. code-block:: python
 
             >>> Err(error="not a number").and_then(must_be_less_than_10) == Err(error="not a number")
             True
@@ -827,10 +1303,18 @@ class Err[E](Result[Never, E]):
         return cast(Result[U, F], self)
 
     def err(self) -> Option[E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).err() == Null()
             True
+
+        monad1-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error="Nothing here").err() == Some(inner="Nothing here")
             True
@@ -841,7 +1325,11 @@ class Err[E](Result[Never, E]):
         return Some(self.error)
 
     def expect(self, msg: str) -> Never:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must be positive-2-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).expect("must be positive") == 2
             True
@@ -850,7 +1338,11 @@ class Err[E](Result[Never, E]):
         raise ValueError(msg)
 
     def expect_err(self, msg: str) -> E:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-must be err-2-expected_context0
+
+        .. code-block:: python
 
             >>> Err(error=2).expect_err("must be err") == 2
             True
@@ -859,16 +1351,32 @@ class Err[E](Result[Never, E]):
         return self.error
 
     def flatten(self) -> Result[Never, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=Ok(inner=Ok(inner=2))).flatten() == Ok(inner=Ok(inner=2))
             True
 
+        monad1-expected_result1
+
+        .. code-block:: python
+
             >>> Ok(inner=Ok(inner=2)).flatten() == Ok(inner=2)
             True
 
+        monad2-expected_result2
+
+        .. code-block:: python
+
             >>> Ok(inner=2).flatten() == Ok(inner=2)
             True
+
+        monad3-expected_result3
+
+        .. code-block:: python
 
             >>> Err(error=None).flatten() == Err(error=None)
             True
@@ -877,10 +1385,18 @@ class Err[E](Result[Never, E]):
         return self
 
     def inspect(self, fn: Callable[[Never], None]) -> Result[Never, E]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-append_to_list-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=[1]).inspect(append_to_list) == Ok(inner=[1])
             True
+
+        monad1-append_to_list-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error="un-appendable").inspect(append_to_list) == Err(error="un-appendable")
             True
@@ -889,10 +1405,18 @@ class Err[E](Result[Never, E]):
         return self
 
     def inspect_err(self, fn: Callable[[E], None]) -> Result[Never, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-append_to_list-expected_result0
+
+        .. code-block:: python
 
             >>> Err(error=[1]).inspect_err(append_to_list) == Err(error=[1])
             True
+
+        monad1-append_to_list-expected_result1
+
+        .. code-block:: python
 
             >>> Ok(inner="un-appendable").inspect_err(append_to_list) == Ok(inner="un-appendable")
             True
@@ -902,10 +1426,18 @@ class Err[E](Result[Never, E]):
         return self
 
     def is_err(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-False
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_err() == False
             True
+
+        monad1-True
+
+        .. code-block:: python
 
             >>> Err(error=2).is_err() == True
             True
@@ -914,13 +1446,25 @@ class Err[E](Result[Never, E]):
         return True
 
     def is_err_and(self, fn: Callable[[E], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-is_even-False
+
+        .. code-block:: python
 
             >>> Err(error=1).is_err_and(is_even) == False
             True
 
+        monad1-is_even-True
+
+        .. code-block:: python
+
             >>> Err(error=2).is_err_and(is_even) == True
             True
+
+        monad2-is_even-False
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_err_and(is_even) == False
             True
@@ -929,10 +1473,18 @@ class Err[E](Result[Never, E]):
         return fn(self.error)
 
     def is_ok(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-True
+
+        .. code-block:: python
 
             >>> Ok(inner=2).is_ok() == True
             True
+
+        monad1-False
+
+        .. code-block:: python
 
             >>> Err(error=2).is_ok() == False
             True
@@ -941,13 +1493,25 @@ class Err[E](Result[Never, E]):
         return False
 
     def is_ok_and(self, fn: Callable[[Never], bool]) -> bool:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-is_even-False
+
+        .. code-block:: python
 
             >>> Ok(inner=1).is_ok_and(is_even) == False
             True
 
+        monad1-is_even-True
+
+        .. code-block:: python
+
             >>> Ok(inner=2).is_ok_and(is_even) == True
             True
+
+        monad2-is_even-False
+
+        .. code-block:: python
 
             >>> Err(error=2).is_ok_and(is_even) == False
             True
@@ -961,10 +1525,18 @@ class Err[E](Result[Never, E]):
         *args: P.args,  # noqa: ARG002
         **kwargs: P.kwargs,  # noqa: ARG002
     ) -> Result[U, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-add_one-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=1).map(add_one) == Ok(inner=2)
             True
+
+        monad1-add_one-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error=1).map(add_one) == Err(error=1)
             True
@@ -975,10 +1547,18 @@ class Err[E](Result[Never, E]):
     def map_err[F, **P](
         self, fn: Callable[Concatenate[E, P], F], *args: P.args, **kwargs: P.kwargs
     ) -> Result[Never, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-add_one-expected_result0
+
+        .. code-block:: python
 
             >>> Err(error=1).map_err(add_one) == Err(error=2)
             True
+
+        monad1-add_one-expected_result1
+
+        .. code-block:: python
 
             >>> Ok(inner=1).map_err(add_one) == Ok(inner=1)
             True
@@ -995,10 +1575,18 @@ class Err[E](Result[Never, E]):
         *args: P.args,  # noqa: ARG002
         **kwargs: P.kwargs,  # noqa: ARG002
     ) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-42-len-3
+
+        .. code-block:: python
 
             >>> Ok(inner="foo").map_or(42, len) == 3
             True
+
+        monad1-42-len-42
+
+        .. code-block:: python
 
             >>> Err(error=None).map_or(42, len) == 42
             True
@@ -1013,10 +1601,18 @@ class Err[E](Result[Never, E]):
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_42-len-3
+
+        .. code-block:: python
 
             >>> Ok(inner="foo").map_or_else(get_42, len) == 3
             True
+
+        monad1-get_42-len-42
+
+        .. code-block:: python
 
             >>> Err(error=None).map_or_else(get_42, len) == 42
             True
@@ -1025,10 +1621,18 @@ class Err[E](Result[Never, E]):
         return default(*args, **kwargs)
 
     def ok(self) -> Option[Never]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).ok() == Some(inner=2)
             True
+
+        monad1-expected_result1
+
+        .. code-block:: python
 
             >>> Err(error=2).ok() == Null()
             True
@@ -1039,16 +1643,32 @@ class Err[E](Result[Never, E]):
         return Null()
 
     def or_[F](self, res: Result[Never, F]) -> Result[Never, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-res0-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).or_(Err(error="foo")) == Ok(inner=2)
             True
 
+        monad1-res1-expected_result1
+
+        .. code-block:: python
+
             >>> Err(error="foo").or_(Ok(inner=100)) == Ok(inner=100)
             True
 
+        monad2-res2-expected_result2
+
+        .. code-block:: python
+
             >>> Ok(inner=2).or_(Ok(inner=100)) == Ok(inner=2)
             True
+
+        monad3-res3-expected_result3
+
+        .. code-block:: python
 
             >>> Err(error="foo").or_(Err(error="foo")) == Err(error="foo")
             True
@@ -1059,13 +1679,25 @@ class Err[E](Result[Never, E]):
     def or_else[F, **P](
         self, fn: Callable[Concatenate[E, P], F], *args: P.args, **kwargs: P.kwargs
     ) -> Result[Never, F]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_ok_vikings-expected_result0
+
+        .. code-block:: python
 
             >>> Ok(inner="barbarians").or_else(get_ok_vikings) == Ok(inner="barbarians")
             True
 
+        monad1-get_ok_vikings-expected_result1
+
+        .. code-block:: python
+
             >>> Err(error="foo").or_else(get_ok_vikings) == Ok(inner="vikings")
             True
+
+        monad2-Err-expected_result2
+
+        .. code-block:: python
 
             >>> Err(error="foo").or_else(Err) == Err(error="foo")
             True
@@ -1074,13 +1706,25 @@ class Err[E](Result[Never, E]):
         return cast(Result[Never, F], fn(self.error, *args, **kwargs))
 
     def transpose(self) -> Option[Result[Never, E]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-expected_result0-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=Some(inner=5)).transpose() == Some(inner=Ok(inner=5))
             True
 
+        monad1-expected_result1-expected_context1
+
+        .. code-block:: python
+
             >>> Ok(inner=Null()).transpose() == Null()
             True
+
+        monad2-expected_result2-expected_context2
+
+        .. code-block:: python
 
             >>> Err(error=None).transpose() == Some(inner=Err(error=None))
             True
@@ -1091,7 +1735,11 @@ class Err[E](Result[Never, E]):
         return Some(self)
 
     def unwrap(self) -> Never:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-2-expected_context0
+
+        .. code-block:: python
 
             >>> Ok(inner=2).unwrap() == 2
             True
@@ -1102,7 +1750,11 @@ class Err[E](Result[Never, E]):
         raise TypeError("Can't call `unwrap` on `Err`")
 
     def unwrap_err(self) -> E:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-failed-expected_context0
+
+        .. code-block:: python
 
             >>> Err(error="failed").unwrap_err() == "failed"
             True
@@ -1111,10 +1763,18 @@ class Err[E](Result[Never, E]):
         return self.error
 
     def unwrap_or[U](self, default: U) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-bike-car
+
+        .. code-block:: python
 
             >>> Ok(inner="car").unwrap_or("bike") == "car"
             True
+
+        monad1-bike-bike
+
+        .. code-block:: python
 
             >>> Err(error=None).unwrap_or("bike") == "bike"
             True
@@ -1123,10 +1783,18 @@ class Err[E](Result[Never, E]):
         return default
 
     def unwrap_or_else[U](self, fn: Callable[[E], U]) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+        monad0-get_42-4
+
+        .. code-block:: python
 
             >>> Ok(inner=4).unwrap_or_else(get_42) == 4
             True
+
+        monad1-get_42-42
+
+        .. code-block:: python
 
             >>> Err(error=None).unwrap_or_else(get_42) == 42
             True

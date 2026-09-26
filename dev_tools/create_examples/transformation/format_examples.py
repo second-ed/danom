@@ -38,13 +38,13 @@ def example_to_str(example: ExampleRecord) -> str:
     doctest = "\n".join(
         f"{'    >>>' if i == 0 else '    ...'} {line}" for i, line in enumerate(lines)
     )
-    return f"{doctest}\n    True"
+    return f"{example.description or ''}\n\n.. code-block:: python\n\n{doctest}\n    True"
 
 
 def reduce_examples_to_example_str(
     fn_examples: dict[str, dict[str, list[str]]],
 ) -> dict[str, dict[str, str]]:
     return {
-        path: {k: ".. code-block:: python\n\n" + "\n\n".join(v) + "\n::" for k, v in fn.items()}
+        path: {k: "Papertrail examples:\n\n" + "\n\n".join(v) + "\n::" for k, v in fn.items()}
         for path, fn in fn_examples.items()
     }

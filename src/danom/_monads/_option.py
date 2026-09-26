@@ -15,16 +15,32 @@ if TYPE_CHECKING:
 class Option[T](ABC):
     @abstractmethod
     def and_(self, opt_b: Option[T]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).and_(Null()) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().and_(Some(inner="foo")) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().and_(Null()) == Null()
             True
@@ -34,13 +50,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def and_then[U](self, fn: Callable[[T], Option[U]]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).and_then(must_be_less_than_10) == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().and_then(must_be_less_than_10) == Null()
             True
@@ -50,10 +78,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def as_list(self) -> list[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).as_list() == [2]
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().as_list() == []
             True
@@ -63,10 +99,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def as_tuple(self) -> tuple[T, ...]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().as_tuple() == ()
             True
@@ -75,10 +119,18 @@ class Option[T](ABC):
         ...
 
     def cloned(self) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).cloned() == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().cloned() == Null()
             True
@@ -88,7 +140,11 @@ class Option[T](ABC):
 
     @abstractmethod
     def expect(self, msg: str) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).expect("must be positive") == 2
             True
@@ -98,13 +154,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def filter_(self, predicate: Callable[[T], bool]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=3).filter_(is_even) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().filter_(is_even) == Null()
             True
@@ -114,16 +182,32 @@ class Option[T](ABC):
 
     @abstractmethod
     def flatten(self) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=Some(inner=Some(inner=2))).flatten() == Some(inner=Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().flatten() == Null()
             True
@@ -133,10 +217,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def inspect(self, fn: Callable[[T], None]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=[1]).inspect(append_to_list) == Some(inner=[1])
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().inspect(append_to_list) == Null()
             True
@@ -146,10 +238,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def is_none(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).is_none() == False
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_none() == True
             True
@@ -159,13 +259,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def is_none_or(self, fn: Callable[[T], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).is_none_or(is_even) == False
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).is_none_or(is_even) == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_none_or(is_even) == True
             True
@@ -175,10 +287,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def is_some(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).is_some() == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_some() == False
             True
@@ -188,13 +308,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def is_some_and(self, fn: Callable[[T], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).is_some_and(is_even) == False
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).is_some_and(is_even) == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_some_and(is_even) == False
             True
@@ -204,10 +336,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def map[U](self, fn: Callable[[T], U]) -> Option[U]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).map(add_one) == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map(add_one) == Null()
             True
@@ -217,10 +357,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map_or(42, len) == 42
             True
@@ -230,10 +378,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def map_or_else[U](self, default: Callable[..., U], fn: Callable[[T], U]) -> U:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").map_or_else(get_42, len) == 3
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map_or_else(get_42, len) == 42
             True
@@ -243,10 +399,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def ok_or[E](self, err: E) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().ok_or(0) == Err(error=0)
             True
@@ -256,10 +420,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def ok_or_else[E](self, err: Callable[..., E]) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().ok_or_else(get_42) == Err(error=42)
             True
@@ -269,16 +441,32 @@ class Option[T](ABC):
 
     @abstractmethod
     def or_(self, opt_b: Option[T]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).or_(Null()) == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().or_(Null()) == Null()
             True
@@ -288,13 +476,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def or_else(self, opt_b: Callable[..., Option[T]]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="barbarians").or_else(get_some_vikings) == Some(inner="barbarians")
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().or_else(Null) == Null()
             True
@@ -304,10 +504,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def replace(self, value: T) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).replace(5) == Some(inner=5)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().replace(3) == Null()
             True
@@ -317,13 +525,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def transpose[E](self) -> Result[Option[T], E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().transpose() == Ok(inner=Null())
             True
@@ -333,7 +553,11 @@ class Option[T](ABC):
 
     @abstractmethod
     def unwrap(self) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).unwrap() == 2
             True
@@ -343,10 +567,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def unwrap_or(self, default: T) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="car").unwrap_or("bike") == "car"
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unwrap_or("bike") == "bike"
             True
@@ -356,10 +588,18 @@ class Option[T](ABC):
 
     @abstractmethod
     def unwrap_or_else(self, fn: Callable[..., T]) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unwrap_or_else(get_42) == 42
             True
@@ -369,13 +609,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def zip[U](self, other: Option[U]) -> Option[tuple[T, U]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).zip(Some(inner="hi")) == Some(inner=(1, "hi"))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=1).zip(Null()) == Null()
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().zip(Some(inner=1)) == Null()
             True
@@ -385,13 +637,25 @@ class Option[T](ABC):
 
     @abstractmethod
     def unzip[U](self) -> tuple[Option[T], Option[U]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=(2, 2)).unzip() == (Some(inner=2), Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unzip() == (Null(), Null())
             True
@@ -405,16 +669,32 @@ class Some[T](Option):
     inner: T
 
     def and_(self, opt_b: Option[T]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).and_(Null()) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().and_(Some(inner="foo")) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().and_(Null()) == Null()
             True
@@ -423,13 +703,25 @@ class Some[T](Option):
         return opt_b
 
     def and_then[U](self, fn: Callable[[T], Option[U]]) -> Option[U]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).and_then(must_be_less_than_10) == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().and_then(must_be_less_than_10) == Null()
             True
@@ -438,10 +730,18 @@ class Some[T](Option):
         return fn(self.inner)
 
     def as_list(self) -> list[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).as_list() == [2]
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().as_list() == []
             True
@@ -450,10 +750,18 @@ class Some[T](Option):
         return [self.inner]
 
     def as_tuple(self) -> tuple[T, ...]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().as_tuple() == ()
             True
@@ -462,7 +770,11 @@ class Some[T](Option):
         return (self.inner,)
 
     def expect(self, msg: str) -> T:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).expect("must be positive") == 2
             True
@@ -471,13 +783,25 @@ class Some[T](Option):
         return self.inner
 
     def filter_(self, predicate: Callable[[T], bool]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=3).filter_(is_even) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().filter_(is_even) == Null()
             True
@@ -486,16 +810,32 @@ class Some[T](Option):
         return self if predicate(self.inner) else Null()
 
     def flatten(self) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=Some(inner=Some(inner=2))).flatten() == Some(inner=Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().flatten() == Null()
             True
@@ -506,10 +846,18 @@ class Some[T](Option):
         return self
 
     def inspect(self, fn: Callable[[T], None]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=[1]).inspect(append_to_list) == Some(inner=[1])
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().inspect(append_to_list) == Null()
             True
@@ -519,10 +867,18 @@ class Some[T](Option):
         return self
 
     def is_none(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).is_none() == False
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_none() == True
             True
@@ -531,13 +887,25 @@ class Some[T](Option):
         return False
 
     def is_none_or(self, fn: Callable[[T], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).is_none_or(is_even) == False
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).is_none_or(is_even) == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_none_or(is_even) == True
             True
@@ -546,10 +914,18 @@ class Some[T](Option):
         return fn(self.inner)
 
     def is_some(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).is_some() == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_some() == False
             True
@@ -558,13 +934,25 @@ class Some[T](Option):
         return True
 
     def is_some_and(self, fn: Callable[[T], bool]) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).is_some_and(is_even) == False
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).is_some_and(is_even) == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_some_and(is_even) == False
             True
@@ -573,10 +961,18 @@ class Some[T](Option):
         return fn(self.inner)
 
     def map[U](self, fn: Callable[[T], U]) -> Option[U]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).map(add_one) == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map(add_one) == Null()
             True
@@ -585,10 +981,18 @@ class Some[T](Option):
         return Some(fn(self.inner))
 
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map_or(42, len) == 42
             True
@@ -597,10 +1001,18 @@ class Some[T](Option):
         return fn(self.inner)
 
     def map_or_else[U](self, default: Callable[[], U], fn: Callable[[T], U]) -> U:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").map_or_else(get_42, len) == 3
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map_or_else(get_42, len) == 42
             True
@@ -609,10 +1021,18 @@ class Some[T](Option):
         return fn(self.inner)
 
     def ok_or[E](self, err: E) -> Result[T, E]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().ok_or(0) == Err(error=0)
             True
@@ -623,10 +1043,18 @@ class Some[T](Option):
         return cast(Result[T, E], Ok(self.inner))
 
     def ok_or_else[E](self, err: Callable[[], E]) -> Result[T, E]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().ok_or_else(get_42) == Err(error=42)
             True
@@ -637,16 +1065,32 @@ class Some[T](Option):
         return cast(Result[T, E], Ok(self.inner))
 
     def or_(self, opt_b: Option[T]) -> Option[T]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).or_(Null()) == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().or_(Null()) == Null()
             True
@@ -655,13 +1099,25 @@ class Some[T](Option):
         return self
 
     def or_else(self, opt_b: Callable[[], Option[T]]) -> Option[T]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="barbarians").or_else(get_some_vikings) == Some(inner="barbarians")
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().or_else(Null) == Null()
             True
@@ -670,10 +1126,18 @@ class Some[T](Option):
         return self
 
     def replace(self, value: T) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).replace(5) == Some(inner=5)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().replace(3) == Null()
             True
@@ -682,13 +1146,25 @@ class Some[T](Option):
         return Some(value)
 
     def transpose(self) -> Result[Option[T], Option[T]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().transpose() == Ok(inner=Null())
             True
@@ -703,7 +1179,11 @@ class Some[T](Option):
         raise TypeError("inner must be a `Result` type")
 
     def unwrap(self) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).unwrap() == 2
             True
@@ -712,10 +1192,18 @@ class Some[T](Option):
         return self.inner
 
     def unwrap_or(self, default: T) -> T:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="car").unwrap_or("bike") == "car"
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unwrap_or("bike") == "bike"
             True
@@ -724,10 +1212,18 @@ class Some[T](Option):
         return self.inner
 
     def unwrap_or_else(self, fn: Callable[[], T]) -> T:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unwrap_or_else(get_42) == 42
             True
@@ -736,13 +1232,25 @@ class Some[T](Option):
         return self.inner
 
     def zip[U](self, other: Option[U]) -> Option[tuple[T, U]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).zip(Some(inner="hi")) == Some(inner=(1, "hi"))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=1).zip(Null()) == Null()
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().zip(Some(inner=1)) == Null()
             True
@@ -753,13 +1261,25 @@ class Some[T](Option):
         return Null[tuple[T, U]]()
 
     def unzip[U](self) -> tuple[Option[T], Option[U]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=(2, 2)).unzip() == (Some(inner=2), Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unzip() == (Null(), Null())
             True
@@ -773,16 +1293,32 @@ class Some[T](Option):
 @attrs.define(frozen=True)
 class Null[T](Option):
     def and_(self, opt_b: Option[T]) -> Option[T]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).and_(Null()) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().and_(Some(inner="foo")) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).and_(Some(inner="foo")) == Some(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().and_(Null()) == Null()
             True
@@ -791,13 +1327,25 @@ class Null[T](Option):
         return self
 
     def and_then[U](self, fn: Callable[[T], Option[U]]) -> Option[U]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).and_then(must_be_less_than_10) == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=20).and_then(must_be_less_than_10) == Null()
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().and_then(must_be_less_than_10) == Null()
             True
@@ -806,10 +1354,18 @@ class Null[T](Option):
         return self
 
     def as_list(self) -> list[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).as_list() == [2]
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().as_list() == []
             True
@@ -818,10 +1374,18 @@ class Null[T](Option):
         return []
 
     def as_tuple(self) -> tuple[T, ...]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).as_tuple() == (2,)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().as_tuple() == ()
             True
@@ -830,7 +1394,11 @@ class Null[T](Option):
         return ()
 
     def expect(self, msg: str) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).expect("must be positive") == 2
             True
@@ -839,13 +1407,25 @@ class Null[T](Option):
         raise ValueError(msg)
 
     def filter_(self, predicate: Callable[[T], bool]) -> Option[T]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=3).filter_(is_even) == Null()
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=4).filter_(is_even) == Some(inner=4)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().filter_(is_even) == Null()
             True
@@ -854,16 +1434,32 @@ class Null[T](Option):
         return self
 
     def flatten(self) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=Some(inner=Some(inner=2))).flatten() == Some(inner=Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=Some(inner=2)).flatten() == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).flatten() == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().flatten() == Null()
             True
@@ -872,10 +1468,18 @@ class Null[T](Option):
         return self
 
     def inspect(self, fn: Callable[[T], None]) -> Option[T]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=[1]).inspect(append_to_list) == Some(inner=[1])
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().inspect(append_to_list) == Null()
             True
@@ -884,10 +1488,18 @@ class Null[T](Option):
         return self
 
     def is_none(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).is_none() == False
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_none() == True
             True
@@ -896,13 +1508,25 @@ class Null[T](Option):
         return True
 
     def is_none_or(self, fn: Callable[[T], bool]) -> bool:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).is_none_or(is_even) == False
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).is_none_or(is_even) == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_none_or(is_even) == True
             True
@@ -911,10 +1535,18 @@ class Null[T](Option):
         return True
 
     def is_some(self) -> bool:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).is_some() == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_some() == False
             True
@@ -923,13 +1555,25 @@ class Null[T](Option):
         return False
 
     def is_some_and(self, fn: Callable[[T], bool]) -> bool:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).is_some_and(is_even) == False
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).is_some_and(is_even) == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().is_some_and(is_even) == False
             True
@@ -938,10 +1582,18 @@ class Null[T](Option):
         return False
 
     def map[U](self, fn: Callable[[T], U]) -> Option[U]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).map(add_one) == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map(add_one) == Null()
             True
@@ -950,10 +1602,18 @@ class Null[T](Option):
         return self
 
     def map_or[U](self, default: U, fn: Callable[[T], U]) -> U:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").map_or(42, len) == 3
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map_or(42, len) == 42
             True
@@ -962,10 +1622,18 @@ class Null[T](Option):
         return default
 
     def map_or_else[U](self, default: Callable[..., U], fn: Callable[[T], U]) -> U:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").map_or_else(get_42, len) == 3
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().map_or_else(get_42, len) == 42
             True
@@ -974,10 +1642,18 @@ class Null[T](Option):
         return default()
 
     def ok_or[E](self, err: E) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").ok_or(0) == Ok(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().ok_or(0) == Err(error=0)
             True
@@ -988,10 +1664,18 @@ class Null[T](Option):
         return cast(Result[T, E], Err[E](err))
 
     def ok_or_else[E](self, err: Callable[[], E]) -> Result[T, E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="foo").ok_or_else(get_42) == Ok(inner="foo")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().ok_or_else(get_42) == Err(error=42)
             True
@@ -1002,16 +1686,32 @@ class Null[T](Option):
         return cast(Result[T, E], Err[E](err()))
 
     def or_(self, opt_b: Option[T]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).or_(Null()) == Some(inner=2)
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().or_(Some(inner=100)) == Some(inner=100)
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=2).or_(Some(inner=100)) == Some(inner=2)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().or_(Null()) == Null()
             True
@@ -1020,13 +1720,25 @@ class Null[T](Option):
         return opt_b
 
     def or_else(self, opt_b: Callable[[], Option[T]]) -> Option[T]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="barbarians").or_else(get_some_vikings) == Some(inner="barbarians")
             True
 
+
+
+        .. code-block:: python
+
             >>> Null().or_else(get_some_vikings) == Some(inner="vikings")
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().or_else(Null) == Null()
             True
@@ -1035,10 +1747,18 @@ class Null[T](Option):
         return opt_b()
 
     def replace(self, value: T) -> Option[T]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).replace(5) == Some(inner=5)
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().replace(3) == Null()
             True
@@ -1047,13 +1767,25 @@ class Null[T](Option):
         return self
 
     def transpose[E](self) -> Result[Option[T], E]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=Ok(inner=2)).transpose() == Ok(inner=Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=Err(error=2)).transpose() == Err(error=Some(inner=2))
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().transpose() == Ok(inner=Null())
             True
@@ -1064,7 +1796,11 @@ class Null[T](Option):
         return cast(Result[Option[T], E], Ok(self))
 
     def unwrap(self) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=2).unwrap() == 2
             True
@@ -1073,10 +1809,18 @@ class Null[T](Option):
         raise TypeError("Can't call `unwrap` on `Null`")
 
     def unwrap_or(self, default: T) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner="car").unwrap_or("bike") == "car"
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unwrap_or("bike") == "bike"
             True
@@ -1085,10 +1829,18 @@ class Null[T](Option):
         return default
 
     def unwrap_or_else(self, fn: Callable[[], T]) -> T:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=4).unwrap_or_else(get_42) == 4
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unwrap_or_else(get_42) == 42
             True
@@ -1097,13 +1849,25 @@ class Null[T](Option):
         return fn()
 
     def zip[U](self, other: Option[U]) -> Option[tuple[T, U]]:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=1).zip(Some(inner="hi")) == Some(inner=(1, "hi"))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=1).zip(Null()) == Null()
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().zip(Some(inner=1)) == Null()
             True
@@ -1112,13 +1876,25 @@ class Null[T](Option):
         return self
 
     def unzip[U](self) -> tuple[Option[T], Option[U]]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Some(inner=(2, 2)).unzip() == (Some(inner=2), Some(inner=2))
             True
 
+
+
+        .. code-block:: python
+
             >>> Some(inner=4).unzip() == (Null(), Null())
             True
+
+
+
+        .. code-block:: python
 
             >>> Null().unzip() == (Null(), Null())
             True

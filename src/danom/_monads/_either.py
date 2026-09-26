@@ -40,10 +40,18 @@ class Either[T_co, E_co: object](ABC):
         Returns ``False`` if the result type is ``Left``.
 
 
+        Papertrail examples:
+
+
+
         .. code-block:: python
 
             >>> Right(inner=None).is_ok() == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=None).is_ok() == False
             True
@@ -57,10 +65,18 @@ class Either[T_co, E_co: object](ABC):
         Given an ``Left`` will return ``self``.
 
 
+        Papertrail examples:
+
+
+
         .. code-block:: python
 
             >>> Right(inner=0).map(add_one) == Right(inner=1)
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=None).map(add_one) == Left(inner=None)
             True
@@ -74,10 +90,18 @@ class Either[T_co, E_co: object](ABC):
         Given an ``Right`` will return ``self``.
 
 
+        Papertrail examples:
+
+
+
         .. code-block:: python
 
             >>> Right(inner=0).map_err(add_one) == Right(inner=0)
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=0).map_err(add_one) == Left(inner=1)
             True
@@ -115,16 +139,32 @@ class Either[T_co, E_co: object](ABC):
 
 
 
+        Papertrail examples:
+
+
+
         .. code-block:: python
 
             >>> Right(inner=Right(inner=None)).flatten() == Right(inner=None)
             True
 
+
+
+        .. code-block:: python
+
             >>> Right(inner=Left(inner=None)).flatten() == Left(inner=None)
             True
 
+
+
+        .. code-block:: python
+
             >>> Left(inner=Right(inner=None)).flatten() == Right(inner=None)
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=Left(inner=None)).flatten() == Left(inner=None)
             True
@@ -141,10 +181,18 @@ class Either[T_co, E_co: object](ABC):
 @attrs.define(frozen=True, hash=True)
 class Right(Either[T_co, Never]):
     def is_ok(self) -> Literal[True]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Right(inner=None).is_ok() == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=None).is_ok() == False
             True
@@ -153,10 +201,18 @@ class Right(Either[T_co, Never]):
         return True
 
     def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Right[U_co]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Right(inner=0).map(add_one) == Right(inner=1)
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=None).map(add_one) == Left(inner=None)
             True
@@ -165,10 +221,18 @@ class Right(Either[T_co, Never]):
         return Right(func(self.inner, *args, **kwargs))
 
     def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Right(inner=0).map_err(add_one) == Right(inner=0)
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=0).map_err(add_one) == Left(inner=1)
             True
@@ -189,10 +253,18 @@ class Right(Either[T_co, Never]):
 @attrs.define(frozen=True, hash=True)
 class Left(Either[Never, E_co]):
     def is_ok(self) -> Literal[False]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Right(inner=None).is_ok() == True
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=None).is_ok() == False
             True
@@ -201,10 +273,18 @@ class Left(Either[Never, E_co]):
         return False
 
     def map(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Self:  # noqa: ARG002
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Right(inner=0).map(add_one) == Right(inner=1)
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=None).map(add_one) == Left(inner=None)
             True
@@ -213,10 +293,18 @@ class Left(Either[Never, E_co]):
         return self
 
     def map_err(self, func: Mappable, *args: P.args, **kwargs: P.kwargs) -> Left[F_co]:
-        """.. code-block:: python
+        """Papertrail examples:
+
+
+
+        .. code-block:: python
 
             >>> Right(inner=0).map_err(add_one) == Right(inner=0)
             True
+
+
+
+        .. code-block:: python
 
             >>> Left(inner=0).map_err(add_one) == Left(inner=1)
             True

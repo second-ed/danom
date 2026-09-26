@@ -19,15 +19,17 @@ class ExampleRecord:
     kwargs: dict[str, Any]
     returned: Any
     expected: Any
+    description: str | None = None
 
     @classmethod
-    def new(
+    def new(  # noqa: PLR0913
         cls,
         fn: Callable,
         args: tuple[Any, ...],
         kwargs: dict[str, Any],
         returned: Any,  # noqa: ANN401
         expected: Any,  # noqa: ANN401
+        description: str | None = None,
     ) -> Self:
         return cls(
             cls_name=fn.__self__.__class__.__name__,
@@ -41,6 +43,7 @@ class ExampleRecord:
             kwargs={k: _get_repr(v) for k, v in kwargs.items()},
             returned=_get_repr(returned),
             expected=_get_repr(expected),
+            description=description,
         )
 
     def to_dict(self) -> dict[str, str]:
