@@ -253,10 +253,6 @@ Alternatively the map method can be used to return a new type instance with the 
 
 # Repo map
 ```
-├── .github
-│   └── workflows
-│       ├── ci_tests.yaml
-│       └── publish.yaml
 ├── dev_tools
 │   ├── create_examples
 │   │   ├── collection
@@ -274,8 +270,16 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── update_cov.py
 │   └── update_readme.py
 ├── docs
-│   └── source
-│       └── conf.py
+│   ├── docs-build
+│   │   ├── doctest
+│   │   ├── doctrees
+│   │   └── html
+│   │       ├── _sources
+│   │       └── _static
+│   ├── source
+│   │   └── conf.py
+│   └── Makefile
+├── rust
 ├── src
 │   └── danom
 │       ├── _monads
@@ -313,7 +317,7 @@ Alternatively the map method can be used to return a new type instance with the 
 │   ├── test_new_type.py
 │   ├── test_safe.py
 │   └── test_utils.py
-├── .pre-commit-config.yaml
+├── LICENSE
 ├── README.md
 ├── pyproject.toml
 ├── ruff.toml
