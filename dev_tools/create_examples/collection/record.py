@@ -31,13 +31,17 @@ class ExampleRecord:
         expected: Any,  # noqa: ANN401
         description: str | None = None,
     ) -> Self:
+        cls_self = _try_self(fn)
+
         return cls(
-            cls_name=fn.__self__.__class__.__name__,
+            cls_name=cls_self.__class__.__name__ if cls_self else "",
             fn_name=fn.__name__,
             module=fn.__module__,
             src_file=str(Path(inspect.getsourcefile(fn))),
-            ent_repr=f"{fn.__self__!r}.{fn.__name__}"
-            if fn.__class__.__name__ == "method"
+            ent_repr=f"{cls_self!r}.{fn.__name__}"
+            if cls_self
+            # else fn.__name__
+            # if fn.__class__.__name__ == "method"
             else fn.__name__,
             args=tuple(_get_repr(arg) for arg in args),
             kwargs={k: _get_repr(v) for k, v in kwargs.items()},
@@ -48,6 +52,13 @@ class ExampleRecord:
 
     def to_dict(self) -> dict[str, str]:
         return attrs.asdict(self)
+
+
+def _try_self(fn: Callable) -> str:
+    try:
+        return fn.__self__
+    except AttributeError:
+        return ""
 
 
 def _get_repr(arg: Any) -> str:  # noqa: ANN401
