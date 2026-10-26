@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -10,6 +10,9 @@ resolution-markers = [
 [options]
 exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
 exclude-newer-span = "P1W"
+
+[options.exclude-newer-package]
+repo-mapper-rs = false
 
 [[package]]
 name = "alabaster"
@@ -352,7 +355,7 @@ wheels = [
 
 [[package]]
 name = "danom"
-version = "0.17.0"
+version = "0.17.1"
 source = { editable = "." }
 dependencies = [
     { name = "attrs" },
@@ -389,7 +392,7 @@ dev = [
     { name = "pytest-asyncio", specifier = ">=1.3.0" },
     { name = "pytest-codspeed", specifier = ">=4.2.0" },
     { name = "pytest-cov", specifier = ">=7.0.0" },
-    { name = "repo-mapper-rs", specifier = ">=0.4.1" },
+    { name = "repo-mapper-rs", specifier = ">=0.5.1" },
     { name = "ruff", specifier = ">=0.14.6" },
     { name = "sphinx", specifier = ">=9.0.4" },
     { name = "ty", specifier = ">=0.0.8" },
@@ -1216,16 +1219,22 @@ wheels = [
 
 [[package]]
 name = "repo-mapper-rs"
-version = "0.4.1"
+version = "0.5.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5d/dc/3e87cd74c9aff611e5f6cc5f1ab03e66656e9669523a03053b6fc2cc6328/repo_mapper_rs-0.4.1.tar.gz", hash = "sha256:5295adaeba3d2acd91a1482779331add8c523e651224ccd1b243152015414228", size = 24844, upload-time = "2026-04-12T16:07:36.17Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/44/61cbafad06b845be444f0ef1831c0162ae91ebb8d9dea5d3e14ee4d1ce3d/repo_mapper_rs-0.5.1.tar.gz", hash = "sha256:d9332b9840ced9eef8457dcd73d320d2444f9431c2d73d9c3957eef8a2fac3c6", size = 33396, upload-time = "2026-10-26T20:48:27.227Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/50/02/fc07c135242cd3c1eae5cda1fa48971fc4391110dc78186e7f8c232b14a1/repo_mapper_rs-0.4.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:4f7953301db1926a48c90cef4136a1acb8c5a9cb28cf8ad049a74d10cc85c3fa", size = 593453, upload-time = "2026-04-12T16:07:27.403Z" },
-    { url = "https://files.pythonhosted.org/packages/c9/f9/a3517af5f1ad548c34791312bb6258132f603e7517c973087f9d2c02724a/repo_mapper_rs-0.4.1-cp312-cp312-manylinux_2_34_x86_64.whl", hash = "sha256:ce0b20149126f04367689b22b831dc587043832910d124bb7a75145c8b0c224c", size = 697599, upload-time = "2026-04-12T16:07:28.823Z" },
-    { url = "https://files.pythonhosted.org/packages/14/c7/27a70a6bfa527e355a784b3d6be51af4786db13149b3954d1eb2c1bcea9f/repo_mapper_rs-0.4.1-cp312-cp312-win_amd64.whl", hash = "sha256:c1c696b28e4bcc515b9a6b2426b1f218d1325a4c41db6469690d367a577fd60c", size = 582993, upload-time = "2026-04-12T16:07:30.04Z" },
-    { url = "https://files.pythonhosted.org/packages/d6/03/f6ded0f6daad0f567ef2dec2376de79516cedbd3daf84a07652b219a2372/repo_mapper_rs-0.4.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:062158cf727eee7a1290da506139a5d468e0552148871481e00d976b12a7157b", size = 593375, upload-time = "2026-04-12T16:07:31.689Z" },
-    { url = "https://files.pythonhosted.org/packages/ce/d2/7352a105b8252b502a32bdf06139231347d500e32470aa6293dabba65191/repo_mapper_rs-0.4.1-cp313-cp313-manylinux_2_34_x86_64.whl", hash = "sha256:733e25f7971ed2a7f14d30381cca46bdf7c35fa9c236ba1ac83178410326912d", size = 697466, upload-time = "2026-04-12T16:07:33.08Z" },
-    { url = "https://files.pythonhosted.org/packages/2f/a9/65d5f268cbc7c37abd72590661682985930103cd8400aa66e0f83964ad71/repo_mapper_rs-0.4.1-cp313-cp313-win_amd64.whl", hash = "sha256:2aa8d336dcd5c656890bb9d0fd8995b013ff14336d4c9f14e41e6d1cb1e5ca5f", size = 582809, upload-time = "2026-04-12T16:07:34.884Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/db/7a2d8e6a1315819682f3139c560590b0226d321a3ed90c2c250f9eb211e8/repo_mapper_rs-0.5.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f2b301657f2b124c037dbd12fe34da2374e44450b2808a9b3c12b2406954809e", size = 574083, upload-time = "2026-10-26T20:48:10.785Z" },
+    { url = "https://files.pythonhosted.org/packages/18/94/726907afacda03b7ec93e24975567899f7a584af26c4639746134ea76bfa/repo_mapper_rs-0.5.1-cp312-cp312-manylinux_2_34_x86_64.whl", hash = "sha256:9c4c36bc2c3a4f65c22721ac27cb2443db6075a5ce1f30c291bb63ed89b57c73", size = 666395, upload-time = "2026-10-26T20:48:12.357Z" },
+    { url = "https://files.pythonhosted.org/packages/af/c4/e3db86a2c4a357046cc2e48822f7897823b7803d2e89a3e293f5b95ea29b/repo_mapper_rs-0.5.1-cp312-cp312-win_amd64.whl", hash = "sha256:1060201f20e1092529e80104f7db2da5d8043759cc7c16866ab3e53b847ea06b", size = 551017, upload-time = "2026-10-26T20:48:13.606Z" },
+    { url = "https://files.pythonhosted.org/packages/07/61/eed46a0761a4a991019147b0ffa5bbeddda47395e8e742787728f69b80c6/repo_mapper_rs-0.5.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:422e741bf977ba67b14f3bf0ed1cd32828134626f0654c14b50c8275286c1f2b", size = 574125, upload-time = "2026-10-26T20:48:15.033Z" },
+    { url = "https://files.pythonhosted.org/packages/66/46/c02707102ba6f987da8e2c40057b05612f2a2de661785dc2228d44e70fca/repo_mapper_rs-0.5.1-cp313-cp313-manylinux_2_34_x86_64.whl", hash = "sha256:f722086e692da92e1b755ad0466a48c2338c84e8842af5e9b59db71046d9a490", size = 666341, upload-time = "2026-10-26T20:48:16.428Z" },
+    { url = "https://files.pythonhosted.org/packages/af/c1/89b745794f26f247fd43eaa057e6a350730dc9e187763e793188e9e71825/repo_mapper_rs-0.5.1-cp313-cp313-win_amd64.whl", hash = "sha256:35ac22ee28026597a47bf6d7ba582bf5200d531c8c8d938fd802fd06a110a619", size = 550815, upload-time = "2026-10-26T20:48:17.732Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/86/823263deb3249e4764500deee50f526fbfe8bf49b2bef3bf6a64fba864c5/repo_mapper_rs-0.5.1-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:ba0896164122091e287957ad50a22375fcd4930a4231aa00e51cae43d4edc346", size = 574625, upload-time = "2026-10-26T20:48:19.052Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/ef/4369ff151752989e99b4e6db121d59d85c4536eed91481de304320c8cf90/repo_mapper_rs-0.5.1-cp314-cp314-manylinux_2_34_x86_64.whl", hash = "sha256:bcc63096ebc3c1165cffd40dd195861ae8732c52d299841314cd52109c072cee", size = 667147, upload-time = "2026-10-26T20:48:20.728Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/c2/38c5300ce25fa7bea46f1c06b07bfb4417ab3035df22da95eee11ea4e7c6/repo_mapper_rs-0.5.1-cp314-cp314-win_amd64.whl", hash = "sha256:785e7bbfdb7865c2407a854bc80302ae555e13b3b268e003cd557f38e201f3a9", size = 551537, upload-time = "2026-10-26T20:48:21.964Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/f2/67334018d7794c54aa79559de6e6839d82b86d0141f0a5f32dd661ca43fd/repo_mapper_rs-0.5.1-cp315-cp315-macosx_11_0_arm64.whl", hash = "sha256:389f9775c2dd2d5813d659264afd51a498feb4e823b2be90785903f16eb64613", size = 574702, upload-time = "2026-10-26T20:48:23.239Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/81/ffeb40a101fc594a82f0c00787f5f91482d60e88e30cdb7e5e9297f4f8c8/repo_mapper_rs-0.5.1-cp315-cp315-manylinux_2_34_x86_64.whl", hash = "sha256:68c7de7e921d5935419e9f2f1ce84430c1930b9595517377f444055bd65f31c2", size = 667264, upload-time = "2026-10-26T20:48:24.521Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/fa/d8452d79b0e09eadfd05f8dbfe4a7f815e036fc0ee2dbad85a7293382df9/repo_mapper_rs-0.5.1-cp315-cp315-win_amd64.whl", hash = "sha256:112963fbe5f4c045fff140c083d56a485b2b50933ebdf4e95ea07bb3593a191f", size = 551560, upload-time = "2026-10-26T20:48:25.84Z" },
 ]
 
 [[package]]
